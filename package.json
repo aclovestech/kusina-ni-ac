@@ -19,9 +19,16 @@
   "homepage": "https://github.com/aclovestech/ecommerce-api#readme",
   "description": "A portfolio project as part of the Full-stack Engineer Path of Codecademy",
   "dependencies": {
+    "compression": "^1.7.5",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "errorhandler": "^1.5.1",
     "express": "^4.21.1",
-    "pg": "^8.13.1"
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0",
+    "morgan": "^1.10.0",
+    "pg": "^8.13.1",
+    "response-time": "^2.3.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
