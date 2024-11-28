@@ -20,7 +20,9 @@ authRouter.post("/register", async (req, res, next) => {
   );
   // If there's something missing from within the input, send a 400 status response.
   if (!isRequiredInputDataComplete) {
-    return res.status(400).send("Bad request: Missing required data");
+    const error = new Error("Bad request: Missing required data");
+    error.statusCode = 400;
+    throw error;
   }
 
   // Hash the given password before sending to the database
@@ -32,12 +34,20 @@ authRouter.post("/register", async (req, res, next) => {
     values: [input.first_name, input.last_name, input.email, hashedPassword],
   };
 
-  // Run the query
-  const queryResult = await db.query(query);
+  try {
+    // Run the query
+    const queryResult = await db.query(query);
+  } catch (err) {
+    const error = new Error("Email must be unique.");
+    error.statusCode = 400;
+    throw error;
+  }
 
   // Return back the result if the query was successful
   if (queryResult.rowCount > 0) {
     res.status(201).json(queryResult.rows[0]);
+  } else {
+    throw new Error();
   }
 });
 

@@ -58,7 +58,6 @@ app.use((err, req, res, next) => {
   res.status(status).json({
     success: false,
     message: err.message || "Internal Server Error",
-    stack: process.env.NODE_ENV === "development" ? err.stack : {},
   });
 });
 
