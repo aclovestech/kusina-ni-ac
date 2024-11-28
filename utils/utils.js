@@ -1,4 +1,4 @@
-const isInputValid = (input, requiredData) => {
+const isRequiredInputDataComplete = (input, requiredData) => {
   if (Object.keys(input).length === 0) {
     return false;
   }
@@ -12,4 +12,4 @@ const isInputValid = (input, requiredData) => {
   return true;
 };
 
-module.exports = { isInputValid };
+module.exports = { isRequiredInputDataComplete };
