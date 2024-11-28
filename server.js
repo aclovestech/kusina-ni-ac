@@ -13,7 +13,6 @@ const cors = require("cors");
 const helmet = require("helmet");
 const responseTime = require("response-time");
 const compression = require("compression");
-const errorhandler = require("errorhandler");
 
 // Router
 const mountRoutes = require("./routes/index");
@@ -53,7 +52,15 @@ app.use(compression());
 mountRoutes(app);
 
 // Error Handling Middleware (should be last)
-app.use(errorhandler());
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  const status = err.statusCode || 500;
+  res.status(status).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+    stack: process.env.NODE_ENV === "development" ? err.stack : {},
+  });
+});
 
 // Start the server
 const PORT = process.env.PORT || 3000;
