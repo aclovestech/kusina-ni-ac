@@ -23,15 +23,20 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Session Config
+const sessionConfig = {
+  secret: process.env.SESSION_SECRET_KEY,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    // 1 hour cookie max age
+    maxAge: 1000 * 60 * 60,
+    secure: process.env.NODE_ENV === "development" ? false : true,
+  },
+};
+
 // Session Management Middleware
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET_KEY,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
-  })
-);
+app.use(session(sessionConfig));
 
 // CORS Middleware
 app.use(cors());
