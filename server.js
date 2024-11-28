@@ -7,7 +7,8 @@ dotenv.config({ path: envFile });
 // Express
 const express = require("express");
 // Middlewares
-const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const passport = require("./utils/passport-config");
 const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -19,24 +20,15 @@ const mountRoutes = require("./routes/index");
 
 const app = express();
 
+// Cookie Parsing Middleware
+app.use(cookieParser());
+
 // Body Parsing Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session Config
-const sessionConfig = {
-  secret: process.env.SESSION_SECRET_KEY,
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    // 1 hour cookie max age
-    maxAge: 1000 * 60 * 60,
-    secure: process.env.NODE_ENV === "development" ? false : true,
-  },
-};
-
-// Session Management Middleware
-app.use(session(sessionConfig));
+// Passport Middleware
+app.use(passport.initialize());
 
 // CORS Middleware
 app.use(cors());

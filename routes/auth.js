@@ -6,6 +6,8 @@ const Router = require("express-promise-router");
 const db = require("../db/index");
 // Get the input validator from utils
 const utils = require("../utils/utils");
+// Passport-related
+const passport = require("../utils/passport-config");
 
 const authRouter = new Router();
 
@@ -37,32 +39,33 @@ authRouter.post("/register", async (req, res, next) => {
   try {
     // Run the query
     const queryResult = await db.query(query);
+    // Return back the result if the query was successful
+    if (queryResult.rowCount > 0) {
+      res.status(201).json(queryResult.rows[0]);
+    } else {
+      throw new Error();
+    }
   } catch (err) {
     const error = new Error("Email must be unique.");
     error.statusCode = 400;
     throw error;
   }
+});
 
-  // Return back the result if the query was successful
-  if (queryResult.rowCount > 0) {
-    res.status(201).json(queryResult.rows[0]);
-  } else {
-    throw new Error();
+authRouter.post(
+  "/login",
+  passport.authenticate("local", { session: false }),
+  (req, res, next) => {
+    res.status(201).json(req.user);
   }
-});
+);
 
-authRouter.post("/login", async (req, res, next) => {
-  // insert login logic here
-});
+authRouter.post("/logout", (req, res, next) => {});
 
 async function hashPassword(plaintextPassword) {
   const saltRounds = 12;
   const salt = await bcrypt.genSalt(saltRounds);
   return await bcrypt.hash(plaintextPassword, salt);
-}
-
-async function isPasswordValid(plaintextPassword, hash) {
-  return await bcrypt.compare(plaintextPassword, hash);
 }
 
 module.exports = authRouter;
