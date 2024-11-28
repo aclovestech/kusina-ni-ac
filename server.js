@@ -15,8 +15,8 @@ const responseTime = require("response-time");
 const compression = require("compression");
 const errorhandler = require("errorhandler");
 
-// Node-postgres (pg)
-const db = require("./db/index");
+// Router
+const mountRoutes = require("./routes/index");
 
 const app = express();
 
@@ -49,10 +49,8 @@ app.use(helmet());
 // Compression Middleware
 app.use(compression());
 
-// Simple Route
-app.get("/", (req, res) => {
-  res.status(200).send();
-});
+// Mount all routes
+mountRoutes(app);
 
 // Error Handling Middleware (should be last)
 app.use(errorhandler());
