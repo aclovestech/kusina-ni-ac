@@ -22,19 +22,18 @@ passport.use(
         return cb(error, false);
       }
 
-      const query = {
-        text: "SELECT customer_id, email, password_hash FROM customers.customers WHERE email = $1",
-        values: [username],
-      };
+      const checkValidAccountQuery =
+        "SELECT customer_id, email, password_hash FROM customers.customers WHERE email = $1";
+      const { rows, rowCount } = await db.query(checkValidAccountQuery, [
+        username,
+      ]);
 
-      const queryResult = await db.query(query);
-
-      if (queryResult.rowCount === 0) {
+      if (rowCount === 0) {
         error.message = "No account with the provided email was found";
         return cb(error, false);
       }
 
-      const user = queryResult.rows[0];
+      const user = rows[0];
       const hash = user.password_hash;
 
       if (!hash) {
