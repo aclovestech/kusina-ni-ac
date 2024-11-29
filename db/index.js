@@ -30,7 +30,7 @@ const query = async (text, params) => {
 };
 
 const getClient = async () => {
-  return pool.connect();
+  return await pool.connect();
 };
 
 module.exports = {

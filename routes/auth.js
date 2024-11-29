@@ -32,26 +32,49 @@ authRouter.post("/register", async (req, res, next) => {
   // Hash the given password before sending to the database
   const hashedPassword = await hashPassword(input.password);
 
-  // Build the query
-  const query = {
-    text: "SELECT * FROM customers.register_customer($1, $2, $3, $4)",
-    values: [input.first_name, input.last_name, input.email, hashedPassword],
-  };
+  // DB query
+  const client = await db.getClient();
 
   try {
-    // Run the query
-    const queryResult = await db.query(query);
-    // Return back the result if the query was successful
-    if (queryResult.rowCount > 0) {
-      res.status(201).json(queryResult.rows[0]);
-    } else {
-      throw new Error();
+    await client.query("BEGIN");
+    await client.query("SET ROLE customer");
+
+    const checkEmailQuery =
+      "SELECT COUNT(*) FROM customers.customers WHERE email = $1";
+    const { rows: queryEmailResponse } = await client.query(checkEmailQuery, [
+      input.email,
+    ]);
+
+    if (parseInt(queryEmailResponse[0].count) > 0) {
+      throw new Error("Email already exists");
     }
+
+    const insertQuery =
+      "INSERT INTO customers.customers(first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4)";
+    await client.query(insertQuery, [
+      input.first_name,
+      input.last_name,
+      input.email,
+      hashedPassword,
+    ]);
+
+    await client.query("COMMIT");
   } catch (err) {
-    const error = new Error("Email must be unique.");
-    error.statusCode = 400;
-    throw error;
+    await client.query("ROLLBACK");
+    err.statusCode = 400;
+    throw err;
+  } finally {
+    await client.query("RESET ROLE");
+    client.release();
   }
+
+  const getInsertedRowQuery =
+    "SELECT customer_id, email, created_at FROM customers.customers AS c WHERE c.email = $1";
+  const { rows: queryGetInsertedRowResponse } = await db.query(
+    getInsertedRowQuery,
+    [input.email]
+  );
+  res.status(201).json(queryGetInsertedRowResponse[0]);
 });
 
 authRouter.post(
