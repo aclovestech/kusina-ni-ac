@@ -24,7 +24,7 @@ authRouter.post("/register", async (req, res, next) => {
   );
   // If there's something missing from within the input, send a 400 status response.
   if (!isRequiredInputDataComplete) {
-    const error = new Error("Bad request: Missing required data");
+    const error = new Error("Missing required data");
     error.statusCode = 400;
     throw error;
   }
