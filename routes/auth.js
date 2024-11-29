@@ -37,7 +37,6 @@ authRouter.post("/register", async (req, res, next) => {
 
   try {
     await client.query("BEGIN");
-    await client.query("SET ROLE customer");
 
     const checkEmailQuery =
       "SELECT COUNT(*) FROM customers.customers WHERE email = $1";
@@ -64,7 +63,6 @@ authRouter.post("/register", async (req, res, next) => {
     err.statusCode = 400;
     throw err;
   } finally {
-    await client.query("RESET ROLE");
     client.release();
   }
 
