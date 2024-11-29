@@ -8,6 +8,8 @@ const db = require("../db/index");
 const utils = require("../utils/utils");
 // Passport-related
 const passport = require("../utils/passport-config");
+// JWT-related
+const jwt = require("../utils/jwt");
 
 const authRouter = new Router();
 
@@ -56,11 +58,10 @@ authRouter.post(
   "/login",
   passport.authenticate("local", { session: false }),
   (req, res, next) => {
-    res.status(201).json(req.user);
+    const token = jwt.generateAccessToken({ id: req.user.customer_id });
+    res.status(201).json({ token });
   }
 );
-
-authRouter.post("/logout", (req, res, next) => {});
 
 async function hashPassword(plaintextPassword) {
   const saltRounds = 12;

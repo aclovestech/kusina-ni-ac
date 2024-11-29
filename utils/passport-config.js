@@ -14,8 +14,12 @@ passport.use(
       passwordField: "password",
     },
     async (username, password, cb) => {
+      let error = new Error();
+      error.statusCode = 400;
+
       if (!username) {
-        return cb(null, false, { message: "Invalid request" });
+        error.message = "Invalid request";
+        return cb(error, false);
       }
 
       const query = {
@@ -26,22 +30,23 @@ passport.use(
       const queryResult = await db.query(query);
 
       if (queryResult.rowCount === 0) {
-        return cb(null, false, {
-          message: "No account with the provided email was found",
-        });
+        error.message = "No account with the provided email was found";
+        return cb(error, false);
       }
 
       const user = queryResult.rows[0];
       const hash = user.password_hash;
 
       if (!hash) {
-        return cb(null, false, { message: "Invalid password hash" });
+        error.message = "Invalid password hash";
+        return cb(error, false);
       }
 
       const isPasswordValid = await bcrypt.compare(password, hash);
 
       if (!isPasswordValid) {
-        return cb(null, false, { message: "Incorrect password" });
+        error.message = "Incorrect password";
+        return cb(error, false);
       }
 
       return cb(null, user);
