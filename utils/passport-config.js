@@ -22,9 +22,9 @@ passport.use(
         return cb(error, false);
       }
 
-      const checkValidAccountQuery =
-        "SELECT customer_id, email, password_hash FROM customers.customers WHERE email = $1";
-      const { rows, rowCount } = await db.query(checkValidAccountQuery, [
+      const userPasswordHashQuery =
+        "SELECT password_hash FROM users.users WHERE email = $1";
+      const { rows, rowCount } = await db.query(userPasswordHashQuery, [
         username,
       ]);
 
@@ -33,8 +33,7 @@ passport.use(
         return cb(error, false);
       }
 
-      const user = rows[0];
-      const hash = user.password_hash;
+      const hash = rows[0].password_hash;
 
       if (!hash) {
         error.message = "Invalid password hash";
@@ -48,7 +47,11 @@ passport.use(
         return cb(error, false);
       }
 
-      return cb(null, user);
+      const userDataQuery =
+        "SELECT u.user_id, r.name AS role_name, u.first_name, u.last_name, u.email, u.created_at FROM users.users AS u JOIN roles.roles AS r ON u.role_id = r.role_id WHERE email = $1";
+      const { rows: userData } = await db.query(userDataQuery, [username]);
+
+      return cb(null, userData[0]);
     }
   )
 );

@@ -38,8 +38,7 @@ authRouter.post("/register", async (req, res, next) => {
   try {
     await client.query("BEGIN");
 
-    const checkEmailQuery =
-      "SELECT COUNT(*) FROM customers.customers WHERE email = $1";
+    const checkEmailQuery = "SELECT COUNT(*) FROM users.users WHERE email = $1";
     const { rows: queryEmailResponse } = await client.query(checkEmailQuery, [
       input.email,
     ]);
@@ -49,7 +48,7 @@ authRouter.post("/register", async (req, res, next) => {
     }
 
     const insertQuery =
-      "INSERT INTO customers.customers(first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4)";
+      "INSERT INTO users.users(first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4)";
     await client.query(insertQuery, [
       input.first_name,
       input.last_name,
@@ -67,7 +66,7 @@ authRouter.post("/register", async (req, res, next) => {
   }
 
   const getInsertedRowQuery =
-    "SELECT customer_id, email, created_at FROM customers.customers AS c WHERE c.email = $1";
+    "SELECT user_id, email, created_at FROM users.users WHERE email = $1";
   const { rows: queryGetInsertedRowResponse } = await db.query(
     getInsertedRowQuery,
     [input.email]
@@ -79,10 +78,14 @@ authRouter.post(
   "/login",
   passport.authenticate("local", { session: false }),
   (req, res, next) => {
-    const token = jwt.generateAccessToken({ id: req.user.customer_id });
+    const token = jwt.generateAccessToken(req.user);
     res.status(201).json({ token });
   }
 );
+
+authRouter.get("/test", jwt.authenticateToken, (req, res, next) => {
+  res.status(200).json(req.user);
+});
 
 async function hashPassword(plaintextPassword) {
   const saltRounds = 12;
