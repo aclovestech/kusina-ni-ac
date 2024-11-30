@@ -13,6 +13,7 @@ const HttpError = require("../utils/HttpError");
 
 const authRouter = new Router();
 
+// Registers a new customer
 authRouter.post("/register", async (req, res, next) => {
   // Save the req.body as the input
   const { name, email, password } = req.body;
@@ -91,6 +92,7 @@ authRouter.post("/register", async (req, res, next) => {
   res.status(201).json(queryResponse.rows[0]);
 });
 
+// Authenticates the user and gives back a JWT
 authRouter.post(
   "/login",
   // Authenticate the user
@@ -102,10 +104,77 @@ authRouter.post(
   }
 );
 
-authRouter.get("/test", jwt.authenticateToken, (req, res, next) => {
-  res.status(200).json(req.user);
+// Registers a new seller
+authRouter.post("/register/seller", async (req, res, next) => {
+  // Save the req.body as the input
+  const { name, email, password } = req.body;
+
+  // Send a 400 status response if the input is incomplete
+  if (!name || !email || !password) {
+    throw new HttpError("Missing required data", 400);
+  }
+
+  // Hash the given password before sending to the database
+  const hashedPassword = await hashPassword(password);
+
+  // Establish a new connection to the database since we are going to make a transaction
+  const client = await db.getClient();
+
+  // These two variables will be used in our queries
+  let query;
+  let queryResponse;
+
+  try {
+    // Begin transaction
+    await client.query("BEGIN");
+
+    // Query: Create a new row for the user
+    query = `
+      INSERT INTO users.users(name, email, password_hash, role_id)
+      VALUES ($1, $2, $3, $4)
+      `;
+    // Response
+    queryResponse = await client.query(query, [name, email, hashedPassword, 2]);
+
+    // Query: Create a new unique row for the user (customer details)
+    query = `
+      INSERT INTO sellers.seller_details (seller_id)
+      SELECT user_id FROM users.users
+      WHERE email = $1
+      `;
+    // Response
+    queryResponse = await client.query(query, [email]);
+
+    // Commit the transaction if all queries we successful
+    await client.query("COMMIT");
+  } catch (err) {
+    // Rollback the transaction if a query was unsuccessful
+    await client.query("ROLLBACK");
+
+    // Throw an error since the transaction was unsuccessful
+    console.error(`Transaction error: ${err.message}`);
+    err.message = "Invalid request";
+    err.statusCode = 400;
+    throw err;
+  } finally {
+    // Release the connection after doing the transaction
+    client.release();
+  }
+
+  // Query: Get the user_id, email, and created_at
+  query = `
+      SELECT user_id, email, created_at
+      FROM users.users
+      WHERE email = $1
+      `;
+  // Response
+  queryResponse = await db.query(query, [email]);
+
+  // Return the newly created user info
+  res.status(201).json(queryResponse.rows[0]);
 });
 
+// Returns a hashed version of the provided plaintext password
 async function hashPassword(plaintextPassword) {
   const saltRounds = 12;
   const salt = await bcrypt.genSalt(saltRounds);
