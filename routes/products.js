@@ -162,4 +162,102 @@ productsRouter.get("/:productId", async (req, res, next) => {
   res.status(200).json(queryResponse.rows);
 });
 
+// Updates the details of a specific product
+productsRouter.put(
+  "/:productId",
+  jwt.authenticateToken,
+  async (req, res, next) => {
+    // Get the role_id from the JWT
+    const { role_name, user_id } = req.user;
+
+    // These two variables will be used in our queries
+    let query;
+    let queryResponse;
+
+    // Query: Get the product details
+    query = `
+    SELECT *
+    FROM products.products AS p
+    WHERE p.product_id = $1
+    `;
+    // Response
+    queryResponse = await db.query(query, [req.params.productId]);
+
+    // Throw an error if the product is not found
+    if (queryResponse.rows.length === 0) {
+      throw new HttpError("Product not found", 404);
+    }
+
+    // Throw an error if the user is not a seller, or if the user is not the seller of the product
+    const isSeller = queryResponse.rows[0].seller_id === user_id;
+    if ((role_name !== "Seller" && role_name !== "Admin") || !isSeller) {
+      throw new HttpError("Unauthorized", 401);
+    }
+
+    // Specify joi schema
+    const schema = Joi.object({
+      name: Joi.string(),
+      description: Joi.string(),
+      price: Joi.number(),
+      stock_quantity: Joi.number(),
+      category_id: Joi.number(),
+    });
+
+    // Validate the input
+    const { value, error } = schema.validate(req.body);
+
+    // Throw an error if there's an error
+    if (error) {
+      throw new HttpError("Missing required data", 400);
+    }
+
+    if (Object.keys(value).length === 0) {
+      throw new HttpError("Please provide details to update", 400);
+    }
+
+    // Establish a new connection to the database since we are going to make a transaction
+    const client = await db.getClient();
+
+    try {
+      // Begin transaction
+      await client.query("BEGIN");
+
+      // Construct the set clause
+      const setClause = Object.keys(value).map(
+        (key, index) => `${key} = $${index + 1}`
+      );
+
+      // Query: Update the product details
+      query = `
+        UPDATE products.products
+        SET ${setClause.join(", ")}, updated_at = CURRENT_TIMESTAMP
+        WHERE product_id = $${Object.keys(value).length + 1}
+        RETURNING *
+        `;
+      // Response
+      queryResponse = await client.query(query, [
+        ...Object.values(value),
+        req.params.productId,
+      ]);
+
+      // Commit the transaction if all queries we successful
+      await client.query("COMMIT");
+    } catch (err) {
+      // Rollback the transaction if a query was unsuccessful
+      await client.query("ROLLBACK");
+
+      // Throw an error since the transaction was unsuccessful
+      console.error(`Transaction error: ${err.message}`);
+      err.message = "Invalid request";
+      err.statusCode = 400;
+      throw err;
+    } finally {
+      // Release the connection after doing the transaction
+      client.release();
+    }
+
+    res.status(200).json(queryResponse.rows[0]);
+  }
+);
+
 module.exports = productsRouter;
