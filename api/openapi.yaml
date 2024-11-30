@@ -1,0 +1,266 @@
+openapi: 3.0.3
+info:
+  title: Pixel Playground API
+  version: 1.0.0
+  description: aclovestech's portfolio project as part of the Full-Stack Engineer Path of Codecademy
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      description: This endpoint allows a user to register by providing their first name, last name, email, and password. The server will respond with the newly created user's details upon successful registration.
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: "John"
+                last_name:
+                  type: string
+                  example: "Doe"
+                email:
+                  type: string
+                  format: email
+                  example: "johndoe@gmail.com"
+                password:
+                  type: string
+                  example: "samplepassword"
+      responses:
+        201:
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customer_id:
+                    type: string
+                    example: "702acbce-bce8-42fc-b5f5-dd2040f85ae1"
+                  email:
+                    type: string
+                    example: "johndoe@gmail.com"
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2024-11-29T00:45:34.047Z"
+        400:
+          description: When the email is not unique
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Email must be unique."
+      tags:
+        - Auth
+  /auth/login:
+    post:
+      summary: Authenticate the user
+      description: This endpoint authenticates a user by providing their email and password. The server will respond with a JSON Web Token upon successful registration.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "johndoe@gmail.com"
+                password:
+                  type: string
+                  example: "samplepassword"
+      responses:
+        201:
+          description: User authenticated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwMmFjYmNlLWJjZTgtNDJmYy1iNWY1LWRkMjA0MGY4NWFlMSIsImlhdCI6MTczMjg0MTk3OCwiZXhwIjoxNzMyODQ1NTc4fQ.6-j2YVYiaughLv53iyEmAYWuDFk3qpTWo9SN0sjrvY0"
+        400:
+          description: When the email is not unique
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Incorrect password"
+      tags:
+        - Auth
+  /users:
+    get:
+      summary: ""
+      description: ""
+      operationId: ""
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Users
+  /users/{userId}:
+    get:
+      summary: ""
+      description: ""
+      operationId: ""
+      parameters:
+        - name: userId
+          in: path
+          description: ""
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Users
+    put:
+      summary: ""
+      description: ""
+      operationId: ""
+      parameters:
+        - name: userId
+          in: path
+          description: ""
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Users
+  /products:
+    get:
+      summary: ""
+      description: ""
+      operationId: ""
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Products
+  /products/{productId}:
+    get:
+      summary: ""
+      description: ""
+      operationId: ""
+      parameters:
+        - name: productId
+          in: path
+          description: ""
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Products
+  /cart:
+    post:
+      summary: ""
+      description: ""
+      operationId: ""
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Cart
+  /cart/{cartId}:
+    post:
+      summary: ""
+      description: ""
+      operationId: ""
+      parameters:
+        - name: cartId
+          in: path
+          description: ""
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Cart
+    get:
+      summary: ""
+      description: ""
+      operationId: ""
+      parameters:
+        - name: cartId
+          in: path
+          description: ""
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Cart
+  /cart/{cartId}/checkout:
+    post:
+      summary: ""
+      description: ""
+      operationId: ""
+      parameters:
+        - name: cartId
+          in: path
+          description: ""
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Cart
+  /orders:
+    get:
+      summary: ""
+      description: ""
+      operationId: ""
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Orders
+  /orders/{orderId}:
+    get:
+      summary: ""
+      description: ""
+      operationId: ""
+      parameters:
+        - name: orderId
+          in: path
+          description: ""
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Orders

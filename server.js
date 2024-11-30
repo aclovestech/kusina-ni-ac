@@ -7,32 +7,28 @@ dotenv.config({ path: envFile });
 // Express
 const express = require("express");
 // Middlewares
-const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const passport = require("./utils/passport-config");
 const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
 const responseTime = require("response-time");
 const compression = require("compression");
-const errorhandler = require("errorhandler");
 
 // Router
 const mountRoutes = require("./routes/index");
 
 const app = express();
 
+// Cookie Parsing Middleware
+app.use(cookieParser());
+
 // Body Parsing Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session Management Middleware
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET_KEY,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
-  })
-);
+// Passport Middleware
+app.use(passport.initialize());
 
 // CORS Middleware
 app.use(cors());
@@ -53,7 +49,14 @@ app.use(compression());
 mountRoutes(app);
 
 // Error Handling Middleware (should be last)
-app.use(errorhandler());
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  const status = err.statusCode || 500;
+  res.status(status).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
 
 // Start the server
 const PORT = process.env.PORT || 3000;
