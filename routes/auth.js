@@ -4,80 +4,99 @@ const bcrypt = require("bcrypt");
 const Router = require("express-promise-router");
 // Node-postgres (pg)
 const db = require("../db/index");
-// Get the input validator from utils
-const utils = require("../utils/utils");
 // Passport-related
 const passport = require("../utils/passport-config");
 // JWT-related
 const jwt = require("../utils/jwt");
+// HttpError
+const HttpError = require("../utils/HttpError");
 
 const authRouter = new Router();
 
 authRouter.post("/register", async (req, res, next) => {
   // Save the req.body as the input
-  const input = req.body;
-  // Check if the required data from the input is complete
-  const requiredData = ["first_name", "last_name", "email", "password"];
-  const isRequiredInputDataComplete = utils.isRequiredInputDataComplete(
-    input,
-    requiredData
-  );
-  // If there's something missing from within the input, send a 400 status response.
-  if (!isRequiredInputDataComplete) {
-    const error = new Error("Missing required data");
-    error.statusCode = 400;
-    throw error;
+  const { name, email, password } = req.body;
+
+  // Send a 400 status response if the input is incomplete
+  if (!name || !email || !password) {
+    throw new HttpError("Missing required data", 400);
   }
 
   // Hash the given password before sending to the database
-  const hashedPassword = await hashPassword(input.password);
+  const hashedPassword = await hashPassword(password);
 
-  // DB query
+  // Establish a new connection to the database since we are going to make a transaction
   const client = await db.getClient();
 
+  // These two variables will be used in our queries
+  let query;
+  let queryResponse;
+
   try {
+    // Begin transaction
     await client.query("BEGIN");
 
-    const checkEmailQuery = "SELECT COUNT(*) FROM users.users WHERE email = $1";
-    const { rows: queryEmailResponse } = await client.query(checkEmailQuery, [
-      input.email,
-    ]);
+    // Query: Create a new row for the user
+    query = `
+    INSERT INTO users.users(name, email, password_hash)
+    VALUES ($1, $2, $3)
+    `;
+    // Response
+    queryResponse = await client.query(query, [name, email, hashedPassword]);
 
-    if (parseInt(queryEmailResponse[0].count) > 0) {
-      throw new Error("Email already exists");
-    }
+    // Query: Create a new unique row for the user (customer details)
+    query = `
+    INSERT INTO customers.customer_details (customer_id)
+    SELECT user_id FROM users.users
+    WHERE email = $1
+    `;
+    // Response
+    queryResponse = await client.query(query, [email]);
 
-    const insertQuery =
-      "INSERT INTO users.users(first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4)";
-    await client.query(insertQuery, [
-      input.first_name,
-      input.last_name,
-      input.email,
-      hashedPassword,
-    ]);
+    // Query: Create a new unique cart for the user
+    query = `
+    INSERT INTO customers.carts (customer_id)
+	    SELECT user_id FROM users.users
+	    WHERE email = $1
+    `;
+    // Response
+    queryResponse = await client.query(query, [email]);
 
+    // Commit the transaction if all queries we successful
     await client.query("COMMIT");
   } catch (err) {
+    // Rollback the transaction if a query was unsuccessful
     await client.query("ROLLBACK");
+
+    // Throw an error since the transaction was unsuccessful
+    console.error(`Transaction error: ${err.message}`);
+    err.message = "Invalid request";
     err.statusCode = 400;
     throw err;
   } finally {
+    // Release the connection after doing the transaction
     client.release();
   }
 
-  const getInsertedRowQuery =
-    "SELECT user_id, email, created_at FROM users.users WHERE email = $1";
-  const { rows: queryGetInsertedRowResponse } = await db.query(
-    getInsertedRowQuery,
-    [input.email]
-  );
-  res.status(201).json(queryGetInsertedRowResponse[0]);
+  // Query: Get the user_id, email, and created_at
+  query = `
+    SELECT user_id, email, created_at
+    FROM users.users
+    WHERE email = $1
+    `;
+  // Response
+  queryResponse = await db.query(query, [email]);
+
+  // Return the newly created user info
+  res.status(201).json(queryResponse.rows[0]);
 });
 
 authRouter.post(
   "/login",
+  // Authenticate the user
   passport.authenticate("local", { session: false }),
   (req, res, next) => {
+    // Return the token if the user is authenticated
     const token = jwt.generateAccessToken(req.user);
     res.status(201).json({ token });
   }
