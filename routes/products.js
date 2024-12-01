@@ -35,7 +35,9 @@ productsRouter.get("/", async (req, res, next) => {
   SELECT c.*, p.*
   FROM products.products AS p
   JOIN products.categories AS c
-    ON c.category_id = $1`;
+    ON c.category_id = $1
+  LIMIT 25
+  `;
   // Response
   queryResponse = await db.query(query, [value.category_id]);
 
@@ -128,6 +130,7 @@ productsRouter.post("/", jwt.authenticateToken, async (req, res, next) => {
     client.release();
   }
 
+  // Return the newly created product
   res.status(201).json(queryResponse.rows[0]);
 });
 
@@ -159,6 +162,7 @@ productsRouter.get("/:productId", async (req, res, next) => {
   // Response
   queryResponse = await db.query(query, [value.product_id]);
 
+  // Return the products
   res.status(200).json(queryResponse.rows);
 });
 
@@ -277,7 +281,9 @@ productsRouter.delete(
     }
 
     // Send a 200 status response if the transaction was successful
-    res.status(200).send();
+    res
+      .status(200)
+      .send({ success: true, message: "Product successfully deleted" });
   }
 );
 
