@@ -40,7 +40,7 @@ const insertUserTransaction = async (
           },
         ])
         .into("users")
-        .returning(["user_id", "email", "created_at"]);
+        .returning(["user_id", "email", "created_at", "role_id"]);
       // After the user is created, get the returned user_id and insert a row within the customers.customer_details table
       await trx
         .withSchema("customers")

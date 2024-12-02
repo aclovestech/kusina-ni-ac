@@ -20,31 +20,15 @@ authRouter.post(
   "/register",
   validateRegistrationInput,
   async (req, res, next) => {
-    // Save the req.body as the input
-    const { name, email } = req.body;
-
-    // Query: Create a new row for the user (transaction)
-    const result = await insertUserTransaction(name, email, req.hashedPassword);
-
-    // Return the newly created user info
-    res.status(201).json(result);
-  }
-);
-
-// Registers a new seller
-authRouter.post(
-  "/register/seller",
-  validateRegistrationInput,
-  async (req, res, next) => {
-    // Save the req.body as the input
-    const { name, email } = req.body;
+    // Destructure the validated input
+    const { name, email, hashedPassword, role_id } = req.validatedInput;
 
     // Query: Create a new row for the user (transaction)
     const result = await insertUserTransaction(
       name,
       email,
-      req.hashedPassword,
-      2
+      hashedPassword,
+      role_id
     );
 
     // Return the newly created user info
@@ -71,6 +55,7 @@ async function validateRegistrationInput(req, res, next) {
     name: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().required(),
+    role_id: Joi.number(),
   });
 
   // Validate the input
@@ -81,8 +66,17 @@ async function validateRegistrationInput(req, res, next) {
     throw new HttpError("Missing required data", 400);
   }
 
+  // Throw an error if the role_id is 1 (admin)
+  if (value.role_id === 1) {
+    throw new HttpError("Unauthorized", 400);
+  }
+
+  // If the role_id is not provided, set it to 3 (customer)
+  value.role_id = value.role_id || 3;
+  // Save the input in the request
+  req.validatedInput = value;
   // Hash the given password and save it within the request for future use
-  req.hashedPassword = await hashPassword(value.password);
+  req.validatedInput.hashedPassword = await hashPassword(value.password);
 
   // Save the input
   next();
