@@ -1,7 +1,5 @@
 // Express promise router
 const Router = require("express-promise-router");
-// Node-postgres (pg)
-const db = require("../db/index");
 // JWT
 const jwt = require("../utils/jwt");
 // HttpError
@@ -16,7 +14,7 @@ const {
   getProductDetailsByProductId,
   updateProductByProductId,
   deleteProductByProductId,
-} = require("../db/db");
+} = require("../db/db-products");
 
 const productsRouter = new Router();
 

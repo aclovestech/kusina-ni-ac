@@ -8,7 +8,7 @@ const HttpError = require("./HttpError");
 // Joi
 const Joi = require("joi");
 // DB (Knex)
-const { getUserPasswordHash, getUserLoginData } = require("../db/db");
+const { getUserPasswordHash, getUserLoginData } = require("../db/db-auth");
 
 // Setup local strategy
 passport.use(
