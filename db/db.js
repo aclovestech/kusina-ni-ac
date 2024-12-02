@@ -19,6 +19,7 @@ const knex = require("knex")({
 });
 
 // Queries
+// Used for registering a new user
 const insertUserTransaction = async (
   name,
   email,
@@ -65,6 +66,56 @@ const insertUserTransaction = async (
   }
 };
 
+// Get the user's password hash
+const getUserPasswordHash = async (email, cb) => {
+  try {
+    // Query: Get the password hash
+    const [returnedData] = await knex
+      .withSchema("users")
+      .select("password_hash")
+      .from("users")
+      .where("email", email);
+
+    // Throw an error if the user is not found
+    if (!returnedData) {
+      return cb(new HttpError("User not found", 400), false);
+    }
+
+    // Return the password hash
+    return returnedData;
+  } catch (err) {
+    // Throw an error since the query was unsuccessful
+    console.error(`Query error: ${err.message}`);
+    throw new HttpError();
+  }
+};
+
+// Get the user's login data
+const getUserLoginData = async (email, cb) => {
+  try {
+    // Query: Get the user data that will be put into the JWT
+    const [returnedData] = await knex("users.users")
+      .join("roles.roles", "users.role_id", "=", "roles.role_id")
+      .select(
+        "users.user_id",
+        { role_name: "roles.name" },
+        "users.name",
+        "users.email",
+        "users.created_at"
+      )
+      .where("users.email", email);
+
+    // Return the data from the response
+    return cb(null, returnedData);
+  } catch (err) {
+    // Throw an error since the query was unsuccessful
+    console.error(`Query error: ${err.message}`);
+    throw new HttpError();
+  }
+};
+
 module.exports = {
   insertUserTransaction,
+  getUserPasswordHash,
+  getUserLoginData,
 };
