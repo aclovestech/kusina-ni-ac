@@ -10,7 +10,7 @@ const jwt = require("../utils/jwt");
 const HttpError = require("../utils/HttpError");
 // Joi
 const Joi = require("joi");
-// DB-related
+// DB (Knex)
 const { insertUserTransaction } = require("../db/db");
 
 const authRouter = new Router();

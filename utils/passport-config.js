@@ -3,13 +3,11 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 // Bcrypt
 const bcrypt = require("bcrypt");
-// Node-postgres (pg)
-const db = require("../db/index");
 // HttpError
 const HttpError = require("./HttpError");
 // Joi
 const Joi = require("joi");
-// Knex (DB)
+// DB (Knex)
 const { getUserPasswordHash, getUserLoginData } = require("../db/db");
 
 // Setup local strategy
