@@ -18,6 +18,10 @@ const knex = require("knex")({
   },
 });
 
+// Setup knex-paginate
+const { attachPaginate } = require("knex-paginate");
+attachPaginate();
+
 // Queries
 // Used for registering a new user
 const insertUserTransaction = async (
