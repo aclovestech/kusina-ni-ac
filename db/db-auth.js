@@ -4,26 +4,14 @@ const knex = require(".");
 const HttpError = require("../utils/HttpError");
 
 // Used for registering a new user
-const insertUserTransaction = async (
-  name,
-  email,
-  hashedPassword,
-  role_id = 3
-) => {
+const insertUserTransaction = async (userDetails) => {
   try {
     // Begin Transaction
     const result = await knex.transaction(async (trx) => {
       // Insert a row within the users.users table with the required data
       const [returnedData] = await trx
         .withSchema("users")
-        .insert([
-          {
-            name: name,
-            email: email,
-            password_hash: hashedPassword,
-            role_id: role_id,
-          },
-        ])
+        .insert(userDetails)
         .into("users")
         .returning(["user_id", "email", "created_at", "role_id"]);
       // After the user is created, get the returned user_id and insert a row within the customers.customer_details table

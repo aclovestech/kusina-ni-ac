@@ -20,16 +20,8 @@ authRouter.post(
   "/register",
   validateRegistrationInput,
   async (req, res, next) => {
-    // Destructure the validated input
-    const { name, email, hashedPassword, role_id } = req.validatedInput;
-
     // Query: Create a new row for the user (transaction)
-    const result = await insertUserTransaction(
-      name,
-      email,
-      hashedPassword,
-      role_id
-    );
+    const result = await insertUserTransaction(req.validatedInput);
 
     // Return the newly created user info
     res.status(201).json(result);
@@ -71,21 +63,26 @@ async function validateRegistrationInput(req, res, next) {
     throw new HttpError("Unauthorized", 400);
   }
 
-  // If the role_id is not provided, set it to 3 (customer)
-  value.role_id = value.role_id || 3;
-  // Save the input in the request
+  // Save the validated input in the request
   req.validatedInput = value;
-  // Hash the given password and save it within the request for future use
-  req.validatedInput.hashedPassword = await hashPassword(value.password);
+  // If the role_id is not provided, set it to 3 (customer)
+  req.validatedInput.role_id = req.validatedInput.role_id || 3;
+  // Hash the given password and save it within the validated input
+  req.validatedInput.password_hash = await hashPassword(value.password);
+  // Delete the password property from the validated input
+  delete req.validatedInput.password;
 
-  // Save the input
+  // Move to the next middleware
   next();
 }
 
 // Returns a hashed version of the provided plaintext password
 async function hashPassword(plaintextPassword) {
+  // Set the salt rounds
   const saltRounds = 12;
+  // Generate the salt
   const salt = await bcrypt.genSalt(saltRounds);
+  // Return the hashed password
   return await bcrypt.hash(plaintextPassword, salt);
 }
 
