@@ -5,14 +5,16 @@ const products = require("./products");
 const cart = require("./cart");
 const orders = require("./orders");
 
+// JWT
+const jwt = require("../utils/jwt");
+
 // Mount all routes together using this function
 const mountRoutes = (app) => {
-  // Example: app.use('/users', users)
   app.use("/auth", auth);
-  app.use("/users", users);
   app.use("/products", products);
-  app.use("/cart", cart);
-  app.use("/orders", orders);
+  app.use("/users", jwt.authenticateToken, users);
+  app.use("/cart", jwt.authenticateToken, cart);
+  app.use("/orders", jwt.authenticateToken, orders);
 };
 
 module.exports = mountRoutes;
