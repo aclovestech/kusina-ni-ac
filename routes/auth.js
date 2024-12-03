@@ -11,7 +11,7 @@ const HttpError = require("../utils/HttpError");
 // Joi
 const Joi = require("joi");
 // DB (Knex)
-const { insertUserTransaction } = require("../db/db-auth");
+const { insertUser } = require("../db/db-auth");
 
 const authRouter = new Router();
 
