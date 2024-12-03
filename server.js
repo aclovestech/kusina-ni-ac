@@ -1,9 +1,3 @@
-// Dotenv
-const dotenv = require("dotenv");
-// Determine which .env file to load based on NODE_ENV
-const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : ".env";
-dotenv.config({ path: envFile });
-
 // Express
 const express = require("express");
 // Middlewares

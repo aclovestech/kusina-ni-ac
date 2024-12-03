@@ -2,95 +2,31 @@
 const bcrypt = require("bcrypt");
 // Express promise router
 const Router = require("express-promise-router");
-// Node-postgres (pg)
-const db = require("../db/index");
 // Passport-related
 const passport = require("../utils/passport-config");
 // JWT-related
 const jwt = require("../utils/jwt");
 // HttpError
 const HttpError = require("../utils/HttpError");
+// Joi
+const Joi = require("joi");
+// DB (Knex)
+const { insertUserTransaction } = require("../db/db-auth");
 
 const authRouter = new Router();
 
 // Registers a new customer
-authRouter.post("/register", async (req, res, next) => {
-  // Save the req.body as the input
-  const { name, email, password } = req.body;
+authRouter.post(
+  "/register",
+  validateRegistrationInput,
+  async (req, res, next) => {
+    // Query: Create a new row for the user (transaction)
+    const result = await insertUser(req.validatedInput);
 
-  // Send a 400 status response if the input is incomplete
-  if (!name || !email || !password) {
-    throw new HttpError("Missing required data", 400);
+    // Return the newly created user info
+    res.status(201).json(result);
   }
-
-  // Hash the given password before sending to the database
-  const hashedPassword = await hashPassword(password);
-
-  // Establish a new connection to the database since we are going to make a transaction
-  const client = await db.getClient();
-
-  // These two variables will be used in our queries
-  let query;
-  let queryResponse;
-
-  try {
-    // Begin transaction
-    await client.query("BEGIN");
-
-    // Query: Create a new row for the user
-    query = `
-    INSERT INTO users.users(name, email, password_hash)
-    VALUES ($1, $2, $3)
-    `;
-    // Response
-    queryResponse = await client.query(query, [name, email, hashedPassword]);
-
-    // Query: Create a new unique row for the user (customer details)
-    query = `
-    INSERT INTO customers.customer_details (customer_id)
-    SELECT user_id FROM users.users
-    WHERE email = $1
-    `;
-    // Response
-    queryResponse = await client.query(query, [email]);
-
-    // Query: Create a new unique cart for the user
-    query = `
-    INSERT INTO customers.carts (customer_id)
-	    SELECT user_id FROM users.users
-	    WHERE email = $1
-    `;
-    // Response
-    queryResponse = await client.query(query, [email]);
-
-    // Commit the transaction if all queries we successful
-    await client.query("COMMIT");
-  } catch (err) {
-    // Rollback the transaction if a query was unsuccessful
-    await client.query("ROLLBACK");
-
-    // Throw an error since the transaction was unsuccessful
-    console.error(`Transaction error: ${err.message}`);
-    err.message = "Invalid request";
-    err.statusCode = 400;
-    throw err;
-  } finally {
-    // Release the connection after doing the transaction
-    client.release();
-  }
-
-  // Query: Get the user_id, email, and created_at
-  query = `
-    SELECT user_id, email, created_at
-    FROM users.users
-    WHERE email = $1
-    `;
-  // Response
-  queryResponse = await db.query(query, [email]);
-
-  // Return the newly created user info
-  res.status(201).json(queryResponse.rows[0]);
-});
+);
 
 // Authenticates the user and gives back a JWT
 authRouter.post(
@@ -104,80 +40,49 @@ authRouter.post(
   }
 );
 
-// Registers a new seller
-authRouter.post("/register/seller", async (req, res, next) => {
-  // Save the req.body as the input
-  const { name, email, password } = req.body;
+// Validates the input for registration
+async function validateRegistrationInput(req, res, next) {
+  // Specify joi schema
+  const schema = Joi.object({
+    name: Joi.string().required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+    role_id: Joi.number(),
+  });
 
-  // Send a 400 status response if the input is incomplete
-  if (!name || !email || !password) {
+  // Validate the input
+  const { value, error } = schema.validate(req.body);
+
+  // Throw an error if there's an error
+  if (error) {
     throw new HttpError("Missing required data", 400);
   }
 
-  // Hash the given password before sending to the database
-  const hashedPassword = await hashPassword(password);
-
-  // Establish a new connection to the database since we are going to make a transaction
-  const client = await db.getClient();
-
-  // These two variables will be used in our queries
-  let query;
-  let queryResponse;
-
-  try {
-    // Begin transaction
-    await client.query("BEGIN");
-
-    // Query: Create a new row for the user
-    query = `
-      INSERT INTO users.users(name, email, password_hash, role_id)
-      VALUES ($1, $2, $3, $4)
-      `;
-    // Response
-    queryResponse = await client.query(query, [name, email, hashedPassword, 2]);
-
-    // Query: Create a new unique row for the user (customer details)
-    query = `
-      INSERT INTO sellers.seller_details (seller_id)
-      SELECT user_id FROM users.users
-      WHERE email = $1
-      `;
-    // Response
-    queryResponse = await client.query(query, [email]);
-
-    // Commit the transaction if all queries we successful
-    await client.query("COMMIT");
-  } catch (err) {
-    // Rollback the transaction if a query was unsuccessful
-    await client.query("ROLLBACK");
-
-    // Throw an error since the transaction was unsuccessful
-    console.error(`Transaction error: ${err.message}`);
-    err.message = "Invalid request";
-    err.statusCode = 400;
-    throw err;
-  } finally {
-    // Release the connection after doing the transaction
-    client.release();
+  // Throw an error if the role_id is 1 (admin)
+  if (value.role_id === 1) {
+    throw new HttpError("Unauthorized", 400);
   }
 
-  // Query: Get the user_id, email, and created_at
-  query = `
-      SELECT user_id, email, created_at
-      FROM users.users
-      WHERE email = $1
-      `;
-  // Response
-  queryResponse = await db.query(query, [email]);
+  // Save the validated input in the request
+  req.validatedInput = value;
+  // If the role_id is not provided, set it to 3 (customer)
+  req.validatedInput.role_id = req.validatedInput.role_id || 3;
+  // Hash the given password and save it within the validated input
+  req.validatedInput.password_hash = await hashPassword(value.password);
+  // Delete the password property from the validated input
+  delete req.validatedInput.password;
 
-  // Return the newly created user info
-  res.status(201).json(queryResponse.rows[0]);
-});
+  // Move to the next middleware
+  next();
+}
 
 // Returns a hashed version of the provided plaintext password
 async function hashPassword(plaintextPassword) {
+  // Set the salt rounds
   const saltRounds = 12;
+  // Generate the salt
   const salt = await bcrypt.genSalt(saltRounds);
+  // Return the hashed password
   return await bcrypt.hash(plaintextPassword, salt);
 }
 
