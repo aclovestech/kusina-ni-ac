@@ -21,7 +21,7 @@ authRouter.post(
   validateRegistrationInput,
   async (req, res, next) => {
     // Query: Create a new row for the user (transaction)
-    const result = await insertUserTransaction(req.validatedInput);
+    const result = await insertUser(req.validatedInput);
 
     // Return the newly created user info
     res.status(201).json(result);

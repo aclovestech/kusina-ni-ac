@@ -4,7 +4,7 @@ const knex = require(".");
 const HttpError = require("../utils/HttpError");
 
 // Used for registering a new user
-const insertUserTransaction = async (userDetails) => {
+const insertUser = async (userDetails) => {
   try {
     // Begin Transaction
     const result = await knex.transaction(async (trx) => {
@@ -25,7 +25,7 @@ const insertUserTransaction = async (userDetails) => {
         .insert({ customer_id: returnedData.user_id })
         .into("carts");
 
-      // Return back the user_id, email, and created_at
+      // Return back the result
       return returnedData;
     });
 
@@ -42,10 +42,8 @@ const insertUserTransaction = async (userDetails) => {
 const getUserPasswordHash = async (email, cb) => {
   try {
     // Query: Get the password hash
-    const [returnedData] = await knex
-      .withSchema("users")
+    const [returnedData] = await knex("users.users")
       .select("password_hash")
-      .from("users")
       .where("email", email);
 
     // Throw an error if the user is not found
@@ -87,7 +85,7 @@ const getUserLoginData = async (email, cb) => {
 };
 
 module.exports = {
-  insertUserTransaction,
+  insertUser,
   getUserPasswordHash,
   getUserLoginData,
 };

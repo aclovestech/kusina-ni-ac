@@ -18,7 +18,7 @@ const {
 
 const productsRouter = new Router();
 
-// Provides the products with a specific category (/products?category={categoryId})
+// Gets the products with a given category
 productsRouter.get("/", async (req, res, next) => {
   // Specify joi schema
   const schema = Joi.object({

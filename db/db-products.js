@@ -9,7 +9,7 @@ const getProductsByCategoryId = async (category_id, perPage, currentPage) => {
   try {
     // Query: Get the products by category ID
     const result = await knex
-      .select("products.*", "categories.*")
+      .select("products.*", "categories.name as category_name")
       .from("products.products")
       .join("products.categories", "categories.category_id", "=", category_id)
       .paginate({
@@ -71,8 +71,15 @@ const insertProduct = async (productDetails) => {
 const getProductDetailsByProductId = async (product_id) => {
   try {
     // Query: Get the product details
-    const [returnedData] = await knex("products.products")
-      .select("*")
+    const [returnedData] = await knex
+      .select("products.*", "categories.name as category_name")
+      .from("products.products")
+      .join(
+        "products.categories",
+        "categories.category_id",
+        "=",
+        "products.category_id"
+      )
       .where("product_id", product_id);
 
     // Return the data from the response
