@@ -190,13 +190,18 @@ const addNewAddressToUser = async (user_id, addressDetails) => {
       addressDetails.is_default = true;
     }
 
+    // Set the is_default property to false if it's not already set
+    if (!addressDetails.is_default) {
+      addressDetails.is_default = false;
+    }
+
     // Query: Create a new row for the address
     const [returnedData] = await knex("customers.customer_addresses").insert(
       {
         customer_id: user_id,
         ...addressDetails,
       },
-      "*"
+      ["*"]
     );
 
     // Return the newly created address
@@ -209,8 +214,40 @@ const addNewAddressToUser = async (user_id, addressDetails) => {
 };
 
 // Updates a specific user address
-const updateUserAddress = async () => {
+const updateUserAddress = async (user_id, address_id, addressDetails) => {
   try {
+    const result = await knex.transaction(async (trx) => {
+      // Check if the is_default property is true
+      if (addressDetails.is_default) {
+        // Query: Set the is_default property of other addresses to false
+        await trx("customers.customer_addresses")
+          .update({ is_default: false })
+          .where("customer_id", user_id)
+          .andWhere({ is_default: true });
+      } else {
+        // Query: Check if the user has any other addresses
+        const existingAddresses = await trx(
+          "customers.customer_addresses"
+        ).where("customer_id", user_id);
+
+        // Set the is_default property to true if the user has no other addresses
+        if (existingAddresses.length === 1) {
+          addressDetails.is_default = true;
+        }
+      }
+
+      // Query: Update the address
+      const [returnedData] = await knex("customers.customer_addresses")
+        .update(addressDetails, ["*"])
+        .where("address_id", address_id)
+        .andWhere("customer_id", user_id);
+
+      // Return the updated address
+      return returnedData;
+    });
+
+    // Return the updated address
+    return result;
   } catch (err) {}
 };
 
@@ -227,4 +264,6 @@ module.exports = {
   deleteUserByUserId,
   getUserAddressesByUserId,
   addNewAddressToUser,
+  updateUserAddress,
+  deleteUserAddress,
 };

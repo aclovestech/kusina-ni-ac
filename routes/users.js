@@ -12,6 +12,8 @@ const {
   deleteUserByUserId,
   getUserAddressesByUserId,
   addNewAddressToUser,
+  updateUserAddress,
+  deleteUserAddress,
 } = require("../db/db-users");
 
 const usersRouter = new Router();
@@ -130,8 +132,18 @@ usersRouter.put(
   "/:userId/addresses/:addressId",
   checkUserAuthorization,
   validateUserIdInput,
+  validateAddressIdInput,
+  validateAddressDetailsInput,
   async (req, res, next) => {
-    res.status(200).json({});
+    // Query: Update the address
+    const result = await updateUserAddress(
+      req.validatedUserId.user_id,
+      req.validatedAddressId.address_id,
+      req.validatedAddressDetails
+    );
+
+    // Return the updated address
+    res.status(200).json(result);
   }
 );
 
@@ -278,7 +290,7 @@ function validateNewAddressInput(req, res, next) {
     zipcode: Joi.string().required(),
     country: Joi.string().required(),
     phone_number: Joi.string().required(),
-    is_default: Joi.boolean(),
+    is_default: Joi.boolean().valid(true, false),
   });
 
   // Validate the input
@@ -291,6 +303,60 @@ function validateNewAddressInput(req, res, next) {
 
   // Save the validated address in the request
   req.validatedNewAddress = value;
+
+  // Move to the next middleware
+  next();
+}
+
+function validateAddressDetailsInput(req, res, next) {
+  // Specify joi schema
+  const schema = Joi.object({
+    address_line_1: Joi.string(),
+    address_line_2: Joi.string(),
+    city: Joi.string(),
+    state: Joi.string(),
+    zipcode: Joi.string(),
+    country: Joi.string(),
+    phone_number: Joi.string(),
+    is_default: Joi.boolean().valid(true, false).default(false),
+  });
+
+  // Validate the input
+  const { value, error } = schema.validate(req.body, { stripUnknown: true });
+
+  // Throw an error if there's an error
+  if (error) {
+    throw new HttpError("Invalid input data", 400);
+  }
+
+  // Save the validated address in the request
+  req.validatedAddressDetails = value;
+
+  // Move to the next middleware
+  next();
+}
+
+function validateAddressIdInput(req, res, next) {
+  // Specify joi schema
+  const schema = Joi.object({
+    address_id: Joi.string().uuid().required(),
+  });
+
+  // Validate the input
+  const { value, error } = schema.validate(
+    { address_id: req.params.addressId },
+    {
+      stripUnknown: true,
+    }
+  );
+
+  // Throw an error if there's an error
+  if (error) {
+    throw new HttpError("Invalid input data", 400);
+  }
+
+  // Save the validated address in the request
+  req.validatedAddressId = value;
 
   // Move to the next middleware
   next();
