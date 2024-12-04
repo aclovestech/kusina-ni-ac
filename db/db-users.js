@@ -3,6 +3,8 @@ const { func } = require("joi");
 const knex = require(".");
 // HttpError
 const HttpError = require("../utils/HttpError");
+// Bcrypt
+const { hashPassword } = require("../utils/bcrypt");
 
 // Maps the role ID to the table name and ID column
 const roleDetailsMap = {
@@ -107,19 +109,31 @@ const updateUserByUserId = async (user_id, userDetails) => {
     const { role_id, baseUpdates, detailedUpdates } = userDetails;
     const { table, idColumn } = roleDetailsMap[role_id];
 
+    // Begin Transaction
     await knex.transaction(async (trx) => {
+      // Check if the baseUpdates object is not empty
       if (Object.keys(baseUpdates).length > 0) {
+        // Hash the password if it's provided
+        if (baseUpdates.password) {
+          baseUpdates.password_hash = await hashPassword(baseUpdates.password);
+          // Delete the password property
+          delete baseUpdates.password;
+        }
+        // Update the users table
         await trx("users.users").update(baseUpdates).where("user_id", user_id);
       }
 
+      // Check if the detailedUpdates object is not empty
       if (Object.keys(detailedUpdates).length > 0) {
-        console.log(`${table} || ${idColumn}`);
+        // Update the table (e.g., admins.admin_details, sellers.seller_details, customers.customer_details, etc.)
         await trx(table).update(detailedUpdates).where(idColumn, user_id);
       }
 
+      // Commit the transaction
       return;
     });
 
+    // Save the result
     result = await knex("users.users")
       .select("*")
       .leftJoin(table, "users.user_id", idColumn)
