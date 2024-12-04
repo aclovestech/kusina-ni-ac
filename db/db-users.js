@@ -216,6 +216,7 @@ const addNewAddressToUser = async (user_id, addressDetails) => {
 // Updates a specific user address
 const updateUserAddress = async (user_id, address_id, addressDetails) => {
   try {
+    // Begin Transaction
     const result = await knex.transaction(async (trx) => {
       // Check if the is_default property is true
       if (addressDetails.is_default) {
@@ -237,7 +238,7 @@ const updateUserAddress = async (user_id, address_id, addressDetails) => {
       }
 
       // Query: Update the address
-      const [returnedData] = await knex("customers.customer_addresses")
+      const [returnedData] = await trx("customers.customer_addresses")
         .update(addressDetails, ["*"])
         .where("address_id", address_id)
         .andWhere("customer_id", user_id);
@@ -248,13 +249,54 @@ const updateUserAddress = async (user_id, address_id, addressDetails) => {
 
     // Return the updated address
     return result;
-  } catch (err) {}
+  } catch (err) {
+    // Throw an error since the query was unsuccessful
+    console.error(`Query error: ${err.message}`);
+    throw new HttpError();
+  }
 };
 
 // Deletes a specific user address
-const deleteUserAddress = async () => {
+const deleteUserAddress = async (user_id, address_id) => {
   try {
-  } catch (err) {}
+    // Begin Transaction
+    await knex.transaction(async (trx) => {
+      // Query: Delete the address
+      await trx("customers.customer_addresses")
+        .del()
+        .where("address_id", address_id)
+        .andWhere("customer_id", user_id);
+
+      // Query: Check if there is a default address for the user
+      const [defaultAddress] = await trx("customers.customer_addresses")
+        .select("address_id")
+        .where("customer_id", user_id)
+        .andWhere("is_default", true);
+
+      if (!defaultAddress) {
+        // Query: Get the first address for the user
+        const subquery = await trx("customers.customer_addresses")
+          .select("address_id")
+          .where("customer_id", user_id)
+          .first();
+
+        // Query: Set the is_default property of the first address to true
+        await trx("customers.customer_addresses")
+          .update({ is_default: true })
+          .where("address_id", subquery.address_id)
+          .andWhere("customer_id", user_id);
+      }
+
+      // Commit the transaction
+      return trx;
+    });
+
+    return;
+  } catch (err) {
+    // Throw an error since the query was unsuccessful
+    console.error(`Query error: ${err.message}`);
+    throw new HttpError();
+  }
 };
 
 module.exports = {

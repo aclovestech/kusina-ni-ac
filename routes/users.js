@@ -152,8 +152,18 @@ usersRouter.delete(
   "/:userId/addresses/:addressId",
   checkUserAuthorization,
   validateUserIdInput,
+  validateAddressIdInput,
   async (req, res, next) => {
-    res.status(200).json({});
+    // Query: Delete the address
+    await deleteUserAddress(
+      req.validatedUserId.user_id,
+      req.validatedAddressId.address_id
+    );
+
+    // Return that the address was deleted successfully
+    res
+      .status(200)
+      .json({ success: true, message: "Address deleted successfully" });
   }
 );
 
