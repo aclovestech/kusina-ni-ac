@@ -4,60 +4,54 @@ const knex = require(".");
 // HttpError
 const HttpError = require("../utils/HttpError");
 
-const getUsers = async ({ role_name, perPage, currentPage }) => {
+// Maps the role ID to the table name and ID column
+const roleDetailsMap = {
+  1: {
+    role_name: "admin",
+    table: "admins.admin_details",
+    idColumn: "admin_details.admin_id",
+  },
+  2: {
+    role_name: "seller",
+    table: "sellers.seller_details",
+    idColumn: "seller_details.seller_id",
+  },
+  3: {
+    role_name: "customer",
+    table: "customers.customer_details",
+    idColumn: "customer_details.customer_id",
+  },
+};
+
+// Gets the users with a given role name
+const getUsersByRoleName = async ({ role_name, perPage, currentPage }) => {
   // Set the perPage to 100 if it's greater than 100
   if (perPage > 100) perPage = 100;
+
+  // Get the role table and ID column from the map based on the role name
+  const filteredRoleDetails = Object.entries(roleDetailsMap).find(
+    ([key, role]) => role.role_name === role_name
+  );
+
+  // Throw an error if the role name is not found
+  if (filteredRoleDetails.length === 0) {
+    throw new HttpError("Invalid role name", 400);
+  }
+
+  // Extract the role ID, table, and ID column
+  const role_id = filteredRoleDetails[0];
+  const { table, idColumn } = filteredRoleDetails[1];
+
   try {
     // Query: Get the users
-    let result;
-    switch (role_name) {
-      // Return only the users that are customers
-      case "customer": {
-        result = await knex("users.users")
-          .select("users.*")
-          .leftJoin("customers.customer_details", function () {
-            this.on("users.user_id", "=", "customer_details.customer_id");
-          })
-          .where("users.role_id", 3)
-          .paginate({
-            perPage: perPage,
-            currentPage: currentPage,
-          });
-        break;
-      }
-      // Return only the users that are sellers
-      case "seller": {
-        result = await knex("users.users")
-          .select("*")
-          .leftJoin("sellers.seller_details", function () {
-            this.on("users.user_id", "=", "seller_details.seller_id");
-          })
-          .where("users.role_id", 2)
-          .paginate({
-            perPage: perPage,
-            currentPage: currentPage,
-          });
-        break;
-      }
-      // Return only the users that are admins
-      case "admin": {
-        result = await knex("users.users")
-          .select("users.*")
-          .leftJoin("admins.admin_details", function () {
-            this.on("users.user_id", "=", "admin_details.admin_id");
-          })
-          .where("users.role_id", 1)
-          .paginate({
-            perPage: perPage,
-            currentPage: currentPage,
-          });
-        break;
-      }
-      // Throw an error if the role name is invalid
-      default: {
-        throw new HttpError("Invalid role name", 400);
-      }
-    }
+    const result = await knex("users.users")
+      .select("*")
+      .leftJoin(table, "users.user_id", idColumn)
+      .where("users.role_id", role_id)
+      .paginate({
+        perPage: perPage,
+        currentPage: currentPage,
+      });
 
     // Return the data from the response
     return result.data;
@@ -68,4 +62,92 @@ const getUsers = async ({ role_name, perPage, currentPage }) => {
   }
 };
 
-module.exports = { getUsers };
+// Gets the user details by a given user ID
+const getUserByUserId = async (user_id) => {
+  try {
+    // Query: Get the user's role ID
+    const [{ role_id }] = await knex("users.users")
+      .select("role_id")
+      .where("user_id", user_id);
+
+    // Throw an error if the user ID is not found
+    if (!role_id) {
+      throw new HttpError("Invalid user ID", 400);
+    }
+
+    // Throw an error if the role ID is not found
+    if (!roleDetailsMap[role_id]) {
+      throw new HttpError("Invalid role name", 400);
+    }
+
+    // Extract the table and ID column from the map
+    const { table, idColumn } = roleDetailsMap[role_id];
+
+    // Query: Get the user details
+    const [returnedData] = await knex("users.users")
+      .select("*")
+      .leftJoin(table, "users.user_id", idColumn)
+      .where("users.user_id", user_id);
+
+    // Return the data from the response
+    return returnedData;
+  } catch (err) {
+    // Throw an error since the query was unsuccessful
+    console.error(`Query error: ${err.message}`);
+    throw new HttpError();
+  }
+};
+
+// Updates the details of a specific user
+const updateUserByUserId = async (user_id, userDetails) => {
+  let result;
+
+  try {
+    // Query: Update the user details
+    const { role_id, baseUpdates, detailedUpdates } = userDetails;
+    const { table, idColumn } = roleDetailsMap[role_id];
+
+    await knex.transaction(async (trx) => {
+      if (Object.keys(baseUpdates).length > 0) {
+        await trx("users.users").update(baseUpdates).where("user_id", user_id);
+      }
+
+      if (Object.keys(detailedUpdates).length > 0) {
+        console.log(`${table} || ${idColumn}`);
+        await trx(table).update(detailedUpdates).where(idColumn, user_id);
+      }
+
+      return;
+    });
+
+    result = await knex("users.users")
+      .select("*")
+      .leftJoin(table, "users.user_id", idColumn)
+      .where("users.user_id", user_id);
+  } catch (err) {
+    // Throw an error since the query was unsuccessful
+    console.error(`Query error: ${err.message}`);
+    throw new HttpError();
+  }
+
+  return result;
+};
+
+// Deletes a specific user
+const deleteUserByUserId = async (user_id) => {
+  try {
+    // Query: Delete the user
+    await knex("users.users").del().where("user_id", user_id);
+  } catch (err) {
+    // Throw an error since the query was unsuccessful
+    console.error(`Query error: ${err.message}`);
+    throw new HttpError();
+  }
+};
+
+module.exports = {
+  getUsersByRoleName,
+  getUserByUserId,
+  updateUserByUserId,
+  deleteUserByUserId,
+};
