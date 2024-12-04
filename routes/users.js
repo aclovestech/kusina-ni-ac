@@ -10,6 +10,8 @@ const {
   getUserByUserId,
   updateUserByUserId,
   deleteUserByUserId,
+  getUserAddressesByUserId,
+  addNewAddressToUser,
 } = require("../db/db-users");
 
 const usersRouter = new Router();
@@ -88,6 +90,58 @@ usersRouter.delete(
     res
       .status(200)
       .json({ success: true, message: "User deleted successfully" });
+  }
+);
+
+// Gets all user addresses
+usersRouter.get(
+  "/:userId/addresses",
+  checkUserAuthorization,
+  validateUserIdInput,
+  async (req, res, next) => {
+    // Query: Get the user's addresses
+    const result = await getUserAddressesByUserId(req.validatedUserId.user_id);
+
+    // Return the data from the response
+    res.status(200).json(result);
+  }
+);
+
+// Adds a new user address
+usersRouter.post(
+  "/:userId/addresses",
+  checkUserAuthorization,
+  validateUserIdInput,
+  validateNewAddressInput,
+  async (req, res, next) => {
+    // Query: Create a new row for the address
+    const result = await addNewAddressToUser(
+      req.validatedUserId.user_id,
+      req.validatedNewAddress
+    );
+
+    // Return the newly created address
+    res.status(201).json(result);
+  }
+);
+
+// Updates a specific user address
+usersRouter.put(
+  "/:userId/addresses/:addressId",
+  checkUserAuthorization,
+  validateUserIdInput,
+  async (req, res, next) => {
+    res.status(200).json({});
+  }
+);
+
+// Deletes a specific user address
+usersRouter.delete(
+  "/:userId/addresses/:addressId",
+  checkUserAuthorization,
+  validateUserIdInput,
+  async (req, res, next) => {
+    res.status(200).json({});
   }
 );
 
@@ -209,6 +263,34 @@ async function extractUserDetailsFromInput(req, res, next) {
     baseUpdates: baseUpdates.value,
     detailedUpdates: detailedUpdates.value,
   };
+
+  // Move to the next middleware
+  next();
+}
+
+function validateNewAddressInput(req, res, next) {
+  // Specify joi schema
+  const schema = Joi.object({
+    address_line_1: Joi.string().required(),
+    address_line_2: Joi.string(),
+    city: Joi.string().required(),
+    state: Joi.string().required(),
+    zipcode: Joi.string().required(),
+    country: Joi.string().required(),
+    phone_number: Joi.string().required(),
+    is_default: Joi.boolean(),
+  });
+
+  // Validate the input
+  const { value, error } = schema.validate(req.body, { stripUnknown: true });
+
+  // Throw an error if there's an error
+  if (error) {
+    throw new HttpError("Invalid input data", 400);
+  }
+
+  // Save the validated address in the request
+  req.validatedNewAddress = value;
 
   // Move to the next middleware
   next();

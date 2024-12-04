@@ -159,9 +159,72 @@ const deleteUserByUserId = async (user_id) => {
   }
 };
 
+// Gets the addresses of a specific user
+const getUserAddressesByUserId = async (user_id) => {
+  try {
+    // Query: Get the user's addresses
+    const result = await knex("customers.customer_addresses")
+      .select("*")
+      .where("customer_id", user_id);
+
+    // Return the data from the response
+    return result;
+  } catch (err) {
+    // Throw an error since the query was unsuccessful
+    console.error(`Query error: ${err.message}`);
+    throw new HttpError();
+  }
+};
+
+// Adds a new address to a specific user
+const addNewAddressToUser = async (user_id, addressDetails) => {
+  try {
+    // Query: Check if the user has any existing addresses
+    const existingAddresses = await knex("customers.customer_addresses").where(
+      "customer_id",
+      user_id
+    );
+
+    // Set the is_default property to true if the user has no existing addresses
+    if (existingAddresses.length === 0) {
+      addressDetails.is_default = true;
+    }
+
+    // Query: Create a new row for the address
+    const [returnedData] = await knex("customers.customer_addresses").insert(
+      {
+        customer_id: user_id,
+        ...addressDetails,
+      },
+      "*"
+    );
+
+    // Return the newly created address
+    return returnedData;
+  } catch (err) {
+    // Throw an error since the query was unsuccessful
+    console.error(`Query error: ${err.message}`);
+    throw new HttpError();
+  }
+};
+
+// Updates a specific user address
+const updateUserAddress = async () => {
+  try {
+  } catch (err) {}
+};
+
+// Deletes a specific user address
+const deleteUserAddress = async () => {
+  try {
+  } catch (err) {}
+};
+
 module.exports = {
   getUsersByRoleName,
   getUserByUserId,
   updateUserByUserId,
   deleteUserByUserId,
+  getUserAddressesByUserId,
+  addNewAddressToUser,
 };
