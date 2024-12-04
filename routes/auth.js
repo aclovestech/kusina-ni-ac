@@ -1,5 +1,3 @@
-// Bcrypt
-const bcrypt = require("bcrypt");
 // Express promise router
 const Router = require("express-promise-router");
 // Passport-related
@@ -12,6 +10,8 @@ const HttpError = require("../utils/HttpError");
 const Joi = require("joi");
 // DB (Knex)
 const { insertUser } = require("../db/db-auth");
+// Bcrypt
+const { hashPassword } = require("../utils/bcrypt");
 
 const authRouter = new Router();
 
@@ -74,16 +74,6 @@ async function validateRegistrationInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
-
-// Returns a hashed version of the provided plaintext password
-async function hashPassword(plaintextPassword) {
-  // Set the salt rounds
-  const saltRounds = 12;
-  // Generate the salt
-  const salt = await bcrypt.genSalt(saltRounds);
-  // Return the hashed password
-  return await bcrypt.hash(plaintextPassword, salt);
 }
 
 module.exports = authRouter;
