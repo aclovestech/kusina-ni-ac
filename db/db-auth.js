@@ -25,10 +25,6 @@ const insertUser = async (userDetails) => {
         await trx
           .insert({ customer_id: returnedData.user_id })
           .into("customers.customer_details");
-        // After that insert a row within the customers.carts table
-        await trx
-          .insert({ customer_id: returnedData.user_id })
-          .into("customers.carts");
       }
 
       // If the user is a seller
@@ -88,6 +84,11 @@ const getUserLoginData = async (email, cb) => {
         "users.created_at"
       )
       .where("users.email", email);
+
+    // Update the user's last login time
+    await knex("users.users")
+      .update({ last_login: knex.fn.now() })
+      .where("user_id", returnedData.user_id);
 
     // Return the data from the response
     return cb(null, returnedData);
