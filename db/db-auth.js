@@ -10,20 +10,34 @@ const insertUser = async (userDetails) => {
     const result = await knex.transaction(async (trx) => {
       // Insert a row within the users.users table with the required data
       const [returnedData] = await trx
-        .withSchema("users")
-        .insert(userDetails)
-        .into("users")
+        .insert({
+          name: userDetails.name,
+          email: userDetails.email,
+          password_hash: userDetails.password_hash,
+          role_id: userDetails.role_id,
+        })
+        .into("users.users")
         .returning(["user_id", "email", "created_at", "role_id"]);
-      // After the user is created, get the returned user_id and insert a row within the customers.customer_details table
-      await trx
-        .withSchema("customers")
-        .insert({ customer_id: returnedData.user_id })
-        .into("customer_details");
-      // After that insert a row within the customers.carts table
-      await trx
-        .withSchema("customers")
-        .insert({ customer_id: returnedData.user_id })
-        .into("carts");
+
+      // If the user is a customer
+      if (userDetails.role === "customer") {
+        // After the user is created, get the returned user_id and insert a row within the customers.customer_details table
+        await trx
+          .insert({ customer_id: returnedData.user_id })
+          .into("customers.customer_details");
+        // After that insert a row within the customers.carts table
+        await trx
+          .insert({ customer_id: returnedData.user_id })
+          .into("customers.carts");
+      }
+
+      // If the user is a seller
+      else if (userDetails.role === "seller") {
+        // After the user is created, get the returned user_id and insert a row within the sellers.seller_details table
+        await trx
+          .insert({ seller_id: returnedData.user_id })
+          .into("sellers.seller_details");
+      }
 
       // Return back the result
       return returnedData;
