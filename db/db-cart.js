@@ -53,7 +53,8 @@ const getCartItemsByCartId = async (cart_id) => {
         "products.description",
         "products.price",
         "products.product_id"
-      );
+      )
+      .where("cart_items.cart_id", cart_id);
 
     // Return the data from the response
     return result;
