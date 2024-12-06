@@ -10,6 +10,7 @@ const {
   addItemsToCart,
   validateCartIdByUserId,
   getCartItemsByCartId,
+  updateCartItemQuantity,
 } = require("../db/db-cart");
 
 const cartRouter = new Router();
@@ -79,7 +80,42 @@ cartRouter.post(
 );
 
 // Updates the quantity of an item in a specific cart
-cartRouter.put("/:cartId/:productId", async (req, res, next) => {});
+cartRouter.put(
+  "/:cartId/:productId",
+  checkUserAuthorization,
+  validateCartIdInput,
+  async (req, res, next) => {
+    // Specify joi schema
+    const schema = Joi.object({
+      product_id: Joi.string().uuid().required(),
+      quantity: Joi.number().integer().min(1).required(),
+    });
+
+    // Validate the input
+    const { value, error } = schema.validate(
+      {
+        product_id: req.params.productId,
+        quantity: req.body.quantity,
+      },
+      { stripUnknown: true }
+    );
+
+    // Throw an error if there's an error
+    if (error) {
+      throw new HttpError("Invalid input data", 400);
+    }
+
+    // Query: Add items to the cart
+    const result = await updateCartItemQuantity(
+      req.validatedCartId.cart_id,
+      value.product_id,
+      value.quantity
+    );
+
+    // Return the updated cart
+    res.status(200).json(result);
+  }
+);
 
 // Deletes an item from a specific cart
 cartRouter.delete("/:cartId/:productId", async (req, res, next) => {});

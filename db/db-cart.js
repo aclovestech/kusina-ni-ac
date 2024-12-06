@@ -65,6 +65,23 @@ const getCartItemsByCartId = async (cart_id) => {
   }
 };
 
+const updateCartItemQuantity = async (cart_id, product_id, quantity) => {
+  try {
+    // Query: Update the cart item quantity
+    const [returnedData] = await knex("customers.cart_items")
+      .update({ quantity: quantity }, ["*"])
+      .where("cart_id", cart_id)
+      .andWhere("product_id", product_id);
+
+    // Return the data from the response
+    return returnedData;
+  } catch (err) {
+    // Throw an error since the query was unsuccessful
+    console.error(`Query error: ${err.message}`);
+    throw new HttpError();
+  }
+};
+
 // Validates if a specific cart belongs to a specific user
 const validateCartIdByUserId = async (cart_id, user_id) => {
   try {
@@ -93,4 +110,5 @@ module.exports = {
   addItemsToCart,
   validateCartIdByUserId,
   getCartItemsByCartId,
+  updateCartItemQuantity,
 };
