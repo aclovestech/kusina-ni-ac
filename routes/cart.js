@@ -11,6 +11,7 @@ const {
   validateCartIdByUserId,
   getCartItemsByCartId,
   updateCartItemQuantity,
+  deleteCartItemByCartIdAndProductId,
 } = require("../db/db-cart");
 
 const cartRouter = new Router();
@@ -118,7 +119,39 @@ cartRouter.put(
 );
 
 // Deletes an item from a specific cart
-cartRouter.delete("/:cartId/:productId", async (req, res, next) => {});
+cartRouter.delete(
+  "/:cartId/:productId",
+  checkUserAuthorization,
+  validateCartIdInput,
+  async (req, res, next) => {
+    // Specify joi schema
+    const schema = Joi.object({
+      product_id: Joi.string().uuid().required(),
+    });
+
+    // Validate the input
+    const { value, error } = schema.validate(
+      {
+        product_id: req.params.productId,
+      },
+      { stripUnknown: true }
+    );
+
+    // Throw an error if there's an error
+    if (error) {
+      throw new HttpError("Invalid input data", 400);
+    }
+
+    // Query: Delete an item from the cart
+    await deleteCartItemByCartIdAndProductId(
+      req.validatedCartId.cart_id,
+      value.product_id
+    );
+
+    // Return that the item was deleted
+    res.status(200).json({ success: true, message: "Item deleted from cart" });
+  }
+);
 
 // Checks out a specific cart
 cartRouter.post("/:cartId/checkout", async (req, res, next) => {});
@@ -137,6 +170,7 @@ function checkUserAuthorization(req, res, next) {
   next();
 }
 
+// Validates the input for cart ID
 function validateCartIdInput(req, res, next) {
   // Specify joi schema
   const schema = Joi.object(
@@ -159,6 +193,7 @@ function validateCartIdInput(req, res, next) {
   // Query: Validate the cart ID
   const isValid = validateCartIdByUserId(value.cart_id, req.user.user_id);
 
+  // Throw an error if the cart ID is invalid
   if (!isValid) {
     throw new HttpError("Unauthorized", 401);
   }

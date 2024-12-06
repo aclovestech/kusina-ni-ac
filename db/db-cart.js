@@ -40,6 +40,7 @@ const addItemsToCart = async (cart_id, items) => {
   }
 };
 
+// Gets the items in a specific cart
 const getCartItemsByCartId = async (cart_id) => {
   try {
     // Query: Get the cart items
@@ -65,6 +66,7 @@ const getCartItemsByCartId = async (cart_id) => {
   }
 };
 
+// Updates the quantity of an item in a specific cart
 const updateCartItemQuantity = async (cart_id, product_id, quantity) => {
   try {
     // Query: Update the cart item quantity
@@ -75,6 +77,21 @@ const updateCartItemQuantity = async (cart_id, product_id, quantity) => {
 
     // Return the data from the response
     return returnedData;
+  } catch (err) {
+    // Throw an error since the query was unsuccessful
+    console.error(`Query error: ${err.message}`);
+    throw new HttpError();
+  }
+};
+
+// Deletes an item from a specific cart
+const deleteCartItemByCartIdAndProductId = async (cart_id, product_id) => {
+  try {
+    // Query: Delete the cart item
+    await knex("customers.cart_items")
+      .del()
+      .where("cart_id", cart_id)
+      .andWhere("product_id", product_id);
   } catch (err) {
     // Throw an error since the query was unsuccessful
     console.error(`Query error: ${err.message}`);
@@ -111,4 +128,5 @@ module.exports = {
   validateCartIdByUserId,
   getCartItemsByCartId,
   updateCartItemQuantity,
+  deleteCartItemByCartIdAndProductId,
 };
