@@ -99,6 +99,73 @@ const deleteCartItemByCartIdAndProductId = async (cart_id, product_id) => {
   }
 };
 
+// Checkout a specific cart
+const checkoutCart = async (cart_id, customer_id, address_id) => {
+  try {
+    // Begin transaction
+    return await knex.transaction(async (trx) => {
+      // Query: Get the cart items
+      const cartData = await trx("customers.carts")
+        .from("customers.cart_items")
+        .join("customers.carts", "cart_items.cart_id", "carts.cart_id")
+        .join(
+          "products.products",
+          "cart_items.product_id",
+          "products.product_id"
+        )
+        .select(
+          "cart_items.quantity",
+          "products.name",
+          "products.description",
+          "products.price",
+          "products.product_id"
+        )
+        .where("cart_items.cart_id", cart_id);
+
+      // Throw an error if the cart is empty
+      if (cartData.length === 0) {
+        throw new HttpError("Cart is empty", 400);
+      }
+
+      // Calculate the total amount
+      let total_amount = 0;
+      cartData.forEach((item) => {
+        total_amount += item.price * item.quantity;
+      });
+
+      // Query: Checkout the cart
+      const [order] = await trx("orders.orders").insert(
+        {
+          customer_id: customer_id,
+          address_id: address_id,
+          total_amount: total_amount,
+        },
+        ["*"]
+      );
+
+      // Query: Get the order ID
+      const order_id = order.order_id;
+
+      // Query: Add the cart items to the order
+      await trx("orders.order_items").insert(
+        cartData.map((item) => ({
+          order_id: order_id,
+          product_id: item.product_id,
+          quantity: item.quantity,
+          price_at_purchase: item.price,
+        }))
+      );
+
+      // Return the order data
+      return { order_details: order, order_items: cartData };
+    });
+  } catch (err) {
+    // Throw an error since the query was unsuccessful
+    console.error(`Query error: ${err.message}`);
+    throw new HttpError();
+  }
+};
+
 // Validates if a specific cart belongs to a specific user
 const validateCartIdByUserId = async (cart_id, user_id) => {
   try {
@@ -129,4 +196,5 @@ module.exports = {
   getCartItemsByCartId,
   updateCartItemQuantity,
   deleteCartItemByCartIdAndProductId,
+  checkoutCart,
 };

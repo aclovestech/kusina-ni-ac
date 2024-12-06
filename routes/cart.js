@@ -12,7 +12,9 @@ const {
   getCartItemsByCartId,
   updateCartItemQuantity,
   deleteCartItemByCartIdAndProductId,
+  checkoutCart,
 } = require("../db/db-cart");
+const { getUserAddressesByUserId } = require("../db/db-users");
 
 const cartRouter = new Router();
 
@@ -154,7 +156,23 @@ cartRouter.delete(
 );
 
 // Checks out a specific cart
-cartRouter.post("/:cartId/checkout", async (req, res, next) => {});
+cartRouter.post(
+  "/:cartId/checkout",
+  checkUserAuthorization,
+  validateCartIdInput,
+  validateAddressIdInput,
+  async (req, res, next) => {
+    // Query: Checkout the cart
+    const result = await checkoutCart(
+      req.validatedCartId.cart_id,
+      req.user.user_id,
+      req.validatedAddressId
+    );
+
+    // Return the response
+    res.status(200).json(result);
+  }
+);
 
 // Checks if the user is a customer or an admin
 function checkUserAuthorization(req, res, next) {
@@ -200,6 +218,44 @@ function validateCartIdInput(req, res, next) {
 
   // Save the validated cart ID in the request
   req.validatedCartId = value;
+
+  // Move to the next middleware
+  next();
+}
+
+// Validates the input for address ID
+async function validateAddressIdInput(req, res, next) {
+  // Specify joi schema
+  const schema = Joi.object({
+    address_id: Joi.string().uuid().required(),
+  });
+
+  // Validate the input
+  const { value, error } = schema.validate(
+    {
+      address_id: req.body.address_id,
+    },
+    { stripUnknown: true }
+  );
+
+  // Throw an error if there's an error
+  if (error) {
+    throw new HttpError("Invalid input data", 400);
+  }
+
+  // Query: Get the user's addresses
+  const addresses = await getUserAddressesByUserId(req.user.user_id);
+
+  // Throw an error if the address ID is invalid
+  const isValid = addresses.find(
+    (address) => address.address_id === value.address_id
+  );
+  if (!isValid) {
+    throw new HttpError("Invalid address ID", 400);
+  }
+
+  // Save the validated address in the request
+  req.validatedAddressId = value.address_id;
 
   // Move to the next middleware
   next();
