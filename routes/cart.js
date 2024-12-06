@@ -9,6 +9,7 @@ const {
   createNewCart,
   addItemsToCart,
   validateCartIdByUserId,
+  getCartItemsByCartId,
 } = require("../db/db-cart");
 
 const cartRouter = new Router();
@@ -23,7 +24,18 @@ cartRouter.post("/", checkUserAuthorization, async (req, res, next) => {
 });
 
 // Gets a specific cart
-cartRouter.get("/:cartId", async (req, res, next) => {});
+cartRouter.get(
+  "/:cartId",
+  checkUserAuthorization,
+  validateCartIdInput,
+  async (req, res, next) => {
+    // Query: Get the cart details
+    const result = await getCartItemsByCartId(req.validatedCartId.cart_id);
+
+    // Return the cart
+    res.status(200).json(result);
+  }
+);
 
 // Adds an item/multiple items to a specific cart
 cartRouter.post(
