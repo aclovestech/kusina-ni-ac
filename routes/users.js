@@ -29,9 +29,9 @@ usersRouter.get("/", checkIsUserAdmin, async (req, res, next) => {
 
   // Validate the input
   const { value, error } = schema.validate({
-    role_name: req.body.role_name.toLowerCase(),
-    perPage: req.body.perPage,
-    currentPage: req.body.currentPage,
+    role_name: req.query.role_name.toLowerCase(),
+    perPage: req.query.perPage,
+    currentPage: req.query.currentPage,
   });
 
   // Throw an error if there's an error
