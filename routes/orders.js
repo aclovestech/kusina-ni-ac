@@ -18,9 +18,27 @@ ordersRouter.get("/", async (req, res, next) => {
 });
 
 // Gets a specific order
-ordersRouter.get("/:order_id", async (req, res, next) => {
+ordersRouter.get("/:orderId", async (req, res, next) => {
+  // Specify joi schema
+  const schema = Joi.object({
+    order_id: Joi.string().uuid().required(),
+  });
+
+  // Validate the input
+  const { value, error } = schema.validate({
+    order_id: req.params.orderId,
+  });
+
+  // Throw an error if there's an error
+  if (error) {
+    throw new HttpError("Invalid input data", 400);
+  }
+
   // Query: Get the order
+  const result = await getOrderById(req.user.user_id, value.order_id);
+
   // Return the order details
+  res.status(200).json(result);
 });
 
 module.exports = ordersRouter;
