@@ -1,266 +1,464 @@
-openapi: 3.0.3
-info:
-  title: Pixel Playground API
-  version: 1.0.0
-  description: aclovestech's portfolio project as part of the Full-Stack Engineer Path of Codecademy
-paths:
-  /auth/register:
-    post:
-      summary: Register a new user
-      description: This endpoint allows a user to register by providing their first name, last name, email, and password. The server will respond with the newly created user's details upon successful registration.
-      operationId: registerUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                first_name:
-                  type: string
-                  example: "John"
-                last_name:
-                  type: string
-                  example: "Doe"
-                email:
-                  type: string
-                  format: email
-                  example: "johndoe@gmail.com"
-                password:
-                  type: string
-                  example: "samplepassword"
-      responses:
-        201:
-          description: User registered successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  customer_id:
-                    type: string
-                    example: "702acbce-bce8-42fc-b5f5-dd2040f85ae1"
-                  email:
-                    type: string
-                    example: "johndoe@gmail.com"
-                  created_at:
-                    type: string
-                    format: date-time
-                    example: "2024-11-29T00:45:34.047Z"
-        400:
-          description: When the email is not unique
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Email must be unique."
-      tags:
-        - Auth
-  /auth/login:
-    post:
-      summary: Authenticate the user
-      description: This endpoint authenticates a user by providing their email and password. The server will respond with a JSON Web Token upon successful registration.
-      operationId: loginUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-                  example: "johndoe@gmail.com"
-                password:
-                  type: string
-                  example: "samplepassword"
-      responses:
-        201:
-          description: User authenticated successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwMmFjYmNlLWJjZTgtNDJmYy1iNWY1LWRkMjA0MGY4NWFlMSIsImlhdCI6MTczMjg0MTk3OCwiZXhwIjoxNzMyODQ1NTc4fQ.6-j2YVYiaughLv53iyEmAYWuDFk3qpTWo9SN0sjrvY0"
-        400:
-          description: When the email is not unique
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Incorrect password"
-      tags:
-        - Auth
-  /users:
-    get:
-      summary: ""
-      description: ""
-      operationId: ""
-      responses:
-        default:
-          description: Default error sample response
-      tags:
-        - Users
-  /users/{userId}:
-    get:
-      summary: ""
-      description: ""
-      operationId: ""
-      parameters:
-        - name: userId
-          in: path
-          description: ""
-          required: true
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error sample response
-      tags:
-        - Users
-    put:
-      summary: ""
-      description: ""
-      operationId: ""
-      parameters:
-        - name: userId
-          in: path
-          description: ""
-          required: true
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error sample response
-      tags:
-        - Users
-  /products:
-    get:
-      summary: ""
-      description: ""
-      operationId: ""
-      responses:
-        default:
-          description: Default error sample response
-      tags:
-        - Products
-  /products/{productId}:
-    get:
-      summary: ""
-      description: ""
-      operationId: ""
-      parameters:
-        - name: productId
-          in: path
-          description: ""
-          required: true
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error sample response
-      tags:
-        - Products
-  /cart:
-    post:
-      summary: ""
-      description: ""
-      operationId: ""
-      responses:
-        default:
-          description: Default error sample response
-      tags:
-        - Cart
-  /cart/{cartId}:
-    post:
-      summary: ""
-      description: ""
-      operationId: ""
-      parameters:
-        - name: cartId
-          in: path
-          description: ""
-          required: true
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error sample response
-      tags:
-        - Cart
-    get:
-      summary: ""
-      description: ""
-      operationId: ""
-      parameters:
-        - name: cartId
-          in: path
-          description: ""
-          required: true
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error sample response
-      tags:
-        - Cart
-  /cart/{cartId}/checkout:
-    post:
-      summary: ""
-      description: ""
-      operationId: ""
-      parameters:
-        - name: cartId
-          in: path
-          description: ""
-          required: true
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error sample response
-      tags:
-        - Cart
-  /orders:
-    get:
-      summary: ""
-      description: ""
-      operationId: ""
-      responses:
-        default:
-          description: Default error sample response
-      tags:
-        - Orders
-  /orders/{orderId}:
-    get:
-      summary: ""
-      description: ""
-      operationId: ""
-      parameters:
-        - name: orderId
-          in: path
-          description: ""
-          required: true
-          schema:
-            type: string
-      responses:
-        default:
-          description: Default error sample response
-      tags:
-        - Orders
+"openapi": "3.0.3"
+"info":
+  "title": "Pixel Playground"
+  "version": "1.0.0"
+  "contact": {}
+"servers":
+  - "url": "{{url}}"
+"components":
+  "securitySchemes":
+    "BearerAuth":
+      "type": "http"
+      "scheme": "bearer"
+      "bearerFormat": "JWT"
+"security":
+  - "BearerAuth": []
+"paths":
+  "/auth/register":
+    "post":
+      "tags":
+        - "auth"
+      "security": []
+      "description": "Registers a new user (either a customer or a seller)"
+      "operationId": "register"
+      "requestBody":
+        "content":
+          "application/json":
+            "examples":
+              "seller":
+                "value":
+                  "email": "{{email}}"
+                  "name": "{{name}}"
+                  "password": "{{password}}"
+                  "role": "seller"
+              "customer":
+                "value":
+                  "email": "{{email}}"
+                  "name": "{{name}}"
+                  "password": "{{password}}"
+      "responses":
+        "200":
+          "description": "Successful response"
+  "/auth/login":
+    "post":
+      "tags":
+        - "auth"
+      "security": []
+      "description": "Authenticates a user and gives a Bearer token back if it was successful"
+      "operationId": "login"
+      "requestBody":
+        "content":
+          "application/json":
+            "examples":
+              "login":
+                "value":
+                  "email": "{{email}}"
+                  "password": "{{password}}"
+      "responses":
+        "200":
+          "description": "Successful response"
+  "/cart":
+    "post":
+      "tags":
+        - "cart"
+      "description": "Creates a new cart for a customer"
+      "operationId": "createNewCart"
+      "responses":
+        "200":
+          "description": "Successful response"
+    "get":
+      "tags":
+        - "cart"
+      "description": "Returns the cart items of a customer"
+      "operationId": "getCartItems"
+      "responses":
+        "200":
+          "description": "Successful response"
+  "/cart/{cartId}":
+    "post":
+      "tags":
+        - "cart"
+      "parameters":
+        - "name": "cartId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "description": "Adds items into the cart"
+      "operationId": "addItems"
+      "requestBody":
+        "content":
+          "application/json":
+            "examples":
+              "add items":
+                "value":
+                  "items":
+                    - "product_id": "{{uuid}}"
+                      "quantity": 2
+                    - "product_id": "{{uuid}}"
+                      "quantity": 1
+      "responses":
+        "200":
+          "description": "Successful response"
+  "/cart/{cartId}/checkout":
+    "post":
+      "tags":
+        - "cart"
+      "parameters":
+        - "name": "cartId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "description": "Checks out a cart of the user"
+      "operationId": "checkout"
+      "requestBody":
+        "content":
+          "application/json":
+            "examples":
+              "checkout":
+                "value":
+                  "address_id": "{{uuid}}"
+      "responses":
+        "200":
+          "description": "Successful response"
+  "/cart/{cartId}/{productId}":
+    "put":
+      "tags":
+        - "cart"
+      "parameters":
+        - "name": "cartId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+        - "name": "productId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "description": "Updates the quantity of an item"
+      "operationId": "updateQuantity"
+      "requestBody":
+        "content":
+          "application/json":
+            "examples":
+              "update quantity":
+                "value":
+                  "quantity": "2"
+      "responses":
+        "200":
+          "description": "Successful response"
+    "delete":
+      "tags":
+        - "cart"
+      "parameters":
+        - "name": "cartId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+        - "name": "productId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "description": "Deletes an item from the cart"
+      "operationId": "deleteItem"
+      "responses":
+        "200":
+          "description": "Successful response"
+  "/orders/":
+    "get":
+      "tags":
+        - "orders"
+      "description": "Returns all the orders of a user"
+      "operationId": "getAllOrders"
+      "responses":
+        "200":
+          "description": "Successful response"
+  "/orders/{orderId}":
+    "get":
+      "tags":
+        - "orders"
+      "parameters":
+        - "name": "orderId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "description": "Returns the details of a specific order"
+      "operationId": "getSpecificOrderDetails"
+      "responses":
+        "200":
+          "description": "Successful response"
+  "/products":
+    "get":
+      "tags":
+        - "products"
+      "description": "Returns all of the products within a given category"
+      "operationId": "getAllProductsFromCategory"
+      "parameters":
+        - "name": "category"
+          "in": "query"
+          "schema":
+            "type": "string"
+            "example": "category_id"
+        - "name": "perPage"
+          "in": "query"
+          "schema":
+            "type": "string"
+            "example": "10"
+        - "name": "currentPage"
+          "in": "query"
+          "schema":
+            "type": "string"
+            "example": "2 (starts with 1)"
+      "responses":
+        "200":
+          "description": "Successful response"
+    "post":
+      "tags":
+        - "products"
+      "description": "Adds a product listing"
+      "operationId": "addProduct"
+      "requestBody":
+        "content":
+          "application/json":
+            "examples":
+              "add product":
+                "value":
+                  "category_id": 1
+                  "description": "{{description}}"
+                  "name": "{{name of the product}}"
+                  "price": 60
+                  "stock_quantity": 100
+      "responses":
+        "200":
+          "description": "Successful response"
+  "/products/{productId}":
+    "get":
+      "tags":
+        - "products"
+      "parameters":
+        - "name": "productId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "description": "Returns the details of a specific product"
+      "operationId": "getProductDetails"
+      "responses":
+        "200":
+          "description": "Successful response"
+    "delete":
+      "tags":
+        - "products"
+      "parameters":
+        - "name": "productId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "description": "Deletes a specific product"
+      "operationId": "deleteProduct"
+      "responses":
+        "200":
+          "description": "Successful response"
+    "put":
+      "tags":
+        - "products"
+      "parameters":
+        - "name": "productId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "description": "Updates a specific product"
+      "operationId": "updateProduct"
+      "requestBody":
+        "content":
+          "application/json":
+            "examples":
+              "update product":
+                "value":
+                  "name": "{{product name}}"
+                  "price": 1000
+                  "stock_quantity": 20
+      "responses":
+        "200":
+          "description": "Successful response"
+  "/users":
+    "get":
+      "tags":
+        - "users"
+      "parameters":
+        - "name": "role_name"
+          "in": "query"
+          "schema":
+            "type": "string"
+            "example": "customer"
+        - "name": "perPage"
+          "in": "query"
+          "schema":
+            "type": "integer"
+            "example": "10"
+        - "name": "currentPage"
+          "in": "query"
+          "schema":
+            "type": "integer"
+            "example": "1"
+      "description": "Returns all of the users of a specific role"
+      "operationId": "getAllUsersWithRole"
+      "responses":
+        "200":
+          "description": "Successful response"
+  "/users/{userId}":
+    "get":
+      "tags":
+        - "users"
+      "parameters":
+        - "name": "userId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "description": "Returns a user's details"
+      "operationId": "getUserDetails"
+      "responses":
+        "200":
+          "description": "Successful response"
+    "put":
+      "tags":
+        - "users"
+      "parameters":
+        - "name": "userId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "description": "Update a user's details"
+      "operationId": "updateUserDetails"
+      "requestBody":
+        "content":
+          "application/json":
+            "examples":
+              "update customer details":
+                "value":
+                  "email": "{{email}}"
+                  "password": "{{password}}"
+                  "name": "{{name}}"
+                  "date_of_birth": "{{date of birth}}"
+                  "sex": "{{sex}}"
+                  "loyalty_points": 100
+              "update seller details":
+                "value":
+                  "email": "{{email}}"
+                  "password": "{{password}}"
+                  "name": "{{name}}"
+                  "business_name": "{{business_name}}"
+                  "phone_number": "{{phone number}}"
+                  "description": "{{description}}"
+      "responses":
+        "200":
+          "description": "Successful response"
+  "/users/{userId}/addresses":
+    "get":
+      "tags":
+        - "users"
+      "parameters":
+        - "name": "userId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "description": "Returns the addresses of a customer"
+      "operationId": "getAddresses"
+      "responses":
+        "200":
+          "description": "Successful response"
+    "post":
+      "tags":
+        - "users"
+      "parameters":
+        - "name": "userId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "description": "Adds a new address for a customer"
+      "operationId": "addNewAddress"
+      "requestBody":
+        "content":
+          "application/json":
+            "examples":
+              "add new address":
+                "value":
+                  "address_line_1": "{{address line 1}}"
+                  "address_line_2": "{{address line 2 (optional)}}"
+                  "city": "{{city}}"
+                  "country": "{{country}}"
+                  "phone_number": "{{phone_number}}"
+                  "state": "{{state}}"
+                  "zipcode": "{{zipcode}}"
+      "responses":
+        "200":
+          "description": "Successful response"
+  "/users/{userId}/addresses/{addressId}":
+    "put":
+      "tags":
+        - "users"
+      "parameters":
+        - "name": "userId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+        - "name": "addressId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "description": "Updates an address"
+      "operationId": "updateAddress"
+      "requestBody":
+        "content":
+          "application/json":
+            "examples":
+              "update address":
+                "value":
+                  "address_line_1": "{{address line 1}}"
+                  "address_line_2": "{{address line 2 (optional)}}"
+                  "city": "{{city}}"
+                  "country": "{{country}}"
+                  "phone_number": "{{phone_number}}"
+                  "state": "{{state}}"
+                  "zipcode": "{{zipcode}}"
+      "responses":
+        "200":
+          "description": "Successful response"
+    "delete":
+      "tags":
+        - "users"
+      "parameters":
+        - "name": "userId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+        - "name": "addressId"
+          "in": "path"
+          "required": true
+          "schema":
+            "type": "string"
+      "description": "Deletes an address"
+      "operationId": "deleteAddress"
+      "responses":
+        "200":
+          "description": "Successful response"
+"tags":
+  - "name": "auth"
+  - "name": "cart"
+  - "name": "orders"
+  - "name": "products"
+  - "name": "users"
