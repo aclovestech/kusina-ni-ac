@@ -29,4 +29,21 @@ function validateIsUserASeller(req, res, next) {
   next();
 }
 
-module.exports = { validateIsUserACustomer, validateIsUserASeller };
+function validateIsUserAdmin(req, res, next) {
+  // Get the role_id from the JWT
+  const { role_name } = req.user;
+
+  // Throw an error if the user is not a customer
+  if (role_name !== "Admin") {
+    throw new HttpError("Unauthorized", 401);
+  }
+
+  // Move to the next middleware
+  next();
+}
+
+module.exports = {
+  validateIsUserACustomer,
+  validateIsUserASeller,
+  validateIsUserAdmin,
+};
