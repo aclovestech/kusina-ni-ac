@@ -30,7 +30,7 @@ const addItemsToCart = async (cart_id, items) => {
 // Gets the items in a specific cart
 const getCartItemsByCartId = async (cart_id) => {
   // Query: Get the cart items
-  const result = knex("customers.cart_items")
+  const result = await knex("customers.cart_items")
     .join("customers.carts", "cart_items.cart_id", "carts.cart_id")
     .join("products.products", "cart_items.product_id", "products.product_id")
     .select(
@@ -43,7 +43,12 @@ const getCartItemsByCartId = async (cart_id) => {
     .where("cart_items.cart_id", cart_id);
 
   // Return the data from the response
-  return result;
+  return result.map((item) => {
+    return {
+      ...item,
+      price: Number(item.price),
+    };
+  });
 };
 
 // Updates the quantity of an item in a specific cart
@@ -119,7 +124,12 @@ const checkoutCart = async (cart_id, customer_id, address_id) => {
     );
 
     // Return the order data
-    return { order_details: order, order_items: cartData };
+    return {
+      order_details: { ...order, total_amount: Number(order.total_amount) },
+      order_items: cartData.map((item) => {
+        return { ...item, price: Number(item.price) };
+      }),
+    };
   });
 
   // Return the data from the response
