@@ -4,87 +4,55 @@ const Router = require("express-promise-router");
 const jwt = require("../utils/jwt");
 // HttpError
 const HttpError = require("../utils/HttpError");
-// Joi
-const Joi = require("joi");
 // DB (Knex)
 const {
   getProductsByCategoryId,
-  isCategoryIdValid,
   insertProduct,
   getProductDetailsByProductId,
   updateProductByProductId,
   deleteProductByProductId,
 } = require("../db/db-products");
+// Validations
+const { validateIsUserASeller } = require("../utils/validations/general");
+const {
+  validateProductWithCategoryQueryInput,
+  validateNewProductDetailsInput,
+  validateProductIdInput,
+  validateUpdatedProductDetailsInput,
+  validateSellerProduct,
+} = require("../utils/validations/products");
 
 const productsRouter = new Router();
 
 // Gets the products with a given category
-productsRouter.get("/", async (req, res, next) => {
-  // Specify joi schema
-  const schema = Joi.object({
-    category_id: Joi.number().required(),
-    perPage: Joi.number().required(),
-    currentPage: Joi.number().required(),
-  });
+productsRouter.get(
+  "/",
+  validateProductWithCategoryQueryInput,
+  async (req, res, next) => {
+    // Query: Get the products by category ID
+    const result = await getProductsByCategoryId(
+      req.validatedProductWithCategoryQueryInput.category_id
+    );
 
-  // Validate the input
-  const { value, error } = schema.validate({
-    category_id: req.query.category,
-    perPage: req.query.perPage,
-    currentPage: req.query.currentPage,
-  });
+    // Throw an error if the result is empty
+    if (result.length === 0) {
+      throw new HttpError("No products found", 404);
+    }
 
-  // Throw an error if the category ID is blank
-  if (error) {
-    throw new HttpError("Invalid request", 404);
+    // Return the products
+    res.status(200).json(result);
   }
-
-  // Query: Get the products by category ID
-  const result = await getProductsByCategoryId(value.category_id);
-
-  // Throw an error if the result is empty
-  if (result.length === 0) {
-    throw new HttpError("No products found", 404);
-  }
-
-  // Return the products
-  res.status(200).json(result);
-});
+);
 
 // Adds a product to the database
 productsRouter.post(
   "/",
   jwt.authenticateToken,
-  checkUserAuthorization,
+  validateIsUserASeller,
+  validateNewProductDetailsInput,
   async (req, res, next) => {
-    // Get the role_id from the JWT
-    const { user_id } = req.user;
-
-    // Specify joi schema
-    const schema = Joi.object({
-      name: Joi.string().required(),
-      description: Joi.string().required(),
-      price: Joi.number().required(),
-      stock_quantity: Joi.number().required(),
-      category_id: Joi.number().required(),
-    });
-
-    // Validate the input
-    const { value, error } = schema.validate(req.body);
-
-    // Throw an error if there's an error
-    if (error) {
-      throw new HttpError("Missing required data", 400);
-    }
-
-    // Checks if the category_id is valid
-    await isCategoryIdValid(value.category_id);
-
-    // Add the user_id to the input
-    value.seller_id = user_id;
-
     // Query: Insert the product
-    const result = await insertProduct(value);
+    const result = await insertProduct(req.validatedNewProductDetailsInput);
 
     // Throw an error if the result is empty
     if (result.length === 0) {
@@ -97,65 +65,38 @@ productsRouter.post(
 );
 
 // Provides the details of a specific product
-productsRouter.get("/:productId", async (req, res, next) => {
-  // Specify joi schema
-  const schema = Joi.object({
-    product_id: Joi.string().uuid().required(),
-  });
+productsRouter.get(
+  "/:productId",
+  validateProductIdInput,
+  async (req, res, next) => {
+    // Query: Get the product details
+    const result = await getProductDetailsByProductId(
+      req.validatedProductIdInput.product_id
+    );
 
-  // Validate the input
-  const { value, error } = schema.validate({
-    product_id: req.params.productId,
-  });
+    // Throw an error if the product is not found
+    if (!result) {
+      throw new HttpError("Product not found", 404);
+    }
 
-  // Throw an error if there's an error
-  if (error) {
-    throw new HttpError("Invalid product ID", 404);
+    // Return the products
+    res.status(200).json(result);
   }
-
-  // Query: Get the product details
-  const result = await getProductDetailsByProductId(value.product_id);
-
-  // Throw an error if the product is not found
-  if (!result) {
-    throw new HttpError("Product not found", 404);
-  }
-
-  // Return the products
-  res.status(200).json(result);
-});
+);
 
 // Updates the details of a specific product
 productsRouter.put(
   "/:productId",
   jwt.authenticateToken,
-  checkUserAuthorization,
+  validateIsUserASeller,
   validateSellerProduct,
+  validateUpdatedProductDetailsInput,
   async (req, res, next) => {
-    // Specify joi schema
-    const schema = Joi.object({
-      name: Joi.string(),
-      description: Joi.string(),
-      price: Joi.number(),
-      stock_quantity: Joi.number(),
-      category_id: Joi.number(),
-    });
-
-    // Validate the input
-    const { value, error } = schema.validate(req.body);
-
-    // Throw an error if there's an error
-    if (error) {
-      throw new HttpError("Missing required data", 404);
-    }
-
-    // Throw an error if the input is empty
-    if (Object.keys(value).length === 0) {
-      throw new HttpError("Please provide details to update", 404);
-    }
-
     // Query: Update the product
-    const result = await updateProductByProductId(req.params.productId, value);
+    const result = await updateProductByProductId(
+      req.params.productId,
+      req.validatedUpdatedProductDetailsInput
+    );
 
     // Return the updated product
     res.status(200).json(result);
@@ -166,7 +107,7 @@ productsRouter.put(
 productsRouter.delete(
   "/:productId",
   jwt.authenticateToken,
-  checkUserAuthorization,
+  validateIsUserASeller,
   validateSellerProduct,
   async (req, res, next) => {
     // Query: Delete the product
@@ -178,42 +119,5 @@ productsRouter.delete(
       .send({ success: true, message: "Product successfully deleted" });
   }
 );
-
-// Checks if the user is a seller or an admin
-function checkUserAuthorization(req, res, next) {
-  // Get the role_id from the JWT
-  const { role_name } = req.user;
-
-  // Throw an error if the user is not a seller
-  if (role_name !== "Seller" && role_name !== "Admin") {
-    throw new HttpError("Unauthorized", 401);
-  }
-
-  // Move to the next middleware
-  next();
-}
-
-// Checks if the user is the seller of the product
-async function validateSellerProduct(req, res, next) {
-  // Get the user_id from the JWT
-  const { user_id } = req.user;
-
-  // Query: Get the product details
-  const result = await getProductDetailsByProductId(req.params.productId);
-
-  // Throw an error if the product is not found
-  if (!result) {
-    throw new HttpError("Product not found", 404);
-  }
-
-  // Throw an error if the user is not a seller, or if the user is not the seller of the product
-  const isSeller = result.seller_id === user_id;
-  if (!isSeller) {
-    throw new HttpError("Unauthorized", 401);
-  }
-
-  // Move to the next middleware
-  next();
-}
 
 module.exports = productsRouter;
