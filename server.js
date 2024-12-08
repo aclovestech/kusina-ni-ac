@@ -48,7 +48,7 @@ app.use((err, req, res, next) => {
   const status = err.statusCode || 500;
   res.status(status).json({
     success: false,
-    message: "An unexpected error occurred. Please try again later.",
+    message: "An error occurred while processing your request.",
   });
 });
 
