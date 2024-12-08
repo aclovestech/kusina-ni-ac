@@ -1,10 +1,10 @@
 // HttpError
-const HttpError = require("../utils/HttpError");
+const HttpError = require("../HttpError");
 // Joi
 const Joi = require("joi");
 // DB (Knex)
-const { validateCartIdByUserId } = require("../db/db-cart");
-const { getUserAddressesByUserId } = require("../db/db-users");
+const { validateCartIdByUserId } = require("../../db/db-cart");
+const { getUserAddressesByUserId } = require("../../db/db-users");
 
 // Validates the input for cart ID
 async function validateCartIdInput(req, res, next) {

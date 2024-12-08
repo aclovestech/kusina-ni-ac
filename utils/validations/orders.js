@@ -1,7 +1,7 @@
 // Joi
 const Joi = require("joi");
 // HttpError
-const HttpError = require("../utils/HttpError");
+const HttpError = require("../HttpError");
 
 // Validate order ID
 function validateOrderIdInput(req, res, next) {

@@ -1,12 +1,12 @@
 // Joi
 const Joi = require("joi");
 // HttpError
-const HttpError = require("../utils/HttpError");
+const HttpError = require("../HttpError");
 // DB (Knex)
 const {
   isCategoryIdValid,
   getProductDetailsByProductId,
-} = require("../db/db-products");
+} = require("../../db/db-products");
 
 // Validates the input for product query with category
 function validateProductWithCategoryQueryInput(req, res, next) {

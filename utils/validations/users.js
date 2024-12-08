@@ -1,9 +1,9 @@
 // Joi
 const Joi = require("joi");
 // HttpError
-const HttpError = require("../utils/HttpError");
+const HttpError = require("../HttpError");
 // DB (Knex)
-const { getUserByUserId } = require("../db/db-users");
+const { getUserByUserId } = require("../../db/db-users");
 
 // Validates the input for user query
 function validateUserQueryInput(req, res, next) {
