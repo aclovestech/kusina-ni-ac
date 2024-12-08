@@ -17,7 +17,12 @@ const getProductsByCategoryId = async (category_id, perPage, currentPage) => {
     });
 
   // Return the data from the response
-  return result.data;
+  return result.data.map((productDetails) => {
+    return {
+      ...productDetails,
+      price: Number(productDetails.price),
+    };
+  });
 };
 
 // Gets the categories
@@ -45,7 +50,10 @@ const insertProduct = async (productDetails) => {
   );
 
   // Return the data from the response
-  return returnedData;
+  return {
+    ...returnedData,
+    price: Number(returnedData.price),
+  };
 };
 
 // Gets the details of a specific product
@@ -61,7 +69,10 @@ const getProductDetailsByProductId = async (product_id) => {
     .where("product_id", product_id);
 
   // Return the data from the response
-  return returnedData;
+  return {
+    ...returnedData,
+    price: Number(returnedData.price),
+  };
 };
 
 // Updates the details of a specific product
@@ -74,7 +85,7 @@ const updateProductByProductId = async (product_id, productDetails) => {
     .where("product_id", product_id);
 
   // Return the data from the response
-  return returnedData;
+  return { ...returnedData, price: Number(returnedData.price) };
 };
 
 // Deletes a specific product
