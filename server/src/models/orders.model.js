@@ -1,8 +1,8 @@
-// DB (Knex)
-const knex = require(".");
+// Imports
+const knex = require("../config/db");
 
 // Gets all orders of a user
-const getAllOrders = async (customer_id) => {
+exports.getAllOrders = async (customer_id) => {
   // Query: Get the orders
   const orders = await knex("orders.orders")
     .select("*")
@@ -52,7 +52,7 @@ const getAllOrders = async (customer_id) => {
 };
 
 // Gets a specific order of a user
-const getOrderById = async (customer_id, order_id) => {
+exports.getOrderById = async (customer_id, order_id) => {
   // Query: Get the order
   const [order] = await knex("orders.orders")
     .select("*")
@@ -92,5 +92,3 @@ const getOrderById = async (customer_id, order_id) => {
     order_items: formattedOrderItems,
   };
 };
-
-module.exports = { getAllOrders, getOrderById };

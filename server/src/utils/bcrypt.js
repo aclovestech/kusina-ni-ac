@@ -1,4 +1,4 @@
-// Bcrypt
+// Imports
 const bcrypt = require("bcrypt");
 
 // Returns a hashed version of the provided plaintext password

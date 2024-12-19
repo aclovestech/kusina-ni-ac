@@ -1,10 +1,9 @@
-// Joi
+// Imports
 const Joi = require("joi");
-// HttpError
-const HttpError = require("../HttpError");
+const HttpError = require("../utils/HttpError");
 
 // Validates the input for registration
-async function validateRegistrationInput(req, res, next) {
+exports.validateRegistrationInput = async (req, res, next) => {
   // Convert role to lowercase if it exists
   req.body.role = req.body.role?.toLowerCase();
 
@@ -42,7 +41,7 @@ async function validateRegistrationInput(req, res, next) {
   }
 
   // Bcrypt
-  const { hashPassword } = require("../bcrypt");
+  const { hashPassword } = require("../utils/bcrypt");
 
   // Hash the given password and save it within the validated input
   req.validatedRegistrationInput.password_hash = await hashPassword(
@@ -51,10 +50,10 @@ async function validateRegistrationInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Validates the input for login
-function validateLoginInput(username, password) {
+exports.validateLoginInput = async (username, password) => {
   // Specify joi schema
   const schema = Joi.object({
     email: Joi.string().email().required(),
@@ -69,9 +68,4 @@ function validateLoginInput(username, password) {
 
   // Return the validated input
   return value;
-}
-
-module.exports = {
-  validateRegistrationInput,
-  validateLoginInput,
 };

@@ -1,10 +1,9 @@
-// DB (Knex)
-const knex = require(".");
-// HttpError
+// Imports
+const knex = require("../config/db");
 const HttpError = require("../utils/HttpError");
 
 // Creates a new cart
-const createNewCart = async (user_id) => {
+exports.createNewCart = async (user_id) => {
   // Query: Create a new cart
   const [returnedData] = await knex("customers.carts").insert(
     { customer_id: user_id },
@@ -16,7 +15,7 @@ const createNewCart = async (user_id) => {
 };
 
 // Adds an item to a specific cart
-const addItemsToCart = async (cart_id, items) => {
+exports.addItemsToCart = async (cart_id, items) => {
   // Query: Add items to the cart
   const result = await knex("customers.cart_items").insert(
     items.map((item) => ({ cart_id: cart_id, ...item })),
@@ -28,7 +27,7 @@ const addItemsToCart = async (cart_id, items) => {
 };
 
 // Gets the items in a specific cart
-const getCartItemsByCartId = async (cart_id) => {
+exports.getCartItemsByCartId = async (cart_id) => {
   // Query: Get the cart items
   const result = await knex("customers.cart_items")
     .join("customers.carts", "cart_items.cart_id", "carts.cart_id")
@@ -52,7 +51,7 @@ const getCartItemsByCartId = async (cart_id) => {
 };
 
 // Updates the quantity of an item in a specific cart
-const updateCartItemQuantity = async (cart_id, product_id, quantity) => {
+exports.updateCartItemQuantity = async (cart_id, product_id, quantity) => {
   // Query: Update the cart item quantity
   const [returnedData] = await knex("customers.cart_items")
     .update({ quantity: quantity }, ["*"])
@@ -64,7 +63,7 @@ const updateCartItemQuantity = async (cart_id, product_id, quantity) => {
 };
 
 // Deletes an item from a specific cart
-const deleteCartItemByCartIdAndProductId = async (cart_id, product_id) => {
+exports.deleteCartItemByCartIdAndProductId = async (cart_id, product_id) => {
   // Query: Delete the cart item
   await knex("customers.cart_items")
     .del()
@@ -73,7 +72,7 @@ const deleteCartItemByCartIdAndProductId = async (cart_id, product_id) => {
 };
 
 // Checkout a specific cart
-const checkoutCart = async (cart_id, customer_id, address_id) => {
+exports.checkoutCart = async (cart_id, customer_id, address_id) => {
   // Begin transaction
   const result = await knex.transaction(async (trx) => {
     // Query: Get the cart items
@@ -137,7 +136,7 @@ const checkoutCart = async (cart_id, customer_id, address_id) => {
 };
 
 // Validates if a specific cart belongs to a specific user
-const validateCartIdByUserId = async (cart_id, user_id) => {
+exports.validateCartIdByUserId = async (cart_id, user_id) => {
   // Query: Check if the cart belongs to the user
   const [returnedData] = await knex("customers.carts")
     .select("cart_id", "customer_id")
@@ -151,14 +150,4 @@ const validateCartIdByUserId = async (cart_id, user_id) => {
 
   // Otherwise, return true
   return true;
-};
-
-module.exports = {
-  createNewCart,
-  addItemsToCart,
-  validateCartIdByUserId,
-  getCartItemsByCartId,
-  updateCartItemQuantity,
-  deleteCartItemByCartIdAndProductId,
-  checkoutCart,
 };

@@ -1,8 +1,8 @@
-// HttpError
-const HttpError = require("../../utils/HttpError");
+// Imports
+const HttpError = require("../utils/HttpError");
 
 // Checks if the user is a customer
-function validateIsUserACustomer(req, res, next) {
+exports.validateIsUserACustomer = (req, res, next) => {
   // Get the role_id from the JWT
   const { role_name } = req.user;
 
@@ -13,10 +13,10 @@ function validateIsUserACustomer(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Checks if the user is a seller
-function validateIsUserASeller(req, res, next) {
+exports.validateIsUserASeller = (req, res, next) => {
   // Get the role_id from the JWT
   const { role_name } = req.user;
 
@@ -27,9 +27,9 @@ function validateIsUserASeller(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
-function validateIsUserAdmin(req, res, next) {
+exports.validateIsUserAdmin = (req, res, next) => {
   // Get the role_id from the JWT
   const { role_name } = req.user;
 
@@ -40,10 +40,4 @@ function validateIsUserAdmin(req, res, next) {
 
   // Move to the next middleware
   next();
-}
-
-module.exports = {
-  validateIsUserACustomer,
-  validateIsUserASeller,
-  validateIsUserAdmin,
 };

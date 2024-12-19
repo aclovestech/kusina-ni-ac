@@ -1,15 +1,10 @@
-// Joi
+// Imports
 const Joi = require("joi");
-// HttpError
-const HttpError = require("../HttpError");
-// DB (Knex)
-const {
-  isCategoryIdValid,
-  getProductDetailsByProductId,
-} = require("../../db/db-products");
+const HttpError = require("../utils/HttpError");
+const productsModel = require("../models/products.model");
 
 // Validates the input for product query with category
-function validateProductWithCategoryQueryInput(req, res, next) {
+exports.validateProductWithCategoryQueryInput = (req, res, next) => {
   // Specify joi schema
   const schema = Joi.object({
     category_id: Joi.number().required(),
@@ -34,10 +29,10 @@ function validateProductWithCategoryQueryInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Validates the input for the details of a new product
-async function validateNewProductDetailsInput(req, res, next) {
+exports.validateNewProductDetailsInput = async (req, res, next) => {
   // Get the role_id from the JWT
   const { user_id } = req.user;
 
@@ -59,7 +54,7 @@ async function validateNewProductDetailsInput(req, res, next) {
   }
 
   // Checks if the category_id is valid
-  await isCategoryIdValid(value.category_id);
+  await productsModel.isCategoryIdValid(value.category_id);
 
   // Add the user_id to the input
   value.seller_id = user_id;
@@ -69,10 +64,10 @@ async function validateNewProductDetailsInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Validates the input for product ID
-function validateProductIdInput(req, res, next) {
+exports.validateProductIdInput = (req, res, next) => {
   // Specify joi schema
   const schema = Joi.object({
     product_id: Joi.string().uuid().required(),
@@ -93,10 +88,10 @@ function validateProductIdInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Validates the input for the details of a product that is to be updated
-function validateUpdatedProductDetailsInput(req, res, next) {
+exports.validateUpdatedProductDetailsInput = (req, res, next) => {
   // Specify joi schema
   const schema = Joi.object(
     {
@@ -127,15 +122,17 @@ function validateUpdatedProductDetailsInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Checks if the user is the seller of the product
-async function validateSellerProduct(req, res, next) {
+exports.validateSellerProduct = async (req, res, next) => {
   // Get the user_id from the JWT
   const { user_id } = req.user;
 
   // Query: Get the product details
-  const result = await getProductDetailsByProductId(req.params.productId);
+  const result = await productsModel.getProductDetailsByProductId(
+    req.params.productId
+  );
 
   // Throw an error if the product is not found
   if (!result) {
@@ -150,12 +147,4 @@ async function validateSellerProduct(req, res, next) {
 
   // Move to the next middleware
   next();
-}
-
-module.exports = {
-  validateProductWithCategoryQueryInput,
-  validateNewProductDetailsInput,
-  validateProductIdInput,
-  validateUpdatedProductDetailsInput,
-  validateSellerProduct,
 };

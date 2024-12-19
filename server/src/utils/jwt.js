@@ -1,20 +1,19 @@
-// Dotenv
+// Imports
 const dotenv = require("dotenv");
+const jwt = require("jsonwebtoken");
+const HttpError = require("../utils/HttpError");
+
 // Determine which .env file to load based on NODE_ENV
 const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : ".env";
 dotenv.config({ path: envFile });
-// JSON Web Token
-const jwt = require("jsonwebtoken");
-// HttpError
-const HttpError = require("../utils/HttpError");
 
 // Generates a JSON Web Token
-const generateAccessToken = (user) => {
+exports.generateAccessToken = (user) => {
   return jwt.sign(user, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
 };
 
 // Verifies a JSON Web Token
-const authenticateToken = (req, res, next) => {
+exports.authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
@@ -25,9 +24,4 @@ const authenticateToken = (req, res, next) => {
     req.user = user;
     next();
   });
-};
-
-module.exports = {
-  generateAccessToken,
-  authenticateToken,
 };

@@ -1,8 +1,6 @@
-// DB (Knex)
-const knex = require(".");
-// HttpError
+// Imports
+const knex = require("../config/db");
 const HttpError = require("../utils/HttpError");
-// Bcrypt
 const { hashPassword } = require("../utils/bcrypt");
 
 // Maps the role ID to the table name and ID column
@@ -25,7 +23,7 @@ const roleDetailsMap = {
 };
 
 // Gets the users with a given role name
-const getUsersByRoleName = async ({ role_name, perPage, currentPage }) => {
+exports.getUsersByRoleName = async ({ role_name, perPage, currentPage }) => {
   // Set the perPage to 100 if it's greater than 100
   if (perPage > 100) perPage = 100;
 
@@ -58,7 +56,7 @@ const getUsersByRoleName = async ({ role_name, perPage, currentPage }) => {
 };
 
 // Gets the user details by a given user ID
-const getUserByUserId = async (user_id) => {
+exports.getUserByUserId = async (user_id) => {
   // Query: Get the user's role ID
   const [{ role_id }] = await knex("users.users")
     .select("role_id")
@@ -88,7 +86,7 @@ const getUserByUserId = async (user_id) => {
 };
 
 // Updates the details of a specific user
-const updateUserByUserId = async (user_id, userDetails) => {
+exports.updateUserByUserId = async (user_id, userDetails) => {
   // Query: Update the user details
   const { role_id, baseUpdates, detailedUpdates } = userDetails;
   const { table, idColumn } = roleDetailsMap[role_id];
@@ -128,13 +126,13 @@ const updateUserByUserId = async (user_id, userDetails) => {
 };
 
 // Deletes a specific user
-const deleteUserByUserId = async (user_id) => {
+exports.deleteUserByUserId = async (user_id) => {
   // Query: Delete the user
   return await knex("users.users").del().where("user_id", user_id);
 };
 
 // Gets the addresses of a specific user
-const getUserAddressesByUserId = async (user_id) => {
+exports.getUserAddressesByUserId = async (user_id) => {
   // Query: Get the user's addresses
   const result = await knex("customers.customer_addresses")
     .select("*")
@@ -145,7 +143,7 @@ const getUserAddressesByUserId = async (user_id) => {
 };
 
 // Adds a new address to a specific user
-const addNewAddressToUser = async (user_id, addressDetails) => {
+exports.addNewAddressToUser = async (user_id, addressDetails) => {
   // Query: Check if the user has any existing addresses
   const existingAddresses = await knex("customers.customer_addresses").where(
     "customer_id",
@@ -176,7 +174,7 @@ const addNewAddressToUser = async (user_id, addressDetails) => {
 };
 
 // Updates a specific user address
-const updateUserAddress = async (user_id, address_id, addressDetails) => {
+exports.updateUserAddress = async (user_id, address_id, addressDetails) => {
   // Begin Transaction
   const result = await knex.transaction(async (trx) => {
     // Check if the is_default property is true
@@ -214,7 +212,7 @@ const updateUserAddress = async (user_id, address_id, addressDetails) => {
 };
 
 // Deletes a specific user address
-const deleteUserAddress = async (user_id, address_id) => {
+exports.deleteUserAddress = async (user_id, address_id) => {
   // Begin Transaction
   await knex.transaction(async (trx) => {
     // Query: Delete the address
@@ -249,15 +247,4 @@ const deleteUserAddress = async (user_id, address_id) => {
 
   // Return
   return;
-};
-
-module.exports = {
-  getUsersByRoleName,
-  getUserByUserId,
-  updateUserByUserId,
-  deleteUserByUserId,
-  getUserAddressesByUserId,
-  addNewAddressToUser,
-  updateUserAddress,
-  deleteUserAddress,
 };
