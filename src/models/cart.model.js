@@ -1,6 +1,5 @@
-// DB (Knex)
+// Imports
 const knex = require("../config/db");
-// HttpError
 const HttpError = require("../utils/HttpError");
 
 // Creates a new cart

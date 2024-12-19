@@ -1,13 +1,11 @@
-// HttpError
+// Imports
 const HttpError = require("../utils/HttpError");
-// Joi
 const Joi = require("joi");
-// DB (Knex)
-const { validateCartIdByUserId } = require("../models/cart.model");
-const { getUserAddressesByUserId } = require("../models/users.model");
+const cartModel = require("../models/cart.model");
+const userModel = require("../models/users.model");
 
 // Validates the input for cart ID
-async function validateCartIdInput(req, res, next) {
+exports.validateCartIdInput = async (req, res, next) => {
   // Specify joi schema
   const schema = Joi.object(
     {
@@ -27,7 +25,10 @@ async function validateCartIdInput(req, res, next) {
   }
 
   // Query: Validate the cart ID
-  const isValid = await validateCartIdByUserId(value.cart_id, req.user.user_id);
+  const isValid = await cartModel.validateCartIdByUserId(
+    value.cart_id,
+    req.user.user_id
+  );
 
   // Throw an error if the cart ID is invalid
   if (!isValid) {
@@ -39,10 +40,10 @@ async function validateCartIdInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Validates the input for address ID
-async function validateAddressIdInput(req, res, next) {
+exports.validateAddressIdInput = async (req, res, next) => {
   // Specify joi schema
   const schema = Joi.object({
     address_id: Joi.string().uuid().required(),
@@ -62,7 +63,7 @@ async function validateAddressIdInput(req, res, next) {
   }
 
   // Query: Get the user's addresses
-  const addresses = await getUserAddressesByUserId(req.user.user_id);
+  const addresses = await userModel.getUserAddressesByUserId(req.user.user_id);
 
   // Throw an error if the address ID is invalid
   const isValid = addresses.find(
@@ -77,10 +78,10 @@ async function validateAddressIdInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Validates the input for cart items
-function validateCartItemsInput(req, res, next) {
+exports.validateCartItemsInput = (req, res, next) => {
   // Specify joi schema for a single item
   const itemSchema = Joi.object(
     {
@@ -110,10 +111,10 @@ function validateCartItemsInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Validates the input for a single cart item
-function validateCartItemToUpdateInput(req, res, next) {
+exports.validateCartItemToUpdateInput = (req, res, next) => {
   // Specify joi schema
   const schema = Joi.object({
     product_id: Joi.string().uuid().required(),
@@ -139,10 +140,10 @@ function validateCartItemToUpdateInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Validates the input for product ID
-function validateProductIdInput(req, res, next) {
+exports.validateProductIdInput = (req, res, next) => {
   // Specify joi schema
   const schema = Joi.object({
     product_id: Joi.string().uuid().required(),
@@ -166,12 +167,4 @@ function validateProductIdInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
-
-module.exports = {
-  validateCartIdInput,
-  validateAddressIdInput,
-  validateCartItemsInput,
-  validateCartItemToUpdateInput,
-  validateProductIdInput,
 };
