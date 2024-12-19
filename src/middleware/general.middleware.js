@@ -1,5 +1,5 @@
 // HttpError
-const HttpError = require("../../utils/HttpError");
+const HttpError = require("../utils/HttpError");
 
 // Checks if the user is a customer
 function validateIsUserACustomer(req, res, next) {

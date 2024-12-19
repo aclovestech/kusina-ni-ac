@@ -1,7 +1,7 @@
 // Joi
 const Joi = require("joi");
 // HttpError
-const HttpError = require("../HttpError");
+const HttpError = require("../utils/HttpError");
 // DB (Knex)
 const { getUserByUserId } = require("../../db/db-users");
 

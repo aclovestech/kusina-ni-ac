@@ -1,5 +1,5 @@
 // HttpError
-const HttpError = require("../HttpError");
+const HttpError = require("../utils/HttpError");
 // Joi
 const Joi = require("joi");
 // DB (Knex)

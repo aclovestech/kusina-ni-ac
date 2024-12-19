@@ -1,7 +1,7 @@
 // Joi
 const Joi = require("joi");
 // HttpError
-const HttpError = require("../HttpError");
+const HttpError = require("../utils/HttpError");
 
 // Validates the input for registration
 async function validateRegistrationInput(req, res, next) {
@@ -42,7 +42,7 @@ async function validateRegistrationInput(req, res, next) {
   }
 
   // Bcrypt
-  const { hashPassword } = require("../bcrypt");
+  const { hashPassword } = require("../utils/bcrypt");
 
   // Hash the given password and save it within the validated input
   req.validatedRegistrationInput.password_hash = await hashPassword(

@@ -2,9 +2,9 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 // HttpError
-const HttpError = require("./HttpError");
+const HttpError = require("../utils/HttpError");
 // Validations
-const { validateLoginInput } = require("./validations/auth");
+const { validateLoginInput } = require("../middleware/auth.middleware");
 // DB (Knex)
 const { getUserPasswordHash, getUserLoginData } = require("../db/db-auth");
 
