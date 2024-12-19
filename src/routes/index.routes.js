@@ -1,9 +1,9 @@
 // Import all routes here
-const auth = require("./auth");
-const users = require("./users");
-const products = require("./products");
-const cart = require("./cart");
-const orders = require("./orders");
+const auth = require("./auth.routes");
+const users = require("./users.routes");
+const products = require("./products.routes");
+const cart = require("./cart.routes");
+const orders = require("./orders.routes");
 
 // JWT
 const jwt = require("../utils/jwt");
