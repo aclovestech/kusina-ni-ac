@@ -1,10 +1,9 @@
-// Joi
+// Imports
 const Joi = require("joi");
-// HttpError
 const HttpError = require("../utils/HttpError");
 
 // Validate order ID
-function validateOrderIdInput(req, res, next) {
+exports.validateOrderIdInput = (req, res, next) => {
   // Specify joi schema
   const schema = Joi.object({
     order_id: Joi.string().uuid().required(),
@@ -25,6 +24,4 @@ function validateOrderIdInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
-
-module.exports = { validateOrderIdInput };
+};

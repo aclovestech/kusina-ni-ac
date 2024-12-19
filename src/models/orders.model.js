@@ -1,4 +1,4 @@
-// DB (Knex)
+// Imports
 const knex = require("../config/db");
 
 // Gets all orders of a user
