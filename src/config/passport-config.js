@@ -3,13 +3,9 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 // HttpError
 const HttpError = require("../utils/HttpError");
-// Validations
-const { validateLoginInput } = require("../middleware/auth.middleware");
-// DB (Knex)
-const {
-  getUserPasswordHash,
-  getUserLoginData,
-} = require("../models/auth.model");
+// Auth-related
+const authModel = require("../models/auth.model");
+const authMiddleware = require("../middleware/auth.middleware");
 
 // Setup local strategy
 passport.use(
@@ -20,7 +16,7 @@ passport.use(
     },
     async (username, password, cb) => {
       // Validate the input
-      const value = validateLoginInput(username, password);
+      const value = authMiddleware.validateLoginInput(username, password);
 
       if (!value) {
         return cb(new HttpError("Invalid request", 400), false);
@@ -28,7 +24,7 @@ passport.use(
 
       try {
         // Get the hash from the response and compare it with the provided password
-        const result = await getUserPasswordHash(value.email);
+        const result = await authModel.getUserPasswordHash(value.email);
 
         // Throw an error if the user is not found
         if (!result) {
@@ -50,7 +46,7 @@ passport.use(
         }
 
         // Get the user's login data
-        const returnedData = await getUserLoginData(value.email, cb);
+        const returnedData = await authModel.getUserLoginData(value.email, cb);
 
         // Return the data from the response
         return cb(null, returnedData);

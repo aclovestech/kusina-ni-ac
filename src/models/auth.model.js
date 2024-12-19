@@ -2,7 +2,7 @@
 const knex = require("../config/db");
 
 // Used for registering a new user
-const insertUser = async (userDetails) => {
+exports.insertUser = async (userDetails) => {
   // Begin Transaction
   const result = await knex.transaction(async (trx) => {
     // Insert a row within the users.users table with the required data
@@ -41,7 +41,7 @@ const insertUser = async (userDetails) => {
 };
 
 // Get the user's password hash
-const getUserPasswordHash = async (email) => {
+exports.getUserPasswordHash = async (email) => {
   // Query: Get the password hash
   const [returnedData] = await knex("users.users")
     .select("password_hash")
@@ -52,7 +52,7 @@ const getUserPasswordHash = async (email) => {
 };
 
 // Get the user's login data
-const getUserLoginData = async (email) => {
+exports.getUserLoginData = async (email) => {
   // Query: Get the user data that will be put into the JWT
   const [returnedData] = await knex("users.users")
     .join("roles.roles", "users.role_id", "roles.role_id")
@@ -72,10 +72,4 @@ const getUserLoginData = async (email) => {
 
   // Return the data from the response
   return returnedData;
-};
-
-module.exports = {
-  insertUser,
-  getUserPasswordHash,
-  getUserLoginData,
 };

@@ -4,7 +4,7 @@ const knex = require("../config/db");
 const HttpError = require("../utils/HttpError");
 
 // Gets the products by category ID
-const getProductsByCategoryId = async (category_id, perPage, currentPage) => {
+exports.getProductsByCategoryId = async (category_id, perPage, currentPage) => {
   if (perPage > 50) perPage = 50;
 
   // Query: Get the products by category ID
@@ -26,7 +26,7 @@ const getProductsByCategoryId = async (category_id, perPage, currentPage) => {
 };
 
 // Gets the categories
-const isCategoryIdValid = async (category_id) => {
+exports.isCategoryIdValid = async (category_id) => {
   // Query: Get the categories
   const result = await knex("products.categories")
     .select("*")
@@ -42,7 +42,7 @@ const isCategoryIdValid = async (category_id) => {
 };
 
 // Inserts a new product
-const insertProduct = async (productDetails) => {
+exports.insertProduct = async (productDetails) => {
   // Query: Insert the product
   const [returnedData] = await knex("products.products").insert(
     productDetails,
@@ -57,7 +57,7 @@ const insertProduct = async (productDetails) => {
 };
 
 // Gets the details of a specific product
-const getProductDetailsByProductId = async (product_id) => {
+exports.getProductDetailsByProductId = async (product_id) => {
   // Query: Get the product details
   const [returnedData] = await knex("products.products")
     .select("products.*", "categories.name as category_name")
@@ -76,7 +76,7 @@ const getProductDetailsByProductId = async (product_id) => {
 };
 
 // Updates the details of a specific product
-const updateProductByProductId = async (product_id, productDetails) => {
+exports.updateProductByProductId = async (product_id, productDetails) => {
   // Add the updated_at to update the timestamp
   productDetails.updated_at = knex.fn.now();
   // Query: Update the product
@@ -89,16 +89,7 @@ const updateProductByProductId = async (product_id, productDetails) => {
 };
 
 // Deletes a specific product
-const deleteProductByProductId = async (product_id) => {
+exports.deleteProductByProductId = async (product_id) => {
   // Query: Delete the product
   return await knex("products.products").del().where("product_id", product_id);
-};
-
-module.exports = {
-  getProductsByCategoryId,
-  isCategoryIdValid,
-  insertProduct,
-  getProductDetailsByProductId,
-  updateProductByProductId,
-  deleteProductByProductId,
 };
