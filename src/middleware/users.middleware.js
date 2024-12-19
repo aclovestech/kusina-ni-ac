@@ -1,12 +1,10 @@
-// Joi
+// Imports
 const Joi = require("joi");
-// HttpError
 const HttpError = require("../utils/HttpError");
-// DB (Knex)
-const { getUserByUserId } = require("../models/users.model");
+const usersModel = require("../models/users.model");
 
 // Validates the input for user query
-function validateUserQueryInput(req, res, next) {
+exports.validateUserQueryInput = (req, res, next) => {
   // Specify joi schema
   const schema = Joi.object({
     role_name: Joi.string().required(),
@@ -29,10 +27,10 @@ function validateUserQueryInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Checks if the user is trying to access the same user or an admin
-function validateUserAuthorization(req, res, next) {
+exports.validateUserAuthorization = (req, res, next) => {
   // Get the user_id from the JWT
   const { user_id } = req.user;
   // Get the userId from the params
@@ -48,10 +46,10 @@ function validateUserAuthorization(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Validates the input for user ID
-function validateUserIdInput(req, res, next) {
+exports.validateUserIdInput = (req, res, next) => {
   // Specify joi schema
   const schema = Joi.object({
     user_id: Joi.string().uuid().required(),
@@ -73,10 +71,10 @@ function validateUserIdInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Extracts the user details from the input
-async function extractUserDetailsFromInput(req, res, next) {
+exports.extractUserDetailsFromInput = async (req, res, next) => {
   // Specify joi schema
   const baseSchema = Joi.object({
     name: Joi.string(),
@@ -96,7 +94,9 @@ async function extractUserDetailsFromInput(req, res, next) {
   const adminSchema = Joi.object({}).optional();
 
   // Get role_id from the DB
-  const { role_id } = await getUserByUserId(req.validatedUserId.user_id);
+  const { role_id } = await usersModel.getUserByUserId(
+    req.validatedUserId.user_id
+  );
 
   // Set the schema based on the role ID
   let schema;
@@ -138,10 +138,10 @@ async function extractUserDetailsFromInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Validates the input for a new address
-function validateNewAddressDetailsInput(req, res, next) {
+exports.validateNewAddressDetailsInput = (req, res, next) => {
   // Specify joi schema
   const schema = Joi.object({
     address_line_1: Joi.string().required(),
@@ -167,10 +167,10 @@ function validateNewAddressDetailsInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
 // Validates the input for address details to be updated
-function validateUpdatedAddressDetailsInput(req, res, next) {
+exports.validateUpdatedAddressDetailsInput = (req, res, next) => {
   // Specify joi schema
   const schema = Joi.object({
     address_line_1: Joi.string(),
@@ -196,9 +196,9 @@ function validateUpdatedAddressDetailsInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
+};
 
-function validateAddressIdInput(req, res, next) {
+exports.validateAddressIdInput = (req, res, next) => {
   // Specify joi schema
   const schema = Joi.object({
     address_id: Joi.string().uuid().required(),
@@ -222,14 +222,4 @@ function validateAddressIdInput(req, res, next) {
 
   // Move to the next middleware
   next();
-}
-
-module.exports = {
-  validateUserQueryInput,
-  validateUserAuthorization,
-  validateUserIdInput,
-  extractUserDetailsFromInput,
-  validateNewAddressDetailsInput,
-  validateUpdatedAddressDetailsInput,
-  validateAddressIdInput,
 };

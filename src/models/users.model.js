@@ -1,8 +1,6 @@
-// DB (Knex)
+// Imports
 const knex = require("../config/db");
-// HttpError
 const HttpError = require("../utils/HttpError");
-// Bcrypt
 const { hashPassword } = require("../utils/bcrypt");
 
 // Maps the role ID to the table name and ID column

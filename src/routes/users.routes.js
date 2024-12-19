@@ -1,29 +1,8 @@
-// Express promise router
+// Imports
 const Router = require("express-promise-router");
-// HttpError
-const HttpError = require("../utils/HttpError");
-// DB (Knex)
-const {
-  getUsersByRoleName,
-  getUserByUserId,
-  updateUserByUserId,
-  deleteUserByUserId,
-  getUserAddressesByUserId,
-  addNewAddressToUser,
-  updateUserAddress,
-  deleteUserAddress,
-} = require("../models/users.model");
-// Validations
 const { validateIsUserAdmin } = require("../middleware/general.middleware");
-const {
-  validateUserQueryInput,
-  validateUserAuthorization,
-  validateUserIdInput,
-  extractUserDetailsFromInput,
-  validateNewAddressDetailsInput,
-  validateUpdatedAddressDetailsInput,
-  validateAddressIdInput,
-} = require("../middleware/users.middleware");
+const usersMiddleware = require("../middleware/users.middleware");
+const usersController = require("../controllers/users.controller");
 
 const usersRouter = new Router();
 
@@ -31,137 +10,69 @@ const usersRouter = new Router();
 usersRouter.get(
   "/",
   validateIsUserAdmin,
-  validateUserQueryInput,
-  async (req, res, next) => {
-    // Query: Get all users
-    const result = await getUsersByRoleName(req.validatedUserQueryInput);
-
-    // Throw an error if the result is empty
-    if (result.length === 0) throw new HttpError("No users found", 404);
-
-    // Return the users
-    res.status(200).json(result);
-  }
+  usersMiddleware.validateUserQueryInput,
+  usersController.getUsers
 );
 
 // Gets a specific user
 usersRouter.get(
   "/:userId",
-  validateUserAuthorization,
-  validateUserIdInput,
-  async (req, res, next) => {
-    // Query: Get the user details
-    const result = await getUserByUserId(req.validatedUserId.user_id);
-
-    // Return the user details
-    res.status(200).json(result);
-  }
+  usersMiddleware.validateUserAuthorization,
+  usersMiddleware.validateUserIdInput,
+  usersController.getUserById
 );
 
 // Updates a specific user
 usersRouter.put(
   "/:userId",
-  validateUserAuthorization,
-  validateUserIdInput,
-  extractUserDetailsFromInput,
-  async (req, res, next) => {
-    // Query: Update the user details
-    const result = await updateUserByUserId(
-      req.validatedUserId.user_id,
-      req.userDetails
-    );
-
-    // Return the user details
-    res.status(201).json(result);
-  }
+  usersMiddleware.validateUserAuthorization,
+  usersMiddleware.validateUserIdInput,
+  usersMiddleware.extractUserDetailsFromInput,
+  usersController.updateUser
 );
 
 // Deletes a specific user
 usersRouter.delete(
   "/:userId",
   validateIsUserAdmin,
-  validateUserIdInput,
-  async (req, res, next) => {
-    // Query: Delete the user
-    await deleteUserByUserId(req.validatedUserId.user_id);
-
-    // Return that the user was deleted
-    res
-      .status(200)
-      .json({ success: true, message: "User deleted successfully" });
-  }
+  usersMiddleware.validateUserIdInput,
+  usersController.deleteUser
 );
 
 // Gets all user addresses
 usersRouter.get(
   "/:userId/addresses",
-  validateUserAuthorization,
-  validateUserIdInput,
-  async (req, res, next) => {
-    // Query: Get the user's addresses
-    const result = await getUserAddressesByUserId(req.validatedUserId.user_id);
-
-    // Return the data from the response
-    res.status(200).json(result);
-  }
+  usersMiddleware.validateUserAuthorization,
+  usersMiddleware.validateUserIdInput,
+  usersController.getUserAddress
 );
 
 // Adds a new user address
 usersRouter.post(
   "/:userId/addresses",
-  validateUserAuthorization,
-  validateUserIdInput,
-  validateNewAddressDetailsInput,
-  async (req, res, next) => {
-    // Query: Create a new row for the address
-    const result = await addNewAddressToUser(
-      req.validatedUserId.user_id,
-      req.validatedNewAddress
-    );
-
-    // Return the newly created address
-    res.status(201).json(result);
-  }
+  usersMiddleware.validateUserAuthorization,
+  usersMiddleware.validateUserIdInput,
+  usersMiddleware.validateNewAddressDetailsInput,
+  usersController.addNewUserAddress
 );
 
 // Updates a specific user address
 usersRouter.put(
   "/:userId/addresses/:addressId",
-  validateUserAuthorization,
-  validateUserIdInput,
-  validateAddressIdInput,
-  validateUpdatedAddressDetailsInput,
-  async (req, res, next) => {
-    // Query: Update the address
-    const result = await updateUserAddress(
-      req.validatedUserId.user_id,
-      req.validatedAddressId.address_id,
-      req.validatedAddressDetails
-    );
-
-    // Return the updated address
-    res.status(200).json(result);
-  }
+  usersMiddleware.validateUserAuthorization,
+  usersMiddleware.validateUserIdInput,
+  usersMiddleware.validateAddressIdInput,
+  usersMiddleware.validateUpdatedAddressDetailsInput,
+  usersController.updateUserAddress
 );
 
 // Deletes a specific user address
 usersRouter.delete(
   "/:userId/addresses/:addressId",
-  validateUserAuthorization,
-  validateUserIdInput,
-  validateAddressIdInput,
-  async (req, res, next) => {
-    // Query: Delete the address
-    await deleteUserAddress(
-      req.validatedUserId.user_id,
-      req.validatedAddressId.address_id
-    );
-
-    // Return that the address was deleted successfully
-    res
-      .status(200)
-      .json({ success: true, message: "Address deleted successfully" });
-  }
+  usersMiddleware.validateUserAuthorization,
+  usersMiddleware.validateUserIdInput,
+  usersMiddleware.validateAddressIdInput,
+  usersController.deleteUserAddress
 );
 
 module.exports = usersRouter;
