@@ -1,5 +1,5 @@
 // DB (Knex)
-const knex = require(".");
+const knex = require("../config/db");
 
 // Gets all orders of a user
 const getAllOrders = async (customer_id) => {

@@ -3,8 +3,8 @@ const HttpError = require("../utils/HttpError");
 // Joi
 const Joi = require("joi");
 // DB (Knex)
-const { validateCartIdByUserId } = require("../../db/db-cart");
-const { getUserAddressesByUserId } = require("../../db/db-users");
+const { validateCartIdByUserId } = require("../models/cart.model");
+const { getUserAddressesByUserId } = require("../models/users.model");
 
 // Validates the input for cart ID
 async function validateCartIdInput(req, res, next) {

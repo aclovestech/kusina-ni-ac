@@ -6,7 +6,10 @@ const HttpError = require("../utils/HttpError");
 // Validations
 const { validateLoginInput } = require("../middleware/auth.middleware");
 // DB (Knex)
-const { getUserPasswordHash, getUserLoginData } = require("../db/db-auth");
+const {
+  getUserPasswordHash,
+  getUserLoginData,
+} = require("../models/auth.model");
 
 // Setup local strategy
 passport.use(

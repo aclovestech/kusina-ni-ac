@@ -1,13 +1,13 @@
 // Express promise router
 const Router = require("express-promise-router");
 // Passport-related
-const passport = require("../utils/passport-config");
+const passport = require("../config/passport-config");
 // JWT-related
 const jwt = require("../utils/jwt");
 // DB (Knex)
-const { insertUser } = require("../db/db-auth");
+const { insertUser } = require("../models/auth.model");
 // Validations
-const { validateRegistrationInput } = require("../utils/validations/auth");
+const { validateRegistrationInput } = require("../middleware/auth.middleware");
 
 const authRouter = new Router();
 

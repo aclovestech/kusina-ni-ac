@@ -12,9 +12,9 @@ const {
   addNewAddressToUser,
   updateUserAddress,
   deleteUserAddress,
-} = require("../db/db-users");
+} = require("../models/users.model");
 // Validations
-const { validateIsUserAdmin } = require("../utils/validations/general");
+const { validateIsUserAdmin } = require("../middleware/general.middleware");
 const {
   validateUserQueryInput,
   validateUserAuthorization,
@@ -23,7 +23,7 @@ const {
   validateNewAddressDetailsInput,
   validateUpdatedAddressDetailsInput,
   validateAddressIdInput,
-} = require("../utils/validations/users");
+} = require("../middleware/users.middleware");
 
 const usersRouter = new Router();
 

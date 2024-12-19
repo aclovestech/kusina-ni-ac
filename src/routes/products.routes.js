@@ -11,16 +11,16 @@ const {
   getProductDetailsByProductId,
   updateProductByProductId,
   deleteProductByProductId,
-} = require("../db/db-products");
+} = require("../models/products.model");
 // Validations
-const { validateIsUserASeller } = require("../utils/validations/general");
+const { validateIsUserASeller } = require("../middleware/general.middleware");
 const {
   validateProductWithCategoryQueryInput,
   validateNewProductDetailsInput,
   validateProductIdInput,
   validateUpdatedProductDetailsInput,
   validateSellerProduct,
-} = require("../utils/validations/products");
+} = require("../middleware/products.middleware");
 
 const productsRouter = new Router();
 

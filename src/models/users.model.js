@@ -1,5 +1,5 @@
 // DB (Knex)
-const knex = require(".");
+const knex = require("../config/db");
 // HttpError
 const HttpError = require("../utils/HttpError");
 // Bcrypt

@@ -9,7 +9,7 @@ const orders = require("./orders.routes");
 const jwt = require("../utils/jwt");
 
 // Validations
-const { validateIsUserACustomer } = require("../utils/validations/general");
+const { validateIsUserACustomer } = require("../middleware/general.middleware");
 
 // Mount all routes together using this function
 const mountRoutes = (app) => {

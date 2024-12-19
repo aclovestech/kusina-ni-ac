@@ -6,7 +6,7 @@ const HttpError = require("../utils/HttpError");
 const {
   isCategoryIdValid,
   getProductDetailsByProductId,
-} = require("../../db/db-products");
+} = require("../models/products.model");
 
 // Validates the input for product query with category
 function validateProductWithCategoryQueryInput(req, res, next) {

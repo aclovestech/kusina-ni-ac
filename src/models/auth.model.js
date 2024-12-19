@@ -1,5 +1,5 @@
 // DB (Knex)
-const knex = require(".");
+const knex = require("../config/db");
 
 // Used for registering a new user
 const insertUser = async (userDetails) => {

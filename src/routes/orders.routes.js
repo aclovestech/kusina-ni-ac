@@ -1,9 +1,9 @@
 // Express promise router
 const Router = require("express-promise-router");
 // DB (Knex)
-const { getAllOrders, getOrderById } = require("../db/db-orders");
+const { getAllOrders, getOrderById } = require("../models/orders.model");
 // Validations
-const { validateOrderIdInput } = require("../utils/validations/orders");
+const { validateOrderIdInput } = require("../middleware/orders.middleware");
 
 const ordersRouter = new Router();
 

@@ -8,7 +8,7 @@ const {
   updateCartItemQuantity,
   deleteCartItemByCartIdAndProductId,
   checkoutCart,
-} = require("../db/db-cart");
+} = require("../models/cart.model");
 // Validations
 const {
   validateCartIdInput,
@@ -16,7 +16,7 @@ const {
   validateCartItemToUpdateInput,
   validateProductIdInput,
   validateAddressIdInput,
-} = require("../utils/validations/cart");
+} = require("../middleware/cart.middleware");
 
 const cartRouter = new Router();
 
