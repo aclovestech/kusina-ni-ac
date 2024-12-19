@@ -1,4 +1,4 @@
-// DB (Knex)
+// Imports
 const knex = require("../config/db");
 
 // Used for registering a new user

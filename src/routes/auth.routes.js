@@ -1,8 +1,6 @@
-// Express promise router
+// Imports
 const Router = require("express-promise-router");
-// Passport-related
 const passport = require("../config/passport-config");
-// Auth-related
 const authController = require("../controllers/auth.controller");
 const authMiddleware = require("../middleware/auth.middleware");
 

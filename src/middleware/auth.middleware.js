@@ -1,6 +1,5 @@
-// Joi
+// Imports
 const Joi = require("joi");
-// HttpError
 const HttpError = require("../utils/HttpError");
 
 // Validates the input for registration
