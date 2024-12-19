@@ -1,6 +1,5 @@
-// Express
+// Imports
 const express = require("express");
-// Middlewares
 const cookieParser = require("cookie-parser");
 const passport = require("./utils/passport-config");
 const morgan = require("morgan");

@@ -1,9 +1,7 @@
-// Passport
+// Imports
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-// HttpError
 const HttpError = require("../utils/HttpError");
-// Auth-related
 const authModel = require("../models/auth.model");
 const authMiddleware = require("../middleware/auth.middleware");
 
