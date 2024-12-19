@@ -1,7 +1,7 @@
 // Imports
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const passport = require("./utils/passport-config");
+const passport = require("./config/passport-config");
 const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -9,7 +9,7 @@ const responseTime = require("response-time");
 const compression = require("compression");
 
 // Router
-const mountRoutes = require("./routes/index");
+const mountRoutes = require("./routes/index.routes");
 
 const app = express();
 
