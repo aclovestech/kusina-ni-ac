@@ -1,6 +1,6 @@
 // Imports
 const Router = require("express-promise-router");
-const { validateIsUserAdmin } = require("../middleware/general.middleware");
+const generalMiddleware = require("../middleware/general.middleware");
 const usersMiddleware = require("../middleware/users.middleware");
 const usersController = require("../controllers/users.controller");
 
@@ -9,7 +9,7 @@ const usersRouter = new Router();
 // Gets all users if the user is an admin
 usersRouter.get(
   "/",
-  validateIsUserAdmin,
+  generalMiddleware.validateIsUserAdmin,
   usersMiddleware.validateUserQueryInput,
   usersController.getUsers
 );
@@ -34,7 +34,7 @@ usersRouter.put(
 // Deletes a specific user
 usersRouter.delete(
   "/:userId",
-  validateIsUserAdmin,
+  generalMiddleware.validateIsUserAdmin,
   usersMiddleware.validateUserIdInput,
   usersController.deleteUser
 );

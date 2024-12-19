@@ -1,7 +1,7 @@
 // Imports
 const Router = require("express-promise-router");
 const jwt = require("../utils/jwt");
-const { validateIsUserASeller } = require("../middleware/general.middleware");
+const generalMiddleware = require("../middleware/general.middleware");
 const productsMiddleware = require("../middleware/products.middleware");
 const productsController = require("../controllers/products.controller");
 
@@ -18,7 +18,7 @@ productsRouter.get(
 productsRouter.post(
   "/",
   jwt.authenticateToken,
-  validateIsUserASeller,
+  generalMiddleware.validateIsUserASeller,
   productsMiddleware.validateNewProductDetailsInput,
   productsController.insertProduct
 );
@@ -34,7 +34,7 @@ productsRouter.get(
 productsRouter.put(
   "/:productId",
   jwt.authenticateToken,
-  validateIsUserASeller,
+  generalMiddleware.validateIsUserASeller,
   productsMiddleware.validateSellerProduct,
   productsMiddleware.validateUpdatedProductDetailsInput,
   productsController.updateProduct
@@ -44,7 +44,7 @@ productsRouter.put(
 productsRouter.delete(
   "/:productId",
   jwt.authenticateToken,
-  validateIsUserASeller,
+  generalMiddleware.validateIsUserASeller,
   productsMiddleware.validateSellerProduct,
   productsController.deleteProduct
 );
