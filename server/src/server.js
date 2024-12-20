@@ -1,6 +1,5 @@
 // Imports
 const express = require("express");
-const cookieParser = require("cookie-parser");
 const passport = require("./config/passport-config");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -12,9 +11,6 @@ const compression = require("compression");
 const mountRoutes = require("./routes/index.routes");
 
 const app = express();
-
-// Cookie Parsing Middleware
-app.use(cookieParser());
 
 // Body Parsing Middleware
 app.use(express.json());
