@@ -1,7 +1,7 @@
 // Imports
 const knex = require("../config/db");
 
-exports.insertCustomer = async ({
+exports.addNewCustomer = async ({
   email,
   first_name,
   last_name,
@@ -18,31 +18,24 @@ exports.insertCustomer = async ({
     ["customer_id", "email", "created_at"]
   );
 
-  // Return the result
+  // Return the data from the response
   return result;
 };
 
-exports.selectCustomerPasswordHash = async (email) => {
-  // Query: Get the password hash
-  const [returnedData] = await knex("customers")
-    .select("password_hash")
-    .where("email", email);
+exports.getCustomerBasicDataByEmail = async (email) => {
+  // Query: Get the customer's basic data
+  const result = await knex("customers").first().where("email", email);
 
   // Return the data from the response
-  return returnedData;
+  return result;
 };
 
-exports.selectCustomerLoginData = async (email) => {
-  // Query: Get the user data that will be put into the JWT
-  const [returnedData] = await knex("customers")
-    .select("customer_id", "first_name", "last_name", "email", "created_at")
-    .where("email", email);
-
-  // Update the user's last login time
+exports.updateCustomerLastLogin = async (customer_id) => {
+  // Query: Update the user's last login timestamp
   await knex("customers")
     .update({ last_login: knex.fn.now() })
-    .where("customer_id", returnedData.customer_id);
+    .where("customer_id", customer_id);
 
-  // Return the data from the response
-  return returnedData;
+  // Return when done
+  return;
 };

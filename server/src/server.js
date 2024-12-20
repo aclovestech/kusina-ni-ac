@@ -1,5 +1,7 @@
 // Imports
 const express = require("express");
+const session = require("express-session");
+const { ConnectSessionKnexStore } = require("connect-session-knex");
 const passport = require("./config/passport-config");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -8,8 +10,27 @@ const responseTime = require("response-time");
 const compression = require("compression");
 const env = require("./config/environment");
 const mountRoutes = require("./routes/index.routes");
+const knex = require("./config/db");
 
 const app = express();
+
+// Session-related
+const store = new ConnectSessionKnexStore({
+  knex,
+  tableName: "sessions",
+});
+
+app.use(
+  session({
+    secret: env.SECRET_KEY,
+    cookie: {
+      maxAge: 10000,
+    },
+    store,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // Body Parsing Middleware
 app.use(express.json());
@@ -17,6 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Passport Middleware
 app.use(passport.initialize());
+app.use(passport.session());
 
 // CORS Middleware
 app.use(cors());

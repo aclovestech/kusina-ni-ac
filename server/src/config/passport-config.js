@@ -1,63 +1,77 @@
 // Imports
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-const HttpError = require("../utils/HttpError");
+const { comparePasswords } = require("../utils/bcrypt");
 const authModel = require("../models/auth.model");
-const authMiddleware = require("../middleware/auth.middleware");
 
-// Setup local strategy
 passport.use(
+  // Setup local strategy
   new LocalStrategy(
     {
+      // Specify the name of the property that you are expecting from the req.body
       usernameField: "email",
       passwordField: "password",
     },
-    async (username, password, cb) => {
-      // Validate the input
-      const value = authMiddleware.validateLoginInput(username, password);
-
-      if (!value) {
-        return cb(new HttpError("Invalid request", 400), false);
-      }
-
+    async (username, password, done) => {
+      // Find and verify the user
       try {
-        // Get the hash from the response and compare it with the provided password
-        const result = await authModel.getCustomerPasswordHash(value.email);
-
-        // Throw an error if the user is not found
-        if (!result) {
-          return cb(new HttpError("User not found", 400), false);
-        }
-
-        // Bcrypt
-        const bcrypt = require("bcrypt");
+        // Get the customer's basic data
+        const basicData = await authModel.getCustomerBasicDataByEmail(username);
 
         // Compare the provided password with the hash
-        const isPasswordValid = await bcrypt.compare(
+        const isPasswordValid = await comparePasswords(
           password,
-          result.password_hash
+          basicData.password_hash
         );
 
-        // Throw an error if the provided password is incorrect
+        // Return false if the password is invalid
         if (!isPasswordValid) {
-          return cb(new HttpError("Incorrect password", 400), false);
+          return done(null, false);
         }
 
-        // Get the user's login data
-        const returnedData = await authModel.getCustomerLoginData(
-          value.email,
-          cb
-        );
+        // Return false if the user doesn't exist
+        if (!basicData) {
+          return done(null, false);
+        }
 
-        // Return the data from the response
-        return cb(null, returnedData);
-      } catch (err) {
-        // Throw an error if anything goes wrong
-        console.error(err.message);
-        return cb(new HttpError(), false);
+        // Remove the password hash from the data
+        delete basicData.password_hash;
+
+        // Update the user's last login timestamp
+        await authModel.updateCustomerLastLogin(basicData.customer_id);
+
+        // Return the customer's data
+        return done(null, basicData);
+      } catch (error) {
+        return done(error);
       }
     }
   )
 );
+
+passport.serializeUser((user, done) => {
+  // Save the user's ID in the session
+  done(null, user.email);
+});
+
+passport.deserializeUser(async (email, done) => {
+  try {
+    // Get the customer's basic data
+    const basicData = await authModel.getCustomerBasicDataByEmail(email);
+
+    // Return false if the user doesn't exist
+    if (!basicData) {
+      return done(null, false);
+    }
+
+    // Remove the password hash from the data
+    delete basicData.password_hash;
+
+    // Return the customer's data
+    return done(null, basicData);
+  } catch (error) {
+    return done(error);
+  }
+});
 
 module.exports = passport;
