@@ -22,7 +22,7 @@ passport.use(
 
       try {
         // Get the hash from the response and compare it with the provided password
-        const result = await authModel.getUserPasswordHash(value.email);
+        const result = await authModel.getCustomerPasswordHash(value.email);
 
         // Throw an error if the user is not found
         if (!result) {
@@ -44,7 +44,10 @@ passport.use(
         }
 
         // Get the user's login data
-        const returnedData = await authModel.getUserLoginData(value.email, cb);
+        const returnedData = await authModel.getCustomerLoginData(
+          value.email,
+          cb
+        );
 
         // Return the data from the response
         return cb(null, returnedData);
