@@ -1,9 +1,8 @@
 // Dotenv
 const dotenv = require("dotenv");
 
-// Determine which .env file to load based on NODE_ENV
-const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : ".env";
-dotenv.config({ path: envFile });
+// Load environment variables from .env file
+dotenv.config();
 
 module.exports = {
   PGHOST: process.env.PGHOST,
@@ -11,5 +10,6 @@ module.exports = {
   PGUSER: process.env.PGUSER,
   PGPASSWORD: process.env.PGPASSWORD,
   PGPORT: process.env.PGPORT,
-  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+  SECRET_KEY: process.env.SECRET_KEY,
+  SERVER_PORT: process.env.SERVER_PORT,
 };

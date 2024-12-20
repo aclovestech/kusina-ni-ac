@@ -6,8 +6,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const responseTime = require("response-time");
 const compression = require("compression");
-
-// Router
+const env = require("./config/environment");
 const mountRoutes = require("./routes/index.routes");
 
 const app = express();
@@ -48,7 +47,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 3000;
+const PORT = env.SERVER_PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
