@@ -1,18 +1,21 @@
-// DB (Knex)
+// Imports
 const knex = require("../config/db");
-// HttpError
-const HttpError = require("../utils/HttpError");
 
-// Gets the products by category ID
-exports.getProductsByCategoryId = async (category_id, perPage, currentPage) => {
-  if (perPage > 50) perPage = 50;
+// Constants
+const MAX_PRODUCTS_PER_PAGE = 10;
 
-  // Query: Get the products by category ID
-  const result = await knex("products.products")
-    .select("products.*", "categories.name as category_name")
-    .join("products.categories", "categories.category_id", category_id)
+// Gets all products
+exports.getAllProducts = async (currentPage) => {
+  // Query
+  const result = await knex("products")
+    .select(
+      "categories.category_id",
+      "categories.name as category_name",
+      "products.*"
+    )
+    .join("categories", "categories.category_id", "products.category_id")
     .paginate({
-      perPage: perPage,
+      perPage: MAX_PRODUCTS_PER_PAGE,
       currentPage: currentPage,
     });
 
@@ -25,71 +28,67 @@ exports.getProductsByCategoryId = async (category_id, perPage, currentPage) => {
   });
 };
 
-// Gets the categories
+// Gets the products by category ID
+exports.getProductsByCategoryId = async (category_id, currentPage) => {
+  // Query
+  const result = await knex("products")
+    .select(
+      "categories.category_id",
+      "categories.name as category_name",
+      "products.*"
+    )
+    .join("categories", "categories.category_id", "products.category_id")
+    .where("categories.category_id", category_id)
+    .paginate({
+      perPage: MAX_PRODUCTS_PER_PAGE,
+      currentPage: currentPage,
+    });
+  // Return the data from the response
+  return result.data.map((productDetails) => {
+    return {
+      ...productDetails,
+      price: Number(productDetails.price),
+    };
+  });
+};
+
+// Gets a specific product by ID
+exports.getProductById = async (product_id) => {
+  // Query
+  const result = await knex("products")
+    .first(
+      "categories.category_id",
+      "categories.name as category_name",
+      "products.*"
+    )
+    .join("categories", "categories.category_id", "products.category_id")
+    .where("product_id", product_id);
+
+  // Return the data from the response
+  return { ...result, price: Number(result.price) };
+};
+
+// Gets all categories
+exports.getAllCategories = async () => {
+  // Query
+  const result = await knex("categories").select("*");
+
+  // Return the data from the response
+  return result;
+};
+
+// Checks if the category ID is valid
 exports.isCategoryIdValid = async (category_id) => {
-  // Query: Get the categories
-  const result = await knex("products.categories")
-    .select("*")
+  // Query
+  const result = await knex("categories")
+    .select()
     .where("category_id", category_id);
 
   // Throw an error if the category is not found
   if (result.length === 0) {
-    throw new HttpError("Category not found", 400);
+    return false;
   }
 
   // Return the data from the response
   return true;
-};
-
-// Inserts a new product
-exports.insertProduct = async (productDetails) => {
-  // Query: Insert the product
-  const [returnedData] = await knex("products.products").insert(
-    productDetails,
-    ["*"]
-  );
-
-  // Return the data from the response
-  return {
-    ...returnedData,
-    price: Number(returnedData.price),
-  };
-};
-
-// Gets the details of a specific product
-exports.getProductDetailsByProductId = async (product_id) => {
-  // Query: Get the product details
-  const [returnedData] = await knex("products.products")
-    .select("products.*", "categories.name as category_name")
-    .join(
-      "products.categories",
-      "categories.category_id",
-      "products.category_id"
-    )
-    .where("product_id", product_id);
-
-  // Return the data from the response
-  return {
-    ...returnedData,
-    price: Number(returnedData.price),
-  };
-};
-
-// Updates the details of a specific product
-exports.updateProductByProductId = async (product_id, productDetails) => {
-  // Add the updated_at to update the timestamp
-  productDetails.updated_at = knex.fn.now();
-  // Query: Update the product
-  const [returnedData] = await knex("products.products")
-    .update(productDetails, ["*"])
-    .where("product_id", product_id);
-
-  // Return the data from the response
-  return { ...returnedData, price: Number(returnedData.price) };
-};
-
-// Deletes a specific product
-exports.deleteProductByProductId = async (product_id) => {
-  // Query: Delete the product
-  return await knex("products.products").del().where("product_id", product_id);
 };

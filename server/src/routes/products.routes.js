@@ -1,52 +1,39 @@
 // Imports
 const Router = require("express-promise-router");
-const jwt = require("../utils/jwt");
-const generalMiddleware = require("../middleware/session.middleware");
-const productsMiddleware = require("../middleware/products.middleware");
+const productsValidator = require("../validators/products.validator");
 const productsController = require("../controllers/products.controller");
 
 const productsRouter = new Router();
 
-// // Gets the products with a given category
-// productsRouter.get(
-//   "/",
-//   productsMiddleware.validateProductWithCategoryQueryInput,
-//   productsController.getProductsByCategory
-// );
+// Gets all categories
+productsRouter.get("/categories", productsController.handleGetAllCategories);
 
-// // Adds a product to the database
-// productsRouter.post(
-//   "/",
-//   jwt.authenticateToken,
-//   generalMiddleware.validateIsUserASeller,
-//   productsMiddleware.validateNewProductDetailsInput,
-//   productsController.insertProduct
-// );
+// Gets all products regardless of category
+productsRouter.get(
+  "/all",
+  // Validate the input
+  productsValidator.validateCurrentPageInput,
+  // Then get the products
+  productsController.handleGetAllProducts
+);
 
-// // Provides the details of a specific product
-// productsRouter.get(
-//   "/:productId",
-//   productsMiddleware.validateProductIdInput,
-//   productsController.getProductDetails
-// );
+// Gets the products with a given category ID
+productsRouter.get(
+  "/",
+  // Validate the input
+  productsValidator.validateCategoryIdInput,
+  productsValidator.validateCurrentPageInput,
+  // Then get the products
+  productsController.handleGetProductsByCategoryId
+);
 
-// // Updates the details of a specific product
-// productsRouter.put(
-//   "/:productId",
-//   jwt.authenticateToken,
-//   generalMiddleware.validateIsUserASeller,
-//   productsMiddleware.validateSellerProduct,
-//   productsMiddleware.validateUpdatedProductDetailsInput,
-//   productsController.updateProduct
-// );
-
-// // Deletes a product with the specified product ID
-// productsRouter.delete(
-//   "/:productId",
-//   jwt.authenticateToken,
-//   generalMiddleware.validateIsUserASeller,
-//   productsMiddleware.validateSellerProduct,
-//   productsController.deleteProduct
-// );
+// Gets a specific product by ID
+productsRouter.get(
+  "/:product_id",
+  // Validate the input
+  productsValidator.validateProductIdInput,
+  // Then get the product
+  productsController.handleGetProductByProductId
+);
 
 module.exports = productsRouter;
