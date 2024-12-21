@@ -18,13 +18,14 @@ const app = express();
 const store = new ConnectSessionKnexStore({
   knex,
   tableName: "sessions",
+  cleanupInterval: 0,
 });
 
 app.use(
   session({
     secret: env.SECRET_KEY,
     cookie: {
-      maxAge: 10000,
+      maxAge: 3600000,
     },
     store,
     resave: false,
