@@ -1,14 +1,39 @@
 // Imports
 const Router = require("express-promise-router");
+const usersAddressesController = require("../controllers/users-addresses.controller");
+const usersAddressesValidator = require("../validators/users-addresses.validator");
 
 const usersAddressesRouter = new Router();
 
-// usersAddressesRouter.get("/", usersController.getUserAddress);
+// Gets the customer's addresses
+usersAddressesRouter.get(
+  "/",
+  usersAddressesController.handleGetCustomerAddresses
+);
 
-// usersAddressesRouter.post("/", usersController.addNewUserAddress);
+// Adds a new address
+usersAddressesRouter.post(
+  "/",
+  // Validate the input first
+  usersAddressesValidator.validateNewAddressDataInput,
+  // Then add the new address
+  usersAddressesController.handleAddNewCustomerAddress
+);
 
-// usersAddressesRouter.put("/:addressId", usersController.updateUserAddress);
+// Validate the input for the address ID
+usersAddressesRouter.use(
+  "/:address_id",
+  usersAddressesValidator.validateAddressIdInput
+);
 
-// usersAddressesRouter.delete("/:addressId", usersController.deleteUserAddress);
+usersAddressesRouter
+  .route("/:address_id")
+  // Updates the customer's address
+  .patch(
+    usersAddressesValidator.validateAddressDataToUpdateInput,
+    usersAddressesController.handleUpdateCustomerAddress
+  )
+  // Deletes the customer's address
+  .delete(usersAddressesController.handleDeleteCustomerAddress);
 
 module.exports = usersAddressesRouter;

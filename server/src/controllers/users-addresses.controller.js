@@ -1,42 +1,63 @@
-// Query: Get the user's addresses
-exports.getUserAddress = async (req, res, next) => {
-  const result = await usersModel.getUserAddressesByUserId(
-    req.validatedUserId.user_id
-  );
+// Imports
+const usersAddressesModel = require("../models/users-addresses.model");
+const { matchedData } = require("express-validator");
+
+// Get the customer's addresses
+exports.handleGetCustomerAddresses = async (req, res, next) => {
+  // Get the customer ID from the validated input
+  const { customer_id } = matchedData(req);
+
+  // Query
+  const result = await usersAddressesModel.getCustomerAddresses(customer_id);
+
+  if (result.length === 0) {
+    return res
+      .status(200)
+      .json({ status: true, message: "No addresses found" });
+  }
 
   // Return the data from the response
   res.status(200).json(result);
 };
 
-// Query: Create a new row for the address
-exports.addNewUserAddress = async (req, res, next) => {
-  const result = await usersModel.addNewAddressToUser(
-    req.validatedUserId.user_id,
-    req.validatedNewAddress
+// Add a new address
+exports.handleAddNewCustomerAddress = async (req, res, next) => {
+  // Get the customer ID and address data from the validated input
+  const { customer_id, ...addressData } = matchedData(req);
+
+  // Query
+  const result = await usersAddressesModel.addNewAddressToCustomer(
+    customer_id,
+    addressData
   );
 
   // Return the newly created address
   res.status(201).json(result);
 };
 
-// Query: Update the address
-exports.updateUserAddress = async (req, res, next) => {
-  const result = await usersModel.updateUserAddress(
-    req.validatedUserId.user_id,
-    req.validatedAddressId.address_id,
-    req.validatedAddressDetails
+// Update the customer's address
+exports.handleUpdateCustomerAddress = async (req, res, next) => {
+  // Get the customer ID, address ID, and address data from the validated input
+  const { customer_id, address_id, ...addressData } = matchedData(req);
+
+  // Query
+  const result = await usersAddressesModel.updateCustomerAddress(
+    customer_id,
+    address_id,
+    addressData
   );
 
   // Return the updated address
   res.status(200).json(result);
 };
 
-// Query: Delete the address
-exports.deleteUserAddress = async (req, res, next) => {
-  await usersModel.deleteUserAddress(
-    req.validatedUserId.user_id,
-    req.validatedAddressId.address_id
-  );
+// Delete a customer's address
+exports.handleDeleteCustomerAddress = async (req, res, next) => {
+  // Get the customer ID and address ID from the validated input
+  const { customer_id, address_id } = matchedData(req);
+
+  // Query
+  await usersAddressesModel.deleteCustomerAddress(customer_id, address_id);
 
   // Return that the address was deleted successfully
   res

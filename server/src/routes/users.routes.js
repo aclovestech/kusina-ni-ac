@@ -34,7 +34,7 @@ usersRouter
   // Deletes the customer's account
   .delete(usersController.handleCustomerAccountDeletion);
 
-// User's addresses route
+// Customer's addresses route
 usersRouter.use("/:customer_id/addresses", usersAddresses);
 
 module.exports = usersRouter;
