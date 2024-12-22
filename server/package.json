@@ -1,5 +1,5 @@
 {
-  "name": "kusina-ni-ac-api",
+  "name": "kusina-ni-ac-backend",
   "version": "1.0.0",
   "main": "src/server.js",
   "scripts": {
@@ -17,7 +17,7 @@
     "url": "https://github.com/aclovestech/kusina-ni-ac/issues"
   },
   "homepage": "https://github.com/aclovestech/kusina-ni-ac#readme",
-  "description": "A portfolio project as part of the Full-stack Engineer Path of Codecademy",
+  "description": "An e-commerce API project made with Node.js and Express as part of the Full-stack Engineer Path of Codecademy",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "compression": "^1.7.5",
