@@ -1,0 +1,17 @@
+{
+  "name": "kusina-ni-ac",
+  "version": "1.0.0",
+  "description": "A monorepo for Kusina ni AC",
+  "private": true,
+  "packageManager": "pnpm@9.15.1",
+  "scripts": {
+    "start:client": "pnpm --filter ./client start",
+    "start:server": "pnpm --filter ./server start",
+    "start:devserver": "pnpm --filter ./server run start:dev",
+    "start": "pnpm --stream -r start",
+    "start:dev": "pnpm --stream -r run start:dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "aclovestech",
+  "license": "ISC"
+}
