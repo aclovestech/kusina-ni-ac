@@ -15,11 +15,11 @@ exports.addNewCustomer = async ({
       last_name: last_name,
       password_hash: password_hash,
     },
-    ["customer_id", "email", "created_at"]
+    ["*"]
   );
 
   // Return the data from the response
-  return result;
+  return result[0];
 };
 
 exports.getCustomerBasicDataByEmail = async (email) => {

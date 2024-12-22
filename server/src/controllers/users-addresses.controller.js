@@ -4,16 +4,13 @@ const { matchedData } = require("express-validator");
 
 // Get the customer's addresses
 exports.handleGetCustomerAddresses = async (req, res, next) => {
-  // Get the customer ID from the validated input
-  const { customer_id } = matchedData(req);
-
   // Query
-  const result = await usersAddressesModel.getCustomerAddresses(customer_id);
+  const result = await usersAddressesModel.getCustomerAddresses(
+    req.user.customer_id
+  );
 
   if (result.length === 0) {
-    return res
-      .status(200)
-      .json({ status: true, message: "No addresses found" });
+    return res.status(200).json({ message: "No addresses found" });
   }
 
   // Return the data from the response
@@ -23,11 +20,11 @@ exports.handleGetCustomerAddresses = async (req, res, next) => {
 // Add a new address
 exports.handleAddNewCustomerAddress = async (req, res, next) => {
   // Get the customer ID and address data from the validated input
-  const { customer_id, ...addressData } = matchedData(req);
+  const addressData = matchedData(req);
 
   // Query
   const result = await usersAddressesModel.addNewAddressToCustomer(
-    customer_id,
+    req.user.customer_id,
     addressData
   );
 
@@ -38,11 +35,11 @@ exports.handleAddNewCustomerAddress = async (req, res, next) => {
 // Update the customer's address
 exports.handleUpdateCustomerAddress = async (req, res, next) => {
   // Get the customer ID, address ID, and address data from the validated input
-  const { customer_id, address_id, ...addressData } = matchedData(req);
+  const { address_id, ...addressData } = matchedData(req);
 
   // Query
   const result = await usersAddressesModel.updateCustomerAddress(
-    customer_id,
+    req.user.customer_id,
     address_id,
     addressData
   );
@@ -54,10 +51,13 @@ exports.handleUpdateCustomerAddress = async (req, res, next) => {
 // Delete a customer's address
 exports.handleDeleteCustomerAddress = async (req, res, next) => {
   // Get the customer ID and address ID from the validated input
-  const { customer_id, address_id } = matchedData(req);
+  const { address_id } = matchedData(req);
 
   // Query
-  await usersAddressesModel.deleteCustomerAddress(customer_id, address_id);
+  await usersAddressesModel.deleteCustomerAddress(
+    req.user.customer_id,
+    address_id
+  );
 
   // Return that the address was deleted successfully
   res

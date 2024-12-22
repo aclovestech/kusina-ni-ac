@@ -3,11 +3,11 @@ const { param, body } = require("express-validator");
 const validate = require("./validate");
 
 // Validates the input for customer ID
-exports.validateCustomerIdInput = [
-  param("customer_id", "Invalid customer ID").isUUID(4),
-  // Error handler
-  validate,
-];
+// exports.validateCustomerIdInput = [
+//   param("customer_id", "Invalid customer ID").isUUID(4),
+//   // Error handler
+//   validate,
+// ];
 
 // Validates the input for the customer's basic data
 exports.validateCustomerDataInput = [

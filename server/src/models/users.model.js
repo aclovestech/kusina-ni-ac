@@ -45,7 +45,7 @@ exports.updateCustomerBasicDataByCustomerId = async (
     .where("customer_id", customer_id);
 
   // Return the data from the response
-  return result;
+  return result[0];
 };
 
 // Deletes the customer's account by a given customer ID

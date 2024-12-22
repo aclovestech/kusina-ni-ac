@@ -22,9 +22,7 @@ authRouter.post(
   authValidator.validateLoginInput,
   // Authenticate the user
   passport.authenticate("local"),
-  (req, res) => {
-    res.json(req.user);
-  }
+  authController.handlePostLogin
 );
 
 module.exports = authRouter;
