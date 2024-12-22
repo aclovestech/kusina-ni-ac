@@ -5,11 +5,12 @@
   "private": true,
   "packageManager": "pnpm@9.15.1",
   "scripts": {
-    "start:client": "pnpm --filter ./client start",
-    "start:server": "pnpm --filter ./server start",
-    "start:devserver": "pnpm --filter ./server run start:dev",
+    "start:client": "pnpm --filter kusina-ni-ac-client start",
+    "dev-client": "pnpm --filter kusina-ni-ac-client run dev",
+    "start:server": "pnpm --filter kusina-ni-ac-backend start",
+    "dev-server": "pnpm --filter kusina-ni-ac-backend run dev",
     "start": "pnpm --stream -r start",
-    "start:dev": "pnpm --stream -r run start:dev",
+    "start:dev": "pnpm --stream -r run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "aclovestech",
