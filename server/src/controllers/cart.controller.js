@@ -62,9 +62,9 @@ exports.handleDeleteCartItem = async (req, res, next) => {
 };
 
 // Checks out the cart
-exports.handleCheckout = async (req, res, next) => {
-  const result = await cartModel.checkoutCart(req.session.cart_id);
+// exports.handleCheckout = async (req, res, next) => {
+//   const result = await cartModel.checkoutCart(req.session.cart_id);
 
-  // Return the response
-  res.status(200).json(result);
-};
+//   // Return the response
+//   res.status(200).json(result);
+// };
