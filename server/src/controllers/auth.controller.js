@@ -1,19 +1,44 @@
 // Imports
 const authModel = require("../models/auth.model");
-const jwt = require("../utils/jwt");
+const { getValidCart, createNewCart } = require("../models/cart.model");
+const { matchedData } = require("express-validator");
+const { hashPassword } = require("../utils/bcrypt");
 
-// Query: Create a new row for the user (transaction)
-exports.createUser = async (req, res, next) => {
-  const result = await authModel.insertUser(req.validatedRegistrationInput);
+exports.handleRegistration = async (req, res, next) => {
+  // Get the validated data
+  const userInput = matchedData(req);
+
+  // Hash the password
+  userInput.password_hash = await hashPassword(userInput.password);
+
+  // Make the query to the database
+  const user = await authModel.addNewCustomer(userInput);
+
+  // Delete the password hash from the data
+  delete user.password_hash;
+
+  // Log the user in
+  req.login(user, (err) => {
+    if (err) return next(err);
+  });
+
+  // Create a new cart
+  const cart = await createNewCart(user.customer_id);
+
+  // Add the cart ID to the session
+  req.session.cart_id = cart.cart_id;
 
   // Return the newly created user info
-  res.status(201).json(result);
+  res.status(201).json(user);
 };
 
-// Return the token if the user is authenticated
-exports.loginUser = (req, res, next) => {
-  const token = jwt.generateAccessToken(req.user);
+exports.handlePostLogin = async (req, res, next) => {
+  // Get the customer's cart ID
+  const { cart_id } = await getValidCart(req.user.customer_id);
 
-  // Return the token
-  res.status(201).json({ token });
+  // Add the cart ID to the session
+  req.session.cart_id = cart_id;
+
+  // Return the user
+  res.json(req.user);
 };

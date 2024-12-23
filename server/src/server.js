@@ -1,20 +1,37 @@
 // Imports
 const express = require("express");
-const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const { ConnectSessionKnexStore } = require("connect-session-knex");
 const passport = require("./config/passport-config");
 const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
 const responseTime = require("response-time");
 const compression = require("compression");
-
-// Router
+const env = require("./config/environment");
 const mountRoutes = require("./routes/index.routes");
+const knex = require("./config/db");
 
 const app = express();
 
-// Cookie Parsing Middleware
-app.use(cookieParser());
+// Session-related
+const store = new ConnectSessionKnexStore({
+  knex,
+  tableName: "sessions",
+  cleanupInterval: 0,
+});
+
+app.use(
+  session({
+    secret: env.SECRET_KEY,
+    cookie: {
+      maxAge: 3600000,
+    },
+    store,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // Body Parsing Middleware
 app.use(express.json());
@@ -22,6 +39,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Passport Middleware
 app.use(passport.initialize());
+app.use(passport.session());
 
 // CORS Middleware
 app.use(cors());
@@ -52,7 +70,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 3000;
+const PORT = env.SERVER_PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

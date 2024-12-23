@@ -1,66 +1,70 @@
 // Imports
 const cartModel = require("../models/cart.model");
+const { matchedData } = require("express-validator");
 
-// Query: Create a new cart
-exports.createNewCart = async (req, res, next) => {
-  const result = await cartModel.createNewCart(req.user.user_id);
+// Creates a new cart
+exports.handleCreateNewCart = async (req, res, next) => {
+  const cart = await cartModel.createNewCart(req.user.customer_id);
 
   // Return the newly created cart
-  res.status(201).json(result);
+  res.status(201).json(cart);
 };
 
-// Query: Get the cart details
-exports.getSpecificCart = async (req, res, next) => {
-  const result = await cartModel.getCartItemsByCartId(
-    req.validatedCartIdInput.cart_id
-  );
+// Retrieves the customer's cart details
+exports.handleGetCartDetails = async (req, res, next) => {
+  const cart = await cartModel.getCartItems(req.session.cart_id);
 
   // Return the cart
-  res.status(200).json(result);
+  res.status(200).json(cart);
 };
 
-// Query: Add items to the cart
-exports.addItemsToCart = async (req, res, next) => {
-  const result = await cartModel.addItemsToCart(
-    req.validatedCartIdInput.cart_id,
-    req.validatedCartItemsInput.items
+// Adds items to the cart
+exports.handleAddProductsToCart = async (req, res, next) => {
+  // Get the validated input
+  const { product_id, quantity } = matchedData(req);
+
+  const product = await cartModel.addProductToCart(
+    req.session.cart_id,
+    product_id,
+    quantity
   );
 
   // Return the updated cart
-  res.status(201).json(result);
+  res.status(201).json(product);
 };
 
-// Query: Add items to the cart
-exports.updateCartItemQuantity = async (req, res, next) => {
-  const result = await cartModel.updateCartItemQuantity(
-    req.validatedCartIdInput.cart_id,
-    req.validatedCartItemToUpdateInput.product_id,
-    req.validatedCartItemToUpdateInput.quantity
+// Updates the quantity of an item within the cart
+exports.handleUpdateCartItem = async (req, res, next) => {
+  // Get the validated input
+  const { product_id, quantity } = matchedData(req);
+
+  const product = await cartModel.updateCartItemQuantity(
+    req.session.cart_id,
+    product_id,
+    quantity
   );
 
   // Return the updated cart
-  res.status(200).json(result);
+  res.status(200).json(product);
 };
 
-// Query: Delete an item from the cart
-exports.deleteCartItem = async (req, res, next) => {
-  await cartModel.deleteCartItemByCartIdAndProductId(
-    req.validatedCartIdInput.cart_id,
-    req.validatedProductIdInput.product_id
-  );
+// Deletes an item from the cart
+exports.handleDeleteCartItem = async (req, res, next) => {
+  // Get the validated input
+  const { product_id } = matchedData(req);
 
-  // Return that the item was deleted
-  res.status(200).json({ success: true, message: "Item deleted from cart" });
+  await cartModel.deleteCartItem(req.session.cart_id, product_id);
+
+  // Return that the item was successfully deleted
+  res
+    .status(200)
+    .json({ success: true, message: "Item successfully deleted from cart" });
 };
 
-// Query: Checkout the cart
-exports.checkoutCart = async (req, res, next) => {
-  const result = await cartModel.checkoutCart(
-    req.validatedCartIdInput.cart_id,
-    req.user.user_id,
-    req.validatedAddressIdInput.address_id
-  );
+// Checks out the cart
+// exports.handleCheckout = async (req, res, next) => {
+//   const result = await cartModel.checkoutCart(req.session.cart_id);
 
-  // Return the response
-  res.status(200).json(result);
-};
+//   // Return the response
+//   res.status(200).json(result);
+// };

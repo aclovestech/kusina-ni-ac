@@ -1,78 +1,30 @@
 // Imports
 const Router = require("express-promise-router");
-const generalMiddleware = require("../middleware/general.middleware");
-const usersMiddleware = require("../middleware/users.middleware");
 const usersController = require("../controllers/users.controller");
+const usersValidator = require("../validators/users.validator");
+const usersAddresses = require("./users-addresses.routes");
+const { checkIsCustomerLoggedIn } = require("../middleware/session.middleware");
 
 const usersRouter = new Router();
 
-// Gets all users if the user is an admin
-usersRouter.get(
-  "/",
-  generalMiddleware.validateIsUserAdmin,
-  usersMiddleware.validateUserQueryInput,
-  usersController.getUsers
-);
+// Middleware that checks if the user is logged in
+usersRouter.use(checkIsCustomerLoggedIn);
 
-// Gets a specific user
-usersRouter.get(
-  "/:userId",
-  usersMiddleware.validateUserAuthorization,
-  usersMiddleware.validateUserIdInput,
-  usersController.getUserById
-);
+// Group routes
+usersRouter
+  .route("/")
+  // Gets the customer's basic data
+  .get(usersController.handleGetCustomerBasicData)
+  // Updates the customer's basic data
+  .patch(
+    // Validate the input first
+    usersValidator.validateCustomerDataInput,
+    usersController.handleUpdateCustomerBasicData
+  )
+  // Deletes the customer's account
+  .delete(usersController.handleCustomerAccountDeletion);
 
-// Updates a specific user
-usersRouter.put(
-  "/:userId",
-  usersMiddleware.validateUserAuthorization,
-  usersMiddleware.validateUserIdInput,
-  usersMiddleware.extractUserDetailsFromInput,
-  usersController.updateUser
-);
-
-// Deletes a specific user
-usersRouter.delete(
-  "/:userId",
-  generalMiddleware.validateIsUserAdmin,
-  usersMiddleware.validateUserIdInput,
-  usersController.deleteUser
-);
-
-// Gets all user addresses
-usersRouter.get(
-  "/:userId/addresses",
-  usersMiddleware.validateUserAuthorization,
-  usersMiddleware.validateUserIdInput,
-  usersController.getUserAddress
-);
-
-// Adds a new user address
-usersRouter.post(
-  "/:userId/addresses",
-  usersMiddleware.validateUserAuthorization,
-  usersMiddleware.validateUserIdInput,
-  usersMiddleware.validateNewAddressDetailsInput,
-  usersController.addNewUserAddress
-);
-
-// Updates a specific user address
-usersRouter.put(
-  "/:userId/addresses/:addressId",
-  usersMiddleware.validateUserAuthorization,
-  usersMiddleware.validateUserIdInput,
-  usersMiddleware.validateAddressIdInput,
-  usersMiddleware.validateUpdatedAddressDetailsInput,
-  usersController.updateUserAddress
-);
-
-// Deletes a specific user address
-usersRouter.delete(
-  "/:userId/addresses/:addressId",
-  usersMiddleware.validateUserAuthorization,
-  usersMiddleware.validateUserIdInput,
-  usersMiddleware.validateAddressIdInput,
-  usersController.deleteUserAddress
-);
+// Customer's addresses route
+usersRouter.use("/addresses", usersAddresses);
 
 module.exports = usersRouter;
