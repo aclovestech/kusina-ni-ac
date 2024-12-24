@@ -8,10 +8,14 @@ export default {
     './index.html',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        awelier: ['Awelier'],
+      },
+    },
   },
   plugins: [daisyui],
   daisyui: {
-    themes: ['coffee', 'dark'],
+    themes: ['coffee'],
   },
 };

@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'Awelier';
+  src: url('./fonts/MADEAwelier-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
