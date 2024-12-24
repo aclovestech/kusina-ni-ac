@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "autoprefixer": "^10.4.20",
+    "axios": "^1.7.9",
     "daisyui": "^4.12.22",
     "lucide-react": "^0.469.0",
     "postcss": "^8.4.49",
