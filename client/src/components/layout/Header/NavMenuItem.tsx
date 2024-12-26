@@ -1,5 +1,13 @@
 import { Link } from 'react-router';
-import { NavMenuItemProps } from './header.interfaces';
+
+interface NavMenuItemProps {
+  item: {
+    label: string;
+    link: string;
+    children?: { label: string; link: string }[];
+  };
+  useDetails?: boolean;
+}
 
 export function NavMenuItem({ item, useDetails }: NavMenuItemProps) {
   if (!item.children) {

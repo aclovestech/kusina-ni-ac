@@ -14,6 +14,15 @@ import OrderDetails from './pages/OrderDetails';
 import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
 
+const MainLayout = () => (
+  <div>
+    <Header />
+    <main>
+      <Outlet />
+    </main>
+  </div>
+);
+
 function App() {
   const router = createBrowserRouter([
     {
@@ -23,6 +32,8 @@ function App() {
         { index: true, element: <Home /> },
         { path: '/auth/sign-in', element: <Login /> },
         { path: '/auth/register', element: <Register /> },
+        // Change to categories instead of category
+        { path: '/categories', element: <Category /> },
         { path: '/category/:category_name', element: <Category /> },
         { path: '/product/:product_id', element: <Product /> },
         { path: '/cart', element: <Cart /> },
@@ -40,17 +51,6 @@ function App() {
   }, []);
 
   return <RouterProvider router={router} />;
-}
-
-function MainLayout() {
-  return (
-    <div>
-      <Header />
-      <main className="*:z-[-1]">
-        <Outlet />
-      </main>
-    </div>
-  );
 }
 
 export default App;
