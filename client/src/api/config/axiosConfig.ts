@@ -1,11 +1,8 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 const config: AxiosRequestConfig = {
-  baseURL: process.env.REACT_APP_API_BASE_URL,
-  timeout: 5000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  timeout: 1000,
 };
 
 const axiosInstance: AxiosInstance = axios.create(config);
