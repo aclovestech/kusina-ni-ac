@@ -42,7 +42,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // CORS Middleware
-app.use(cors());
+app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
 
 // Logging Middleware
 app.use(morgan("combined"));
