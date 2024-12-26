@@ -46,7 +46,7 @@ function MainLayout() {
   return (
     <div>
       <Header />
-      <main>
+      <main className="*:z-[-1]">
         <Outlet />
       </main>
     </div>

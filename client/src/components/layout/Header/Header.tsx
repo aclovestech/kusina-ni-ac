@@ -4,7 +4,7 @@ import { ShoppingCart, User } from 'lucide-react';
 
 export default function Header() {
   return (
-    <header className="font-awelier navbar bg-base-300">
+    <header className="navbar bg-base-300">
       {/* Navbar Start */}
       <div className="navbar-start">
         <div className="dropdown">
