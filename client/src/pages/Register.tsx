@@ -5,6 +5,9 @@ import {
   IRegistrationFormInput,
 } from '../schemas/registration';
 import FormInput from '../components/common/FormInput';
+import axiosInstance from '../api/config/axiosConfig';
+import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router';
 
 const Register: React.FC = () => {
   const {
@@ -15,8 +18,23 @@ const Register: React.FC = () => {
     resolver: zodResolver(RegistrationFormSchema),
   });
 
-  const onSubmit: SubmitHandler<IRegistrationFormInput> = (data) => {
+  const navigate = useNavigate();
+
+  const onSubmit: SubmitHandler<IRegistrationFormInput> = async (data) => {
     console.log(data);
+    try {
+      const response = await axiosInstance.post('/auth/register', data);
+      console.log(response);
+      navigate('/');
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.error(error.message);
+        const modal = document.getElementById(
+          'error_modal'
+        ) as HTMLDialogElement;
+        modal?.showModal();
+      }
+    }
   };
 
   return (
@@ -62,12 +80,11 @@ const Register: React.FC = () => {
             />
 
             <div className="card-actions justify-center pt-4">
-              <button
+              <input
                 className="btn btn-primary"
-                onClick={handleSubmit(onSubmit)}
-              >
-                Register
-              </button>
+                type="submit"
+                value="Register"
+              />
             </div>
           </form>
         </div>
