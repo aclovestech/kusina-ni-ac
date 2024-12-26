@@ -25,14 +25,12 @@ const Register: React.FC = () => {
     try {
       const response = await axiosInstance.post('/auth/register', data);
       console.log(response);
-      navigate('/');
+      if (response.status === 201) {
+        navigate('/');
+      }
     } catch (error) {
       if (error instanceof AxiosError) {
         console.error(error.message);
-        const modal = document.getElementById(
-          'error_modal'
-        ) as HTMLDialogElement;
-        modal?.showModal();
       }
     }
   };
