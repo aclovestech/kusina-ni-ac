@@ -8,6 +8,7 @@ import FormInput from '../components/common/FormInput';
 import axiosInstance from '../api/config/axiosConfig';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router';
+import { useState } from 'react';
 
 const Register: React.FC = () => {
   const {
@@ -19,12 +20,17 @@ const Register: React.FC = () => {
   });
 
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const onSubmit: SubmitHandler<IRegistrationFormInput> = async (data) => {
-    console.log(data);
+    if (isSubmitting) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
       const response = await axiosInstance.post('/auth/register', data);
-      console.log(response);
       if (response.status === 201) {
         navigate('/');
       }
@@ -32,6 +38,8 @@ const Register: React.FC = () => {
       if (error instanceof AxiosError) {
         console.error(error.message);
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -76,13 +84,18 @@ const Register: React.FC = () => {
               register={register('confirm_password')}
               errors={errors.confirm_password}
             />
-
             <div className="card-actions justify-center pt-4">
-              <input
-                className="btn btn-primary"
-                type="submit"
-                value="Register"
-              />
+              <button
+                className={
+                  isSubmitting ? 'btn btn-disabled' : 'btn btn-primary'
+                }
+                disabled={isSubmitting}
+              >
+                {isSubmitting && (
+                  <span className="loading loading-spinner loading-sm"></span>
+                )}
+                Register
+              </button>
             </div>
           </form>
         </div>
