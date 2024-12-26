@@ -33,14 +33,14 @@ export default function Header() {
             ))}
           </ul>
         </div>
-        <h1 className="hidden h-12 min-h-12 flex-shrink-0 items-center justify-center pl-4 pr-4 text-center text-xl font-semibold md:inline-flex">
+        <h1 className="hidden h-12 min-h-12 flex-shrink-0 items-center justify-center pl-4 pr-4 text-center text-xl font-extrabold md:inline-flex">
           Kusina ni AC
         </h1>
       </div>
 
       {/* Navbar Center (Small) */}
       <div className="navbar-center md:hidden">
-        <h1 className="inline-flex h-12 min-h-12 flex-shrink-0 items-center justify-center pl-4 pr-4 text-center text-lg font-semibold">
+        <h1 className="inline-flex h-12 min-h-12 flex-shrink-0 items-center justify-center pl-4 pr-4 text-center text-xl font-extrabold">
           Kusina ni AC
         </h1>
       </div>
