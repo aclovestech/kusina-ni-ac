@@ -12,4 +12,5 @@ module.exports = {
   PGPORT: process.env.PGPORT,
   SECRET_KEY: process.env.SECRET_KEY,
   SERVER_PORT: process.env.SERVER_PORT,
+  CLIENT_URL: process.env.CLIENT_URL,
 };
