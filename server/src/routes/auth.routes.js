@@ -3,6 +3,7 @@ const Router = require("express-promise-router");
 const passport = require("../config/passport-config");
 const authController = require("../controllers/auth.controller");
 const authValidator = require("../validators/auth.validator");
+const env = require("../config/environment");
 
 const authRouter = new Router();
 
@@ -30,11 +31,13 @@ authRouter.get("/google", passport.authenticate("google"));
 // Google callback
 authRouter.get(
   "/google/callback",
-  passport.authenticate("google"),
+  passport.authenticate("google", {
+    failureRedirect: `${env.CLIENT_URL}/login`,
+  }),
   authController.handlePostLogin
 );
 
 // Logout
-authRouter.get("/logout", authController.handleLogout);
+authRouter.post("/logout", authController.handleLogout);
 
 module.exports = authRouter;

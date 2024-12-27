@@ -55,6 +55,7 @@ passport.use(
       clientSecret: env.GOOGLE_CLIENT_SECRET,
       callbackURL: "http://localhost:3000/auth/google/callback",
       scope: ["profile", "email"],
+      state: true,
     },
     async (accessToken, refreshToken, profile, done) => {
       const provider = profile.provider;
@@ -84,9 +85,6 @@ passport.use(
           // Return the newly created user
           return done(null, newCustomer);
         }
-
-        // Update the user's last login timestamp
-        await authModel.updateCustomerLastLogin(basicData.customer_id);
 
         // Return the customer's data
         return done(null, basicData);
