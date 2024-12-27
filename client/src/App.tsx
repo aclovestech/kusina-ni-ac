@@ -1,5 +1,7 @@
 // Imports
-import { BrowserRouter, Routes, Route } from 'react-router';
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router';
+import { useEffect } from 'react';
+import Header from './components/layout/Header/Header';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -11,25 +13,59 @@ import Orders from './pages/Orders';
 import OrderDetails from './pages/OrderDetails';
 import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
+import { Toaster } from 'sonner';
+
+const MainLayout = () => (
+  <div>
+    <Header />
+    <main>
+      <Outlet />
+    </main>
+    <Toaster
+      className="md:![--width:150px]"
+      duration={10000}
+      position="bottom-center"
+      toastOptions={{
+        classNames: {
+          success: 'bg-success',
+          error: 'bg-error',
+          info: 'bg-info',
+          warning: 'bg-warning',
+        },
+        style: { justifyContent: 'center' },
+      }}
+    />
+  </div>
+);
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route index element={<Home />} />
-        <Route path="/auth/sign-in" element={<Login />} />
-        <Route path="/auth/register" element={<Register />} />
-        <Route path="/category/:category_name" element={<Category />} />
-        <Route path="/product/:product_id" element={<Product />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/cart/checkout" element={<Checkout />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/orders/:order_id" element={<OrderDetails />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
-  );
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <MainLayout />,
+      children: [
+        { index: true, element: <Home /> },
+        { path: '/auth/sign-in', element: <Login /> },
+        { path: '/auth/register', element: <Register /> },
+        // Change to categories instead of category
+        { path: '/categories', element: <Category /> },
+        { path: '/category/:category_name', element: <Category /> },
+        { path: '/product/:product_id', element: <Product /> },
+        { path: '/cart', element: <Cart /> },
+        { path: '/cart/checkout', element: <Checkout /> },
+        { path: '/orders', element: <Orders /> },
+        { path: '/orders/:order_id', element: <OrderDetails /> },
+        { path: '/settings', element: <Settings /> },
+        { path: '*', element: <NotFound /> },
+      ],
+    },
+  ]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', 'coffee');
+  }, []);
+
+  return <RouterProvider router={router} />;
 }
 
 export default App;
