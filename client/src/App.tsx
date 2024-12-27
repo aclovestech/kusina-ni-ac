@@ -22,8 +22,8 @@ const MainLayout = () => (
       <Outlet />
     </main>
     <Toaster
-      className="![--width:150px]"
-      duration={5000}
+      className="md:![--width:150px]"
+      duration={10000}
       position="bottom-center"
       toastOptions={{
         classNames: {
@@ -32,6 +32,7 @@ const MainLayout = () => (
           info: 'bg-info',
           warning: 'bg-warning',
         },
+        style: { justifyContent: 'center' },
       }}
     />
   </div>

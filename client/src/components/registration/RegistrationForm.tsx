@@ -26,7 +26,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   onSubmit,
 }) => {
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-xs">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="mt-4 w-full max-w-xs self-center"
+    >
       <FormInput
         label="First Name"
         placeholder="First Name"
@@ -62,7 +65,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         register={register('confirm_password')}
         errors={errors.confirm_password}
       />
-      <div className="card-actions justify-center pt-4">
+      <div className="card-actions mt-8 justify-center">
         <button
           className={isSubmitting ? 'btn btn-disabled' : 'btn btn-primary'}
           disabled={isSubmitting}

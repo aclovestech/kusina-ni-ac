@@ -7,7 +7,7 @@ import {
 } from '../schemas/registration';
 import axiosInstance from '../api/config/axiosConfig';
 import { AxiosError } from 'axios';
-import { useNavigate } from 'react-router';
+import { useNavigate, Link } from 'react-router';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import RegistrationForm from '../components/registration/RegistrationForm';
@@ -56,8 +56,8 @@ const Register: React.FC = () => {
   return (
     <>
       <div className="card bg-base-300 md:card-side mx-5 my-8 shadow-xl md:mx-32 lg:mx-60">
-        <div className="card-body items-center">
-          <h1 className="card-title">Register</h1>
+        <div className="card-body">
+          <h1 className="card-title self-center">Register</h1>
           <RegistrationForm
             register={register}
             handleSubmit={handleSubmit}
@@ -65,6 +65,14 @@ const Register: React.FC = () => {
             isSubmitting={isSubmitting}
             onSubmit={onSubmit}
           />
+          <div className="mt-4 text-center">
+            <p>
+              Already have an account?{' '}
+              <Link to="/auth/sign-in" className="text-primary">
+                Sign in here
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </>
