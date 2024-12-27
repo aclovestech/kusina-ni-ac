@@ -4,7 +4,7 @@
   "description": "A monorepo for Kusina ni AC",
   "scripts": {
     "client": "pnpm -F kusina-ni-ac-client",
-    "server": "pnpm -F kusina-ni-ac-backend"
+    "backend": "pnpm -F kusina-ni-ac-backend"
   },
   "keywords": [],
   "author": "aclovestech",
