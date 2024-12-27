@@ -13,6 +13,7 @@ import Orders from './pages/Orders';
 import OrderDetails from './pages/OrderDetails';
 import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
+import { Toaster } from 'sonner';
 
 const MainLayout = () => (
   <div>
@@ -20,6 +21,19 @@ const MainLayout = () => (
     <main>
       <Outlet />
     </main>
+    <Toaster
+      className="![--width:150px]"
+      duration={5000}
+      position="bottom-center"
+      toastOptions={{
+        classNames: {
+          success: 'bg-success',
+          error: 'bg-error',
+          info: 'bg-info',
+          warning: 'bg-warning',
+        },
+      }}
+    />
   </div>
 );
 

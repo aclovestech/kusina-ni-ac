@@ -9,6 +9,7 @@ import axiosInstance from '../api/config/axiosConfig';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 const Register: React.FC = () => {
   const {
@@ -37,6 +38,7 @@ const Register: React.FC = () => {
     } catch (error) {
       if (error instanceof AxiosError) {
         console.error(error.message);
+        toast.error(error.message);
       }
     } finally {
       setIsSubmitting(false);
