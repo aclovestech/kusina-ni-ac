@@ -1,6 +1,8 @@
+// Imports
 import { NavMenuItem } from './NavMenuItem';
 import { ShoppingCart, User, AlignLeft } from 'lucide-react';
 
+// Nav Menu Data
 const navMenuData = [
   { label: 'Home', link: '/' },
   {
@@ -10,6 +12,7 @@ const navMenuData = [
   { label: 'About', link: '/about' },
 ];
 
+// Header component
 export default function Header() {
   return (
     <header className="navbar bg-base-300">

@@ -1,5 +1,7 @@
+// Imports
 import { Link } from 'react-router';
 
+// Interface for the NavMenuItem component
 interface NavMenuItemProps {
   item: {
     label: string;
@@ -9,6 +11,7 @@ interface NavMenuItemProps {
   useDetails?: boolean;
 }
 
+// NavMenuItem component
 export function NavMenuItem({ item, useDetails }: NavMenuItemProps) {
   if (!item.children) {
     return (
