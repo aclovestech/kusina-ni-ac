@@ -12,7 +12,7 @@ authRouter.post(
   // Validate the input
   authValidator.validateRegistrationInput,
   // Register the customer
-  authController.handleRegistration
+  authController.handleRegistrationLocal
 );
 
 // Authenticates the user and creates a session
@@ -24,5 +24,17 @@ authRouter.post(
   passport.authenticate("local"),
   authController.handlePostLogin
 );
+
+// Google login
+authRouter.get("/google", passport.authenticate("google"));
+// Google callback
+authRouter.get(
+  "/google/callback",
+  passport.authenticate("google"),
+  authController.handlePostLogin
+);
+
+// Logout
+authRouter.get("/logout", authController.handleLogout);
 
 module.exports = authRouter;
