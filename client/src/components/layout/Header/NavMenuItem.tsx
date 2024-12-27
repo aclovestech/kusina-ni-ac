@@ -1,5 +1,5 @@
 // Imports
-import { Link } from 'react-router';
+import { Link } from '@tanstack/react-router';
 
 // Interface for the NavMenuItem component
 interface NavMenuItemProps {

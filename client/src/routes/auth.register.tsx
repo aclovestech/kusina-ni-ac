@@ -7,12 +7,16 @@ import {
 } from '../schemas/registration';
 import axiosInstance from '../api/config/axiosConfig';
 import { AxiosError } from 'axios';
-import { useNavigate, Link } from 'react-router';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import RegistrationForm from '../components/registration/RegistrationForm';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 
-const Register: React.FC = () => {
+export const Route = createFileRoute('/auth/register')({
+  component: Register,
+});
+
+function Register() {
   // React Hook Form
   const {
     register,
@@ -22,7 +26,7 @@ const Register: React.FC = () => {
     resolver: zodResolver(RegistrationFormSchema),
   });
 
-  // React Router Navigate (for redirecting)
+  // Tanstack Router Navigate (for redirecting)
   const navigate = useNavigate();
   // State for submitting the form
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -40,7 +44,7 @@ const Register: React.FC = () => {
     try {
       const response = await axiosInstance.post('/auth/register', data);
       if (response.status === 201) {
-        navigate('/');
+        navigate({ to: '/' });
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -55,7 +59,7 @@ const Register: React.FC = () => {
 
   return (
     <>
-      <div className="card bg-base-300 md:card-side mx-5 my-8 shadow-xl md:mx-32 lg:mx-60">
+      <div className="card mx-5 my-8 bg-base-300 shadow-xl md:card-side md:mx-32 lg:mx-60">
         <div className="card-body">
           <h1 className="card-title self-center">Register</h1>
           <RegistrationForm
@@ -66,17 +70,12 @@ const Register: React.FC = () => {
             onSubmit={onSubmit}
           />
           <div className="mt-4 text-center">
-            <p>
-              Already have an account?{' '}
-              <Link to="/auth/sign-in" className="text-primary">
-                Sign in here
-              </Link>
-            </p>
+            <p>Already have an account?</p>
+            {/* link */}
+            <div>Sign in here</div>
           </div>
         </div>
       </div>
     </>
   );
-};
-
-export default Register;
+}
