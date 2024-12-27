@@ -92,6 +92,6 @@ exports.getCustomerPasswordHashByEmail = async (email) => {
 exports.updateCustomerLastLogin = async (customer_id) => {
   // Query: Update the user's last login timestamp
   return await knex("customers")
-    .update({ last_login: knex.fn.now() }, basicDataColumns)
+    .update({ last_login: knex.fn.now() })
     .where("customer_id", customer_id);
 };

@@ -3,6 +3,7 @@ const authModel = require("../models/auth.model");
 const { getValidCart, createNewCart } = require("../models/cart.model");
 const { matchedData } = require("express-validator");
 const { hashPassword } = require("../utils/bcrypt");
+const env = require("../config/environment");
 
 exports.handleRegistrationLocal = async (req, res, next) => {
   // Get the validated data
@@ -19,8 +20,8 @@ exports.handleRegistrationLocal = async (req, res, next) => {
     if (err) return next(err);
   });
 
-  // Return the newly created user info
-  res.status(201).json(user);
+  // Redirect the user to the app's home page
+  res.redirect(`${env.CLIENT_URL}/`);
 };
 
 exports.handlePostLogin = async (req, res, next) => {
@@ -39,18 +40,19 @@ exports.handlePostLogin = async (req, res, next) => {
   req.session.cart_id = cart_id;
 
   // Update the user's last login timestamp
-  const user = await authModel.updateCustomerLastLogin(req.user.customer_id);
+  await authModel.updateCustomerLastLogin(req.user.customer_id);
 
-  // Return the user
-  res.status(200).json(user[0]);
+  // Redirect the user to the app's home page
+  res.redirect(`${env.CLIENT_URL}/`);
 };
 
 exports.handleLogout = (req, res, next) => {
   // Log the user out
   req.logout((err) => {
-    if (err) return next(err);
+    if (err) {
+      return next(err);
+    }
+    // Return that the user was logged out
+    res.status(200).json({ message: "Logged out successfully" });
   });
-
-  // Return that the user was logged out
-  res.status(200).json({ message: "You have been logged out" });
 };
