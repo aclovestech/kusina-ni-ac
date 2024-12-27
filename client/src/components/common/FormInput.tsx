@@ -1,5 +1,7 @@
+// Imports
 import { FieldError, UseFormRegisterReturn } from 'react-hook-form';
 
+// Interface for the FormInput component
 interface FormInputProps {
   label: string;
   placeholder: string;
@@ -8,6 +10,7 @@ interface FormInputProps {
   errors?: FieldError;
 }
 
+// FormInput component
 const FormInput: React.FC<FormInputProps> = ({
   label,
   placeholder,

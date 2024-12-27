@@ -1,5 +1,7 @@
+// Imports
 import * as z from 'zod';
 
+// Schema
 export const RegistrationFormSchema = z
   .object({
     first_name: z.string().min(1, 'First name is required'),
