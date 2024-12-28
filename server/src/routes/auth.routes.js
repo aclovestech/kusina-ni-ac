@@ -3,9 +3,11 @@ const Router = require("express-promise-router");
 const passport = require("../config/passport-config");
 const authController = require("../controllers/auth.controller");
 const authValidator = require("../validators/auth.validator");
-const env = require("../config/environment");
 
 const authRouter = new Router();
+
+// Checks if the user is logged in
+authRouter.get("/check-session", authController.handleCheckSession);
 
 // Registers a new customer
 authRouter.post(

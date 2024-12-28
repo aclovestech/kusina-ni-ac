@@ -2,19 +2,17 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginFormSchema, ILoginFormInput } from '../schemas/login';
-import axiosInstance from '../api/config/axiosConfig';
-import { AxiosError } from 'axios';
 import { useState } from 'react';
-import { toast } from 'sonner';
 import LoginForm from '../components/login/LoginForm';
-import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import SignInWithGoogle from '../components/common/SignInWithGoogle';
+import { useSession } from '../hooks/SessionProvider';
 
 export const Route = createFileRoute('/auth/sign-in')({
-  component: Login,
+  component: SignIn,
 });
 
-function Login() {
+function SignIn() {
   // React Hook Form
   const {
     register,
@@ -24,10 +22,11 @@ function Login() {
     resolver: zodResolver(LoginFormSchema),
   });
 
-  // React Router Navigate (for redirecting)
-  const navigate = useNavigate();
   // State for submitting the form
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  // Login hook
+  const { login } = useSession();
 
   const onSubmit: SubmitHandler<ILoginFormInput> = async (data) => {
     // Check if the form is already being submitted to avoid multiple submissions
@@ -40,15 +39,7 @@ function Login() {
 
     // Send the form data to the server
     try {
-      const response = await axiosInstance.post('/auth/login', data);
-      if (response.statusText === 'OK') {
-        navigate({ to: '/' });
-      }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error(error.message);
-        toast.error(error.message);
-      }
+      await login(data);
     } finally {
       // Set isSubmitting to false to indicate that the form submission is complete
       setIsSubmitting(false);
