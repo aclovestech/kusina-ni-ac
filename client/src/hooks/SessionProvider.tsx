@@ -6,7 +6,7 @@ import { AxiosError } from 'axios';
 import { useNavigate } from '@tanstack/react-router';
 
 // Interfaces
-interface User {
+export interface User {
   customer_id: string;
   email: string;
   first_name: string;

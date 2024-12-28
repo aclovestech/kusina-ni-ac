@@ -11,15 +11,15 @@ const NavbarCart: React.FC = () => {
       </div>
       <div
         tabIndex={0}
-        className="card dropdown-content card-compact z-50 mt-3 w-52 bg-base-200 shadow"
+        className="card dropdown-content card-compact z-50 mt-3 w-44 bg-base-200 shadow"
       >
         <div className="card-body items-center text-center">
-          <span className="text-lg font-bold">8 Items</span>
-          <span className="text">Subtotal: $999</span>
+          <span className="card-title">8 Items</span>
+          <span className="mb-2 text-primary">Subtotal: $999</span>
           <div className="card-actions">
             <Link
               to="/cart"
-              className="btn btn-primary btn-block"
+              className="btn btn-outline"
               onClick={closeDropdown}
             >
               View cart

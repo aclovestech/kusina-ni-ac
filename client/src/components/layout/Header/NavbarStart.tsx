@@ -17,7 +17,7 @@ const NavbarStart: React.FC<{ navMenuData: INavMenuItem[] }> = ({
         </h1>
         <ul
           tabIndex={0}
-          className="menu dropdown-content menu-sm z-50 mt-3 w-52 rounded-box bg-base-200 p-2 shadow"
+          className="menu dropdown-content menu-sm z-50 mt-3 w-44 rounded-box bg-base-200 p-2 shadow"
         >
           {navMenuData.map((item, index) => (
             <NavMenuItem key={index} item={item} useDetails={false} />
