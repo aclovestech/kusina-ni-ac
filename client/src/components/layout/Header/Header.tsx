@@ -2,6 +2,7 @@
 import { NavMenuItem } from './NavMenuItem';
 import { ShoppingCart, User, AlignLeft } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
+import closeDropdown from '../../../utils/closeDropdown';
 
 // Nav Menu Data
 const navMenuData = [
@@ -73,7 +74,11 @@ export default function Header() {
               <span className="text-lg font-bold">8 Items</span>
               <span className="text">Subtotal: $999</span>
               <div className="card-actions">
-                <Link to="/cart" className="btn btn-primary btn-block">
+                <Link
+                  to="/cart"
+                  className="btn btn-primary btn-block"
+                  onClick={closeDropdown}
+                >
                   View cart
                 </Link>
               </div>
@@ -93,8 +98,12 @@ export default function Header() {
             <div className="card-body items-center text-center">
               <span className="text-base font-bold">You are not signed in</span>
               <div className="card-actions">
-                <Link to="/auth/sign-in" className="btn btn-primary btn-block">
-                  Login
+                <Link
+                  to="/auth/sign-in"
+                  className="btn btn-primary btn-block"
+                  onClick={closeDropdown}
+                >
+                  Sign in
                 </Link>
               </div>
             </div>

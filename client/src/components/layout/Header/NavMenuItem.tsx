@@ -1,5 +1,6 @@
 // Imports
 import { Link } from '@tanstack/react-router';
+import closeDropdown from '../../../utils/closeDropdown';
 
 // Interface for the NavMenuItem component
 interface NavMenuItemProps {
@@ -16,7 +17,9 @@ export function NavMenuItem({ item, useDetails }: NavMenuItemProps) {
   if (!item.children) {
     return (
       <li>
-        <Link to={item.link}>{item.label}</Link>
+        <Link to={item.link} onClick={closeDropdown}>
+          {item.label}
+        </Link>
       </li>
     );
   }
@@ -34,7 +37,9 @@ export function NavMenuItem({ item, useDetails }: NavMenuItemProps) {
         </details>
       ) : (
         <>
-          <Link to={item.link}>{item.label}</Link>
+          <Link to={item.link} onClick={closeDropdown}>
+            {item.label}
+          </Link>
           <ul className="p-2">
             {item.children.map((child, index) => (
               <NavMenuItem key={index} item={child} />
