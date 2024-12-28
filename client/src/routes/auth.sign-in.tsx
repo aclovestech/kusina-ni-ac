@@ -8,8 +8,9 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import LoginForm from '../components/login/LoginForm';
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
+import SignInWithGoogle from '../components/common/SignInWithGoogle';
 
-export const Route = createFileRoute('/auth/login')({
+export const Route = createFileRoute('/auth/sign-in')({
   component: Login,
 });
 
@@ -66,6 +67,10 @@ function Login() {
             isSubmitting={isSubmitting}
             onSubmit={onSubmit}
           />
+          <div className="divider divider-primary">OR</div>
+          <div className="card-actions justify-center">
+            <SignInWithGoogle />
+          </div>
           <div className="mt-4 text-center">
             <p>
               Don't have an account?{' '}

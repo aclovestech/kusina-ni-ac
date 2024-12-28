@@ -23,8 +23,8 @@ import { Route as ProductProductIdImport } from './routes/product.$productId';
 import { Route as OrdersOrderIdImport } from './routes/orders.$orderId';
 import { Route as CategoryCategoryIdImport } from './routes/category.$categoryId';
 import { Route as CartCheckoutImport } from './routes/cart.checkout';
+import { Route as AuthSignInImport } from './routes/auth.sign-in';
 import { Route as AuthRegisterImport } from './routes/auth.register';
-import { Route as AuthLoginImport } from './routes/auth.login';
 
 // Create Virtual Routes
 
@@ -98,15 +98,15 @@ const CartCheckoutRoute = CartCheckoutImport.update({
   getParentRoute: () => CartRoute,
 } as any);
 
-const AuthRegisterRoute = AuthRegisterImport.update({
-  id: '/auth/register',
-  path: '/auth/register',
+const AuthSignInRoute = AuthSignInImport.update({
+  id: '/auth/sign-in',
+  path: '/auth/sign-in',
   getParentRoute: () => rootRoute,
 } as any);
 
-const AuthLoginRoute = AuthLoginImport.update({
-  id: '/auth/login',
-  path: '/auth/login',
+const AuthRegisterRoute = AuthRegisterImport.update({
+  id: '/auth/register',
+  path: '/auth/register',
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -163,18 +163,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsImport;
       parentRoute: typeof rootRoute;
     };
-    '/auth/login': {
-      id: '/auth/login';
-      path: '/auth/login';
-      fullPath: '/auth/login';
-      preLoaderRoute: typeof AuthLoginImport;
-      parentRoute: typeof rootRoute;
-    };
     '/auth/register': {
       id: '/auth/register';
       path: '/auth/register';
       fullPath: '/auth/register';
       preLoaderRoute: typeof AuthRegisterImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/auth/sign-in': {
+      id: '/auth/sign-in';
+      path: '/auth/sign-in';
+      fullPath: '/auth/sign-in';
+      preLoaderRoute: typeof AuthSignInImport;
       parentRoute: typeof rootRoute;
     };
     '/cart/checkout': {
@@ -239,8 +239,8 @@ export interface FileRoutesByFullPath {
   '/home': typeof HomeRoute;
   '/orders': typeof OrdersRouteWithChildren;
   '/settings': typeof SettingsRoute;
-  '/auth/login': typeof AuthLoginRoute;
   '/auth/register': typeof AuthRegisterRoute;
+  '/auth/sign-in': typeof AuthSignInRoute;
   '/cart/checkout': typeof CartCheckoutRoute;
   '/category/$categoryId': typeof CategoryCategoryIdRoute;
   '/orders/$orderId': typeof OrdersOrderIdRoute;
@@ -255,8 +255,8 @@ export interface FileRoutesByTo {
   '/home': typeof HomeRoute;
   '/orders': typeof OrdersRouteWithChildren;
   '/settings': typeof SettingsRoute;
-  '/auth/login': typeof AuthLoginRoute;
   '/auth/register': typeof AuthRegisterRoute;
+  '/auth/sign-in': typeof AuthSignInRoute;
   '/cart/checkout': typeof CartCheckoutRoute;
   '/category/$categoryId': typeof CategoryCategoryIdRoute;
   '/orders/$orderId': typeof OrdersOrderIdRoute;
@@ -272,8 +272,8 @@ export interface FileRoutesById {
   '/home': typeof HomeRoute;
   '/orders': typeof OrdersRouteWithChildren;
   '/settings': typeof SettingsRoute;
-  '/auth/login': typeof AuthLoginRoute;
   '/auth/register': typeof AuthRegisterRoute;
+  '/auth/sign-in': typeof AuthSignInRoute;
   '/cart/checkout': typeof CartCheckoutRoute;
   '/category/$categoryId': typeof CategoryCategoryIdRoute;
   '/orders/$orderId': typeof OrdersOrderIdRoute;
@@ -290,8 +290,8 @@ export interface FileRouteTypes {
     | '/home'
     | '/orders'
     | '/settings'
-    | '/auth/login'
     | '/auth/register'
+    | '/auth/sign-in'
     | '/cart/checkout'
     | '/category/$categoryId'
     | '/orders/$orderId'
@@ -305,8 +305,8 @@ export interface FileRouteTypes {
     | '/home'
     | '/orders'
     | '/settings'
-    | '/auth/login'
     | '/auth/register'
+    | '/auth/sign-in'
     | '/cart/checkout'
     | '/category/$categoryId'
     | '/orders/$orderId'
@@ -320,8 +320,8 @@ export interface FileRouteTypes {
     | '/home'
     | '/orders'
     | '/settings'
-    | '/auth/login'
     | '/auth/register'
+    | '/auth/sign-in'
     | '/cart/checkout'
     | '/category/$categoryId'
     | '/orders/$orderId'
@@ -337,8 +337,8 @@ export interface RootRouteChildren {
   HomeRoute: typeof HomeRoute;
   OrdersRoute: typeof OrdersRouteWithChildren;
   SettingsRoute: typeof SettingsRoute;
-  AuthLoginRoute: typeof AuthLoginRoute;
   AuthRegisterRoute: typeof AuthRegisterRoute;
+  AuthSignInRoute: typeof AuthSignInRoute;
   CategoryCategoryIdRoute: typeof CategoryCategoryIdRoute;
   ProductProductIdRoute: typeof ProductProductIdRoute;
 }
@@ -351,8 +351,8 @@ const rootRouteChildren: RootRouteChildren = {
   HomeRoute: HomeRoute,
   OrdersRoute: OrdersRouteWithChildren,
   SettingsRoute: SettingsRoute,
-  AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
+  AuthSignInRoute: AuthSignInRoute,
   CategoryCategoryIdRoute: CategoryCategoryIdRoute,
   ProductProductIdRoute: ProductProductIdRoute,
 };
@@ -374,8 +374,8 @@ export const routeTree = rootRoute
         "/home",
         "/orders",
         "/settings",
-        "/auth/login",
         "/auth/register",
+        "/auth/sign-in",
         "/category/$categoryId",
         "/product/$productId"
       ]
@@ -407,11 +407,11 @@ export const routeTree = rootRoute
     "/settings": {
       "filePath": "settings.tsx"
     },
-    "/auth/login": {
-      "filePath": "auth.login.tsx"
-    },
     "/auth/register": {
       "filePath": "auth.register.tsx"
+    },
+    "/auth/sign-in": {
+      "filePath": "auth.sign-in.tsx"
     },
     "/cart/checkout": {
       "filePath": "cart.checkout.tsx",

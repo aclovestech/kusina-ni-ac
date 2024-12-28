@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import RegistrationForm from '../components/registration/RegistrationForm';
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
+import SignInWithGoogle from '../components/common/SignInWithGoogle';
 
 export const Route = createFileRoute('/auth/register')({
   component: Register,
@@ -27,7 +28,7 @@ function Register() {
   });
 
   // Tanstack Router Navigate (for redirecting)
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: '/auth/register' });
   // State for submitting the form
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -69,10 +70,14 @@ function Register() {
             isSubmitting={isSubmitting}
             onSubmit={onSubmit}
           />
+          <div className="divider divider-primary">OR</div>
+          <div className="card-actions justify-center">
+            <SignInWithGoogle />
+          </div>
           <div className="mt-4 text-center">
             <p>Already have an account?</p>
-            <Link to="/auth/login" className="font-bold text-primary">
-              Sign in here
+            <Link to="/auth/sign-in">
+              <span className="font-bold text-primary">Sign in here</span>
             </Link>
           </div>
         </div>
