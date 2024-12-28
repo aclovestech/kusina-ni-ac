@@ -1,4 +1,4 @@
-const SignInWithGoogle = () => {
+export const SignInWithGoogle = () => {
   // Redirect for Google Sign In
   const handleGoogleSignIn = () => {
     window.location.href = 'http://localhost:3000/auth/google';
@@ -18,5 +18,3 @@ const SignInWithGoogle = () => {
     </div>
   );
 };
-
-export default SignInWithGoogle;

@@ -1,33 +1,11 @@
 // Imports
-import { createContext, useContext, useState, useEffect } from 'react';
-import axiosInstance from '../api/config/axiosConfig';
+import { useState, useEffect } from 'react';
+import axiosInstance from '../../api/config/axiosConfig';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
 import { useNavigate } from '@tanstack/react-router';
-
-// Interfaces
-export interface User {
-  customer_id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  date_of_birth: Date;
-  loyalty_points: number;
-}
-interface SessionContextType {
-  isAuthenticated: boolean;
-  user: User | null;
-  login: (credentials: { email: string; password: string }) => Promise<void>;
-  loginWithGoogle: () => void;
-  logout: () => Promise<void>;
-  checkSessionStatus: () => Promise<void>;
-}
-interface SessionProviderProps {
-  children: React.ReactNode;
-}
-
-// Context
-const SessionContext = createContext<SessionContextType | null>(null);
+import { SessionContextType, SessionProviderProps, User } from '.';
+import { SessionContext } from '.';
 
 export const SessionProvider: React.FC<SessionProviderProps> = ({
   children,
@@ -106,12 +84,4 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
       {children}
     </SessionContext.Provider>
   );
-};
-
-export const useSession = (): SessionContextType => {
-  const context = useContext(SessionContext);
-  if (!context) {
-    throw new Error('useSession must be used within a SessionProvider');
-  }
-  return context;
 };

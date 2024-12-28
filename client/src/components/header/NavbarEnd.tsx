@@ -2,7 +2,7 @@
 import NavbarCart from './NavbarCart';
 import NavbarUser from './NavbarUser';
 
-const NavbarEnd = () => {
+export const NavbarEnd = () => {
   return (
     <div className="navbar-end">
       <NavbarCart />
@@ -10,5 +10,3 @@ const NavbarEnd = () => {
     </div>
   );
 };
-
-export default NavbarEnd;

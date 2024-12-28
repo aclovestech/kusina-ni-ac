@@ -1,7 +1,7 @@
 // Imports
 import { ShoppingCart } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
-import closeDropdown from '../../../utils/closeDropdown';
+import closeDropdown from '../../utils/closeDropdown';
 
 const NavbarCart: React.FC = () => {
   return (

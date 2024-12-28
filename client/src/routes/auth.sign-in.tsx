@@ -1,11 +1,11 @@
 // Imports
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LoginFormSchema, ILoginFormInput } from '../schemas/login';
+import { LoginFormSchema, LoginFormInput } from '../schemas/login';
 import { useState } from 'react';
-import LoginForm from '../components/login/LoginForm';
+import { LoginForm } from '../components';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import SignInWithGoogle from '../components/common/SignInWithGoogle';
+import { SignInWithGoogle } from '../components';
 import { useSession } from '../hooks/SessionProvider';
 
 export const Route = createFileRoute('/auth/sign-in')({
@@ -18,7 +18,7 @@ function SignIn() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ILoginFormInput>({
+  } = useForm<LoginFormInput>({
     resolver: zodResolver(LoginFormSchema),
   });
 
@@ -28,7 +28,7 @@ function SignIn() {
   // Login hook
   const { login } = useSession();
 
-  const onSubmit: SubmitHandler<ILoginFormInput> = async (data) => {
+  const onSubmit: SubmitHandler<LoginFormInput> = async (data) => {
     // Check if the form is already being submitted to avoid multiple submissions
     if (isSubmitting) {
       return;

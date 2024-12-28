@@ -11,7 +11,7 @@ interface FormInputProps {
 }
 
 // FormInput component
-const FormInput: React.FC<FormInputProps> = ({
+export const FormInput: React.FC<FormInputProps> = ({
   label,
   placeholder,
   type,
@@ -41,5 +41,3 @@ const FormInput: React.FC<FormInputProps> = ({
     </label>
   );
 };
-
-export default FormInput;

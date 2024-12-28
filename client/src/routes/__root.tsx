@@ -2,7 +2,7 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { Toaster } from 'sonner';
-import Header from '../components/layout/Header/Header';
+import { Header } from '../components';
 import { SessionProvider } from '../hooks/SessionProvider';
 
 export const Route = createRootRoute({

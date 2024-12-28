@@ -1,8 +1,8 @@
 // Imports
 import { User } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
-import closeDropdown from '../../../utils/closeDropdown';
-import { useSession } from '../../../hooks/SessionProvider';
+import closeDropdown from '../../utils/closeDropdown';
+import { useSession } from '../../hooks/SessionProvider/SessionProviderContext';
 
 const UserNotSignedIn: React.FC = () => {
   return (

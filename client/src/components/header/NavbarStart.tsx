@@ -1,9 +1,9 @@
 // Imports
 import { NavMenuItem } from './NavMenuItem';
 import { AlignLeft } from 'lucide-react';
-import { INavMenuItem } from './Header';
+import { NavMenuItemType } from './Header';
 
-const NavbarStart: React.FC<{ navMenuData: INavMenuItem[] }> = ({
+export const NavbarStart: React.FC<{ navMenuData: NavMenuItemType[] }> = ({
   navMenuData,
 }) => {
   return (
@@ -27,5 +27,3 @@ const NavbarStart: React.FC<{ navMenuData: INavMenuItem[] }> = ({
     </div>
   );
 };
-
-export default NavbarStart;

@@ -5,19 +5,19 @@ import {
   FieldErrors,
   SubmitHandler,
 } from 'react-hook-form';
-import FormInput from '../common/FormInput';
-import { ILoginFormInput } from '../../schemas/login';
+import { FormInput } from '../';
+import { LoginFormInput } from '../../schemas/login';
 
 // Interface for the LoginForm component
 interface LoginFormProps {
-  register: UseFormRegister<ILoginFormInput>;
-  handleSubmit: UseFormHandleSubmit<ILoginFormInput>;
-  errors: FieldErrors<ILoginFormInput>;
+  register: UseFormRegister<LoginFormInput>;
+  handleSubmit: UseFormHandleSubmit<LoginFormInput>;
+  errors: FieldErrors<LoginFormInput>;
   isSubmitting: boolean;
-  onSubmit: SubmitHandler<ILoginFormInput>;
+  onSubmit: SubmitHandler<LoginFormInput>;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({
+export const LoginForm: React.FC<LoginFormProps> = ({
   register,
   handleSubmit,
   errors,
@@ -58,5 +58,3 @@ const LoginForm: React.FC<LoginFormProps> = ({
     </form>
   );
 };
-
-export default LoginForm;

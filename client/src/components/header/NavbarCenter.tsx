@@ -1,8 +1,8 @@
 // Imports
 import { NavMenuItem } from './NavMenuItem';
-import { INavMenuItem } from './Header';
+import { NavMenuItemType } from './Header';
 
-const NavbarCenter: React.FC<{ navMenuData: INavMenuItem[] }> = ({
+export const NavbarCenter: React.FC<{ navMenuData: NavMenuItemType[] }> = ({
   navMenuData,
 }) => {
   return (
@@ -22,5 +22,3 @@ const NavbarCenter: React.FC<{ navMenuData: INavMenuItem[] }> = ({
     </>
   );
 };
-
-export default NavbarCenter;

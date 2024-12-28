@@ -1,6 +1,6 @@
 // Imports
 import { Link } from '@tanstack/react-router';
-import closeDropdown from '../../../utils/closeDropdown';
+import closeDropdown from '../../utils/closeDropdown';
 
 // Interface for the NavMenuItem component
 interface NavMenuItemProps {
