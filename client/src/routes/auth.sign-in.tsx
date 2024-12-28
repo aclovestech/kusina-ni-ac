@@ -59,7 +59,7 @@ function Login() {
     <>
       <div className="card mx-5 my-8 bg-base-300 shadow-xl md:card-side md:mx-32 lg:mx-60">
         <div className="card-body">
-          <h1 className="card-title self-center">Login</h1>
+          <h1 className="card-title self-center">Sign in</h1>
           <LoginForm
             register={register}
             handleSubmit={handleSubmit}
