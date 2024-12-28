@@ -20,8 +20,8 @@ exports.handleRegistrationLocal = async (req, res, next) => {
     if (err) return next(err);
   });
 
-  // Redirect the user to the app's home page
-  res.redirect(`${env.CLIENT_URL}/`);
+  // Move to the next middleware
+  next();
 };
 
 exports.handlePostLogin = async (req, res, next) => {
@@ -42,8 +42,8 @@ exports.handlePostLogin = async (req, res, next) => {
   // Update the user's last login timestamp
   await authModel.updateCustomerLastLogin(req.user.customer_id);
 
-  // Redirect the user to the app's home page
-  res.redirect(`${env.CLIENT_URL}/`);
+  // Move to the next middleware
+  next();
 };
 
 exports.handleLogout = (req, res, next) => {
@@ -55,4 +55,14 @@ exports.handleLogout = (req, res, next) => {
     // Return that the user was logged out
     res.status(200).json({ message: "Logged out successfully" });
   });
+};
+
+exports.handleRedirectFromLocal = (req, res, next) => {
+  // Return that the user was logged in
+  res.json({ message: "Logged in successfully" });
+};
+
+exports.handleRedirectFromThirdParty = (req, res, next) => {
+  // Redirect the user to the app's home page
+  res.redirect(`${env.CLIENT_URL}/`);
 };
