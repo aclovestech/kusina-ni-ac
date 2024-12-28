@@ -18,6 +18,7 @@ import { Route as OrdersImport } from './routes/orders'
 import { Route as HomeImport } from './routes/home'
 import { Route as CategoriesImport } from './routes/categories'
 import { Route as CartImport } from './routes/cart'
+import { Route as AboutImport } from './routes/about'
 import { Route as ProductProductIdImport } from './routes/product.$productId'
 import { Route as OrdersOrderIdImport } from './routes/orders.$orderId'
 import { Route as CategoryCategoryIdImport } from './routes/category.$categoryId'
@@ -58,6 +59,12 @@ const CategoriesRoute = CategoriesImport.update({
 const CartRoute = CartImport.update({
   id: '/cart',
   path: '/cart',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AboutRoute = AboutImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -112,6 +119,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
     '/cart': {
@@ -219,6 +233,7 @@ const OrdersRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
+  '/about': typeof AboutRoute
   '/cart': typeof CartRouteWithChildren
   '/categories': typeof CategoriesRoute
   '/home': typeof HomeRoute
@@ -234,6 +249,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
+  '/about': typeof AboutRoute
   '/cart': typeof CartRouteWithChildren
   '/categories': typeof CategoriesRoute
   '/home': typeof HomeRoute
@@ -250,6 +266,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
+  '/about': typeof AboutRoute
   '/cart': typeof CartRouteWithChildren
   '/categories': typeof CategoriesRoute
   '/home': typeof HomeRoute
@@ -267,6 +284,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/cart'
     | '/categories'
     | '/home'
@@ -281,6 +299,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/cart'
     | '/categories'
     | '/home'
@@ -295,6 +314,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/cart'
     | '/categories'
     | '/home'
@@ -311,6 +331,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  AboutRoute: typeof AboutRoute
   CartRoute: typeof CartRouteWithChildren
   CategoriesRoute: typeof CategoriesRoute
   HomeRoute: typeof HomeRoute
@@ -324,6 +345,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  AboutRoute: AboutRoute,
   CartRoute: CartRouteWithChildren,
   CategoriesRoute: CategoriesRoute,
   HomeRoute: HomeRoute,
@@ -346,6 +368,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/about",
         "/cart",
         "/categories",
         "/home",
@@ -359,6 +382,9 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.lazy.tsx"
+    },
+    "/about": {
+      "filePath": "about.tsx"
     },
     "/cart": {
       "filePath": "cart.tsx",

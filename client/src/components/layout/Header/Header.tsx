@@ -1,6 +1,7 @@
 // Imports
 import { NavMenuItem } from './NavMenuItem';
 import { ShoppingCart, User, AlignLeft } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
 
 // Nav Menu Data
 const navMenuData = [
@@ -30,7 +31,7 @@ export default function Header() {
           {/* Dropdown Content */}
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-200 rounded-box z-50 mt-3 w-52 p-2 shadow"
+            className="menu dropdown-content menu-sm z-50 mt-3 w-52 rounded-box bg-base-200 p-2 shadow"
           >
             {navMenuData.map((item, index) => (
               <NavMenuItem key={index} item={item} useDetails={false} />
@@ -58,39 +59,43 @@ export default function Header() {
       {/* Navbar End */}
       <div className="navbar-end">
         {/* Cart */}
-        <div className="dropdown dropdown-bottom dropdown-end">
+        <div className="dropdown dropdown-end dropdown-bottom">
           {/* Cart Icon */}
-          <div tabIndex={0} role="button" className="btn btn-sm btn-ghost">
+          <div tabIndex={0} role="button" className="btn btn-ghost btn-sm">
             <ShoppingCart />
           </div>
           {/* Dropdown Content */}
           <div
             tabIndex={0}
-            className="card card-compact dropdown-content bg-base-200 z-50 mt-3 w-52 shadow"
+            className="card dropdown-content card-compact z-50 mt-3 w-52 bg-base-200 shadow"
           >
             <div className="card-body items-center text-center">
               <span className="text-lg font-bold">8 Items</span>
               <span className="text">Subtotal: $999</span>
               <div className="card-actions">
-                <button className="btn btn-primary btn-block">View cart</button>
+                <Link to="/cart" className="btn btn-primary btn-block">
+                  View cart
+                </Link>
               </div>
             </div>
           </div>
         </div>
 
         {/* User */}
-        <div className="dropdown dropdown-bottom dropdown-end">
-          <div tabIndex={0} role="button" className="btn btn-sm btn-ghost">
+        <div className="dropdown dropdown-end dropdown-bottom">
+          <div tabIndex={0} role="button" className="btn btn-ghost btn-sm">
             <User />
           </div>
           <div
             tabIndex={0}
-            className="card card-compact dropdown-content bg-base-200 z-50 mt-3 w-52 shadow"
+            className="card dropdown-content card-compact z-50 mt-3 w-52 bg-base-200 shadow"
           >
             <div className="card-body items-center text-center">
               <span className="text-base font-bold">You are not signed in</span>
               <div className="card-actions">
-                <button className="btn btn-primary btn-block">Login</button>
+                <Link to="/auth/login" className="btn btn-primary btn-block">
+                  Login
+                </Link>
               </div>
             </div>
           </div>

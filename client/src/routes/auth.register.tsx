@@ -10,7 +10,7 @@ import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import RegistrationForm from '../components/registration/RegistrationForm';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/auth/register')({
   component: Register,
@@ -71,8 +71,9 @@ function Register() {
           />
           <div className="mt-4 text-center">
             <p>Already have an account?</p>
-            {/* link */}
-            <div>Sign in here</div>
+            <Link to="/auth/login" className="font-bold text-primary">
+              Sign in here
+            </Link>
           </div>
         </div>
       </div>
