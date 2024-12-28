@@ -7743,8 +7743,6 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  turbo-stream@2.4.0: {}
-
   type-check@0.4.0:
     dependencies:
       prelude-ls: 1.2.1
