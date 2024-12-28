@@ -1,38 +1,35 @@
 // Imports
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  RegistrationFormSchema,
-  IRegistrationFormInput,
-} from '../schemas/registration';
+import { LoginFormSchema, ILoginFormInput } from '../schemas/login';
 import axiosInstance from '../api/config/axiosConfig';
 import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import RegistrationForm from '../components/registration/RegistrationForm';
+import LoginForm from '../components/login/LoginForm';
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
 import SignInWithGoogle from '../components/common/SignInWithGoogle';
 
-export const Route = createFileRoute('/auth/register')({
-  component: Register,
+export const Route = createFileRoute('/auth/sign-in')({
+  component: Login,
 });
 
-function Register() {
+function Login() {
   // React Hook Form
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IRegistrationFormInput>({
-    resolver: zodResolver(RegistrationFormSchema),
+  } = useForm<ILoginFormInput>({
+    resolver: zodResolver(LoginFormSchema),
   });
 
-  // Tanstack Router Navigate (for redirecting)
+  // React Router Navigate (for redirecting)
   const navigate = useNavigate();
   // State for submitting the form
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const onSubmit: SubmitHandler<IRegistrationFormInput> = async (data) => {
+  const onSubmit: SubmitHandler<ILoginFormInput> = async (data) => {
     // Check if the form is already being submitted to avoid multiple submissions
     if (isSubmitting) {
       return;
@@ -43,7 +40,7 @@ function Register() {
 
     // Send the form data to the server
     try {
-      const response = await axiosInstance.post('/auth/register', data);
+      const response = await axiosInstance.post('/auth/login', data);
       if (response.statusText === 'OK') {
         navigate({ to: '/' });
       }
@@ -62,8 +59,8 @@ function Register() {
     <>
       <div className="card mx-5 my-8 bg-base-300 shadow-xl md:card-side md:mx-32 lg:mx-60">
         <div className="card-body">
-          <h1 className="card-title self-center">Register</h1>
-          <RegistrationForm
+          <h1 className="card-title self-center">Sign in</h1>
+          <LoginForm
             register={register}
             handleSubmit={handleSubmit}
             errors={errors}
@@ -75,10 +72,12 @@ function Register() {
             <SignInWithGoogle />
           </div>
           <div className="mt-4 text-center">
-            <p>Already have an account?</p>
-            <Link to="/auth/sign-in">
-              <span className="font-bold text-primary">Sign in here</span>
-            </Link>
+            <p>
+              Don't have an account?{' '}
+              <Link to="/auth/register" className="text-primary">
+                Register here
+              </Link>
+            </p>
           </div>
         </div>
       </div>

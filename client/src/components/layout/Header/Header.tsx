@@ -93,7 +93,7 @@ export default function Header() {
             <div className="card-body items-center text-center">
               <span className="text-base font-bold">You are not signed in</span>
               <div className="card-actions">
-                <Link to="/auth/login" className="btn btn-primary btn-block">
+                <Link to="/auth/sign-in" className="btn btn-primary btn-block">
                   Login
                 </Link>
               </div>

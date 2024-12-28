@@ -8,7 +8,6 @@ import { routeTree } from './routeTree.gen';
 // Set up a Router instance
 const router = createRouter({
   routeTree,
-  defaultPreload: 'intent',
   defaultStaleTime: 5000,
 });
 
@@ -29,3 +28,6 @@ if (!rootElement.innerHTML) {
     </StrictMode>
   );
 }
+
+// Set theme
+document.documentElement.setAttribute('data-theme', 'coffee');
