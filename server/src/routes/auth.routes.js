@@ -13,7 +13,9 @@ authRouter.post(
   // Validate the input
   authValidator.validateRegistrationInput,
   // Register the customer
-  authController.handleRegistrationLocal
+  authController.handleRegistrationLocal,
+  // Redirect the user
+  authController.handleRedirectFromLocal
 );
 
 // Authenticates the user and creates a session
@@ -23,7 +25,9 @@ authRouter.post(
   authValidator.validateLoginInput,
   // Authenticate the user
   passport.authenticate("local"),
-  authController.handlePostLogin
+  authController.handlePostLogin,
+  // Redirect the user
+  authController.handleRedirectFromLocal
 );
 
 // Google login
@@ -31,10 +35,10 @@ authRouter.get("/google", passport.authenticate("google"));
 // Google callback
 authRouter.get(
   "/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: `${env.CLIENT_URL}/login`,
-  }),
-  authController.handlePostLogin
+  passport.authenticate("google"),
+  authController.handlePostLogin,
+  // Redirect the user
+  authController.handleRedirectFromThirdParty
 );
 
 // Logout
