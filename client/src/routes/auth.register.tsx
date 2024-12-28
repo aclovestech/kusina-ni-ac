@@ -28,7 +28,7 @@ function Register() {
   });
 
   // Tanstack Router Navigate (for redirecting)
-  const navigate = useNavigate({ from: '/auth/register' });
+  const navigate = useNavigate();
   // State for submitting the form
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -44,7 +44,7 @@ function Register() {
     // Send the form data to the server
     try {
       const response = await axiosInstance.post('/auth/register', data);
-      if (response.status === 201) {
+      if (response.statusText === 'OK') {
         navigate({ to: '/' });
       }
     } catch (error) {

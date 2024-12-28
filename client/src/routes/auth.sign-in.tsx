@@ -41,7 +41,7 @@ function Login() {
     // Send the form data to the server
     try {
       const response = await axiosInstance.post('/auth/login', data);
-      if (response.status === 201) {
+      if (response.statusText === 'OK') {
         navigate({ to: '/' });
       }
     } catch (error) {
