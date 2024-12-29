@@ -3,15 +3,15 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   RegistrationFormSchema,
-  IRegistrationFormInput,
+  RegistrationFormInput,
 } from '../schemas/registration';
 import axiosInstance from '../api/config/axiosConfig';
 import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import RegistrationForm from '../components/registration/RegistrationForm';
+import { RegistrationForm } from '../components';
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
-import SignInWithGoogle from '../components/common/SignInWithGoogle';
+import { SignInWithGoogle } from '../components';
 
 export const Route = createFileRoute('/auth/register')({
   component: Register,
@@ -23,7 +23,7 @@ function Register() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IRegistrationFormInput>({
+  } = useForm<RegistrationFormInput>({
     resolver: zodResolver(RegistrationFormSchema),
   });
 
@@ -32,7 +32,7 @@ function Register() {
   // State for submitting the form
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const onSubmit: SubmitHandler<IRegistrationFormInput> = async (data) => {
+  const onSubmit: SubmitHandler<RegistrationFormInput> = async (data) => {
     // Check if the form is already being submitted to avoid multiple submissions
     if (isSubmitting) {
       return;

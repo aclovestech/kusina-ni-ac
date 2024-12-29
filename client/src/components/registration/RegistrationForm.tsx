@@ -5,20 +5,20 @@ import {
   FieldErrors,
   SubmitHandler,
 } from 'react-hook-form';
-import FormInput from '../common/FormInput';
-import { IRegistrationFormInput } from '../../schemas/registration';
+import { FormInput } from '../';
+import { RegistrationFormInput } from '../../schemas/registration';
 
 // Interface for the RegistrationForm component
 interface RegistrationFormProps {
-  register: UseFormRegister<IRegistrationFormInput>;
-  handleSubmit: UseFormHandleSubmit<IRegistrationFormInput>;
-  errors: FieldErrors<IRegistrationFormInput>;
+  register: UseFormRegister<RegistrationFormInput>;
+  handleSubmit: UseFormHandleSubmit<RegistrationFormInput>;
+  errors: FieldErrors<RegistrationFormInput>;
   isSubmitting: boolean;
-  onSubmit: SubmitHandler<IRegistrationFormInput>;
+  onSubmit: SubmitHandler<RegistrationFormInput>;
 }
 
 // RegistrationForm component
-const RegistrationForm: React.FC<RegistrationFormProps> = ({
+export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   register,
   handleSubmit,
   errors,
@@ -79,5 +79,3 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     </form>
   );
 };
-
-export default RegistrationForm;

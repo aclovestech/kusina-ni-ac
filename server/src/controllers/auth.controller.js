@@ -59,10 +59,17 @@ exports.handleLogout = (req, res, next) => {
 
 exports.handleRedirectFromLocal = (req, res, next) => {
   // Return that the user was logged in
-  res.json({ message: "Logged in successfully" });
+  res.json(req.user);
 };
 
 exports.handleRedirectFromThirdParty = (req, res, next) => {
   // Redirect the user to the app's home page
   res.redirect(`${env.CLIENT_URL}/`);
+};
+
+exports.handleCheckSession = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "The user is not logged in" });
+  }
+  return res.json(req.user);
 };
