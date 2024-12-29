@@ -4,15 +4,19 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { Toaster } from 'sonner';
 import { Header } from '../components';
 import { SessionProvider } from '../hooks/SessionProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export const Route = createRootRoute({
   component: Root,
   notFoundComponent: () => <div>404</div>,
 });
 
+const queryClient = new QueryClient();
+
 function Root() {
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <SessionProvider>
         <Header />
         <main>
@@ -34,6 +38,7 @@ function Root() {
         />
       </SessionProvider>
       <TanStackRouterDevtools />
-    </>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
