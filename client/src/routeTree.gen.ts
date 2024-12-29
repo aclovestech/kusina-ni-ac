@@ -16,8 +16,8 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as SettingsImport } from './routes/settings'
 import { Route as ProfileImport } from './routes/profile'
 import { Route as OrdersImport } from './routes/orders'
+import { Route as MenuImport } from './routes/menu'
 import { Route as HomeImport } from './routes/home'
-import { Route as CategoriesImport } from './routes/categories'
 import { Route as CartImport } from './routes/cart'
 import { Route as AboutImport } from './routes/about'
 import { Route as ProductProductIdImport } from './routes/product.$productId'
@@ -51,15 +51,15 @@ const OrdersRoute = OrdersImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const HomeRoute = HomeImport.update({
-  id: '/home',
-  path: '/home',
+const MenuRoute = MenuImport.update({
+  id: '/menu',
+  path: '/menu',
   getParentRoute: () => rootRoute,
 } as any)
 
-const CategoriesRoute = CategoriesImport.update({
-  id: '/categories',
-  path: '/categories',
+const HomeRoute = HomeImport.update({
+  id: '/home',
+  path: '/home',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -142,18 +142,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CartImport
       parentRoute: typeof rootRoute
     }
-    '/categories': {
-      id: '/categories'
-      path: '/categories'
-      fullPath: '/categories'
-      preLoaderRoute: typeof CategoriesImport
-      parentRoute: typeof rootRoute
-    }
     '/home': {
       id: '/home'
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof HomeImport
+      parentRoute: typeof rootRoute
+    }
+    '/menu': {
+      id: '/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof MenuImport
       parentRoute: typeof rootRoute
     }
     '/orders': {
@@ -249,8 +249,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutRoute
   '/cart': typeof CartRouteWithChildren
-  '/categories': typeof CategoriesRoute
   '/home': typeof HomeRoute
+  '/menu': typeof MenuRoute
   '/orders': typeof OrdersRouteWithChildren
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
@@ -266,8 +266,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutRoute
   '/cart': typeof CartRouteWithChildren
-  '/categories': typeof CategoriesRoute
   '/home': typeof HomeRoute
+  '/menu': typeof MenuRoute
   '/orders': typeof OrdersRouteWithChildren
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
@@ -284,8 +284,8 @@ export interface FileRoutesById {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutRoute
   '/cart': typeof CartRouteWithChildren
-  '/categories': typeof CategoriesRoute
   '/home': typeof HomeRoute
+  '/menu': typeof MenuRoute
   '/orders': typeof OrdersRouteWithChildren
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
@@ -303,8 +303,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/cart'
-    | '/categories'
     | '/home'
+    | '/menu'
     | '/orders'
     | '/profile'
     | '/settings'
@@ -319,8 +319,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/cart'
-    | '/categories'
     | '/home'
+    | '/menu'
     | '/orders'
     | '/profile'
     | '/settings'
@@ -335,8 +335,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/cart'
-    | '/categories'
     | '/home'
+    | '/menu'
     | '/orders'
     | '/profile'
     | '/settings'
@@ -353,8 +353,8 @@ export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   AboutRoute: typeof AboutRoute
   CartRoute: typeof CartRouteWithChildren
-  CategoriesRoute: typeof CategoriesRoute
   HomeRoute: typeof HomeRoute
+  MenuRoute: typeof MenuRoute
   OrdersRoute: typeof OrdersRouteWithChildren
   ProfileRoute: typeof ProfileRoute
   SettingsRoute: typeof SettingsRoute
@@ -368,8 +368,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   AboutRoute: AboutRoute,
   CartRoute: CartRouteWithChildren,
-  CategoriesRoute: CategoriesRoute,
   HomeRoute: HomeRoute,
+  MenuRoute: MenuRoute,
   OrdersRoute: OrdersRouteWithChildren,
   ProfileRoute: ProfileRoute,
   SettingsRoute: SettingsRoute,
@@ -392,8 +392,8 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/cart",
-        "/categories",
         "/home",
+        "/menu",
         "/orders",
         "/profile",
         "/settings",
@@ -415,11 +415,11 @@ export const routeTree = rootRoute
         "/cart/checkout"
       ]
     },
-    "/categories": {
-      "filePath": "categories.tsx"
-    },
     "/home": {
       "filePath": "home.tsx"
+    },
+    "/menu": {
+      "filePath": "menu.tsx"
     },
     "/orders": {
       "filePath": "orders.tsx",

@@ -14,8 +14,8 @@ export interface NavMenuItemType {
 const navMenuData: NavMenuItemType[] = [
   { label: 'Home', link: '/' },
   {
-    label: 'Categories',
-    link: '/categories',
+    label: 'Menu',
+    link: '/menu',
   },
   { label: 'About', link: '/about' },
 ];
