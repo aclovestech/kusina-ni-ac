@@ -4,6 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 import pluginRouter from '@tanstack/eslint-plugin-router';
+import pluginQuery from '@tanstack/eslint-plugin-query';
 
 export default tseslint.config(
   { ignores: ['dist'] },
@@ -12,6 +13,7 @@ export default tseslint.config(
       js.configs.recommended,
       ...tseslint.configs.recommended,
       ...pluginRouter.configs['flat/recommended'],
+      ...pluginQuery.configs['flat/recommended'],
     ],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
