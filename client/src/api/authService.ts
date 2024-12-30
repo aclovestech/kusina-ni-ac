@@ -1,24 +1,23 @@
 // Imports
 import apiClient from './apiClient';
-import { RegistrationFormInput } from '../schemas/registrationSchema';
-import { LoginFormInput } from '../schemas/loginSchema';
+import { LoginFormInput, RegistrationFormInput } from '../schemas/authSchemas';
 
-export async function register(data: RegistrationFormInput) {
+export async function registerCustomer(data: RegistrationFormInput) {
   return await apiClient.post('/auth/register', { json: data }).json();
 }
 
-export async function login(data: LoginFormInput) {
+export async function loginCustomer(data: LoginFormInput) {
   return await apiClient.post('/auth/login', { json: data }).json();
 }
 
-export function loginWithGoogle() {
+export function loginCustomerWithGoogle() {
   window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
 }
 
-export async function checkSession() {
+export async function checkCustomerSession() {
   return await apiClient.get('/auth/check-session').json();
 }
 
-export async function logout() {
+export async function logoutCustomer() {
   return await apiClient.post('/auth/logout').json();
 }
