@@ -1,6 +1,9 @@
+// Imports
+import { loginCustomerWithGoogle } from '../../api';
+
 export function SignInWithGoogle() {
   return (
-    <div className="btn btn-primary" onClick={() => {}}>
+    <div className="btn btn-primary" onClick={loginCustomerWithGoogle}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 488 512"

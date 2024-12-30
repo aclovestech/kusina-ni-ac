@@ -29,3 +29,5 @@ export const RegistrationFormSchema = z
     }
   );
 export type RegistrationFormInput = z.infer<typeof RegistrationFormSchema>;
+
+export type FormData = RegistrationFormInput | LoginFormInput;

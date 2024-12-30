@@ -1,16 +1,20 @@
+// Imports
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import {
   LoginFormSchema,
   RegistrationFormSchema,
+  FormData,
 } from '../../schemas/authSchemas';
 import { FormInput } from './FormInput';
 
 type AuthFormProps = {
   formType: 'login' | 'register';
+  onSubmit: (data: FormData) => void;
+  isPending: boolean;
 };
 
-export function AuthForm({ formType }: AuthFormProps) {
+export function AuthForm({ formType, onSubmit, isPending }: AuthFormProps) {
   const fields =
     formType === 'login'
       ? [
@@ -33,19 +37,19 @@ export function AuthForm({ formType }: AuthFormProps) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormData>({
     resolver:
       formType === 'login'
         ? zodResolver(LoginFormSchema)
         : zodResolver(RegistrationFormSchema),
   });
 
-  const isSubmitting = false;
-
   return (
     <form
       className="mt-4 w-full max-w-xs self-center"
-      onSubmit={handleSubmit(() => {})}
+      onSubmit={handleSubmit(onSubmit, (error) => {
+        console.error(error);
+      })}
     >
       {fields.map((field) => {
         return (
@@ -55,16 +59,17 @@ export function AuthForm({ formType }: AuthFormProps) {
             type={field.type}
             register={register}
             errors={errors}
-            name={field.name}
+            name={field.name as keyof FormData}
           />
         );
       })}
       <div className="card-actions mt-8 justify-center">
         <button
-          className={isSubmitting ? 'btn btn-disabled' : 'btn btn-primary'}
-          disabled={isSubmitting}
+          className={isPending ? 'btn btn-disabled' : 'btn btn-primary'}
+          disabled={isPending}
+          onClick={handleSubmit(onSubmit)}
         >
-          {isSubmitting && (
+          {isPending && (
             <span className="loading loading-spinner loading-sm"></span>
           )}
           {formType === 'login' ? 'Sign in' : 'Register'}

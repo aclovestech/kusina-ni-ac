@@ -1,12 +1,13 @@
 // Imports
 import { UseFormRegister, FieldErrors, FieldValues } from 'react-hook-form';
+import { FormData } from '../../schemas/authSchemas';
 
 type FormInputProps = {
   label: string;
   type: string;
-  register: UseFormRegister<FieldValues>;
+  register: UseFormRegister<FormData>;
   errors: FieldErrors<FieldValues>;
-  name: string;
+  name: keyof FormData;
 };
 
 export function FormInput({
