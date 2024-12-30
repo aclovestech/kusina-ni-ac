@@ -2,9 +2,21 @@
 import { User } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import closeDropdown from '../../utils/closeDropdown';
-import { useSession } from '../../hooks/SessionProvider/SessionProviderContext';
 
-const UserNotSignedIn: React.FC = () => {
+export default function NavbarUser() {
+  const isAuthenticated = true;
+
+  return (
+    <div className="dropdown dropdown-end dropdown-bottom">
+      <div tabIndex={0} role="button" className="btn btn-ghost btn-sm">
+        <User />
+      </div>
+      {isAuthenticated ? <UserSignedIn /> : <UserNotSignedIn />}
+    </div>
+  );
+}
+
+function UserNotSignedIn() {
   return (
     <div
       tabIndex={0}
@@ -24,10 +36,14 @@ const UserNotSignedIn: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
-const UserSignedIn: React.FC = () => {
-  const { user, logout } = useSession();
+function UserSignedIn() {
+  const user = {
+    first_name: 'John',
+  };
+  const logout = () => {};
+
   return (
     <div>
       <ul
@@ -45,19 +61,4 @@ const UserSignedIn: React.FC = () => {
       </ul>
     </div>
   );
-};
-
-const NavbarUser: React.FC = () => {
-  const { isAuthenticated } = useSession();
-
-  return (
-    <div className="dropdown dropdown-end dropdown-bottom">
-      <div tabIndex={0} role="button" className="btn btn-ghost btn-sm">
-        <User />
-      </div>
-      {isAuthenticated ? <UserSignedIn /> : <UserNotSignedIn />}
-    </div>
-  );
-};
-
-export default NavbarUser;
+}

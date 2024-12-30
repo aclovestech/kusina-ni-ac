@@ -1,43 +1,43 @@
 // Imports
-import { FieldError, UseFormRegisterReturn } from 'react-hook-form';
+import { UseFormRegister, FieldErrors, FieldValues } from 'react-hook-form';
 
-// Interface for the FormInput component
-interface FormInputProps {
+type FormInputProps = {
   label: string;
-  placeholder: string;
   type: string;
-  register: UseFormRegisterReturn;
-  errors?: FieldError;
-}
+  register: UseFormRegister<FieldValues>;
+  errors: FieldErrors<FieldValues>;
+  name: string;
+};
 
-// FormInput component
-export const FormInput: React.FC<FormInputProps> = ({
+export default function FormInput({
   label,
-  placeholder,
   type,
   register,
   errors,
-}) => {
+  name,
+}: FormInputProps) {
   return (
     <label className="form-control w-full max-w-xs">
       <div className="label">
         <span className="label-text">{label}</span>
       </div>
       <input
-        {...register}
+        {...register(name)}
         type={type}
-        placeholder={placeholder}
+        placeholder={label}
         className={
-          errors
+          errors[name]
             ? 'input input-bordered input-error w-full max-w-xs'
             : 'input input-bordered w-full max-w-xs'
         }
       />
-      {errors && (
+      {errors[name] && (
         <div className="label">
-          <span className="label-text-alt text-error">{errors.message}</span>
+          <span className="label-text-alt text-error">
+            {errors[name].message as string}
+          </span>
         </div>
       )}
     </label>
   );
-};
+}

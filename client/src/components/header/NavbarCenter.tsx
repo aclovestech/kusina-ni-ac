@@ -1,10 +1,7 @@
 // Imports
-import { NavMenuItem } from './NavMenuItem';
-import { NavMenuItemType } from './Header';
+import { NavMenuList } from './NavMenuList';
 
-export const NavbarCenter: React.FC<{ navMenuData: NavMenuItemType[] }> = ({
-  navMenuData,
-}) => {
+export default function NavbarCenter() {
   return (
     <>
       <div className="navbar-center md:hidden">
@@ -14,11 +11,9 @@ export const NavbarCenter: React.FC<{ navMenuData: NavMenuItemType[] }> = ({
       </div>
       <div className="navbar-center hidden md:flex">
         <ul className="menu menu-horizontal px-1">
-          {navMenuData.map((item, index) => (
-            <NavMenuItem key={index} item={item} useDetails={true} />
-          ))}
+          <NavMenuList />
         </ul>
       </div>
     </>
   );
-};
+}

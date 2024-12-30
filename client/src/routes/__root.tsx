@@ -3,7 +3,6 @@ import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { Toaster } from 'sonner';
 import { Header } from '../components';
-import { SessionProvider } from '../hooks/SessionProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -17,26 +16,24 @@ const queryClient = new QueryClient();
 function Root() {
   return (
     <QueryClientProvider client={queryClient}>
-      <SessionProvider>
-        <Header />
-        <main>
-          <Outlet />
-        </main>
-        <Toaster
-          className="md:![--width:150px]"
-          duration={10000}
-          position="bottom-center"
-          toastOptions={{
-            classNames: {
-              success: 'bg-success',
-              error: 'bg-error',
-              info: 'bg-info',
-              warning: 'bg-warning',
-            },
-            style: { justifyContent: 'center' },
-          }}
-        />
-      </SessionProvider>
+      <Header />
+      <main>
+        <Outlet />
+      </main>
+      <Toaster
+        className="md:![--width:150px]"
+        duration={10000}
+        position="bottom-center"
+        toastOptions={{
+          classNames: {
+            success: 'bg-success',
+            error: 'bg-error',
+            info: 'bg-info',
+            warning: 'bg-warning',
+          },
+          style: { justifyContent: 'center' },
+        }}
+      />
       <TanStackRouterDevtools />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

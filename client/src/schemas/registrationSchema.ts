@@ -1,5 +1,5 @@
 // Imports
-import * as z from 'zod';
+import { z } from 'zod';
 
 // Schema
 export const RegistrationFormSchema = z
