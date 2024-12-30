@@ -9,7 +9,7 @@ type FormInputProps = {
   name: string;
 };
 
-export default function FormInput({
+export function FormInput({
   label,
   type,
   register,
