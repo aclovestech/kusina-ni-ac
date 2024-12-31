@@ -1,4 +1,5 @@
 export * from './authService';
 export * from './productsService';
 export * from './usersService';
-export * from './cartServices';
+export * from './cartService';
+export * from './ordersService';
