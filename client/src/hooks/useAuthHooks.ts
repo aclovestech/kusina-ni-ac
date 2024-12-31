@@ -5,7 +5,7 @@ import {
   loginCustomer,
   checkCustomerSession,
   logoutCustomer,
-} from '../api/authService';
+} from '../api';
 import { LoginFormInput, RegistrationFormInput } from '../schemas/authSchemas';
 
 export function useRegisterCustomer(onSuccess?: () => void) {
