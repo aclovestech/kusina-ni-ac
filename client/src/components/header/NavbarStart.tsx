@@ -1,11 +1,8 @@
 // Imports
-import { NavMenuItem } from './NavMenuItem';
+import { NavMenuList } from './NavMenuList';
 import { AlignLeft } from 'lucide-react';
-import { NavMenuItemType } from './Header';
 
-export const NavbarStart: React.FC<{ navMenuData: NavMenuItemType[] }> = ({
-  navMenuData,
-}) => {
+export default function NavbarStart() {
   return (
     <div className="navbar-start">
       <div className="dropdown">
@@ -19,11 +16,9 @@ export const NavbarStart: React.FC<{ navMenuData: NavMenuItemType[] }> = ({
           tabIndex={0}
           className="menu dropdown-content menu-sm z-50 mt-3 w-44 rounded-box bg-base-200 p-2 shadow"
         >
-          {navMenuData.map((item, index) => (
-            <NavMenuItem key={index} item={item} useDetails={false} />
-          ))}
+          <NavMenuList />
         </ul>
       </div>
     </div>
   );
-};
+}

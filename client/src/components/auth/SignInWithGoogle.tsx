@@ -1,11 +1,9 @@
-export const SignInWithGoogle = () => {
-  // Redirect for Google Sign In
-  const handleGoogleSignIn = () => {
-    window.location.href = 'http://localhost:3000/auth/google';
-  };
+// Imports
+import { loginCustomerWithGoogle } from '../../api';
 
+export function SignInWithGoogle() {
   return (
-    <div className="btn btn-primary" onClick={handleGoogleSignIn}>
+    <div className="btn btn-primary" onClick={loginCustomerWithGoogle}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 488 512"
@@ -17,4 +15,4 @@ export const SignInWithGoogle = () => {
       <span>Sign in with Google</span>
     </div>
   );
-};
+}

@@ -18,10 +18,9 @@ exports.handleRegistrationLocal = async (req, res, next) => {
   // Log the user in
   req.login(user, (err) => {
     if (err) return next(err);
+    // Move to the next middleware
+    return next();
   });
-
-  // Move to the next middleware
-  next();
 };
 
 exports.handlePostLogin = async (req, res, next) => {

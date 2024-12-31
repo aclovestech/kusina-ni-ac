@@ -3,7 +3,7 @@ import { ShoppingCart } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import closeDropdown from '../../utils/closeDropdown';
 
-const NavbarCart: React.FC = () => {
+export default function NavbarCart() {
   return (
     <div className="dropdown dropdown-end dropdown-bottom">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-sm">
@@ -29,6 +29,4 @@ const NavbarCart: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default NavbarCart;
+}

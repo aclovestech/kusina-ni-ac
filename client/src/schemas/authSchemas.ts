@@ -1,7 +1,14 @@
 // Imports
-import * as z from 'zod';
+import { z } from 'zod';
 
-// Schema
+// Login
+export const LoginFormSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+});
+export type LoginFormInput = z.infer<typeof LoginFormSchema>;
+
+// Registration
 export const RegistrationFormSchema = z
   .object({
     first_name: z.string().min(1, 'First name is required'),
@@ -21,5 +28,6 @@ export const RegistrationFormSchema = z
       path: ['confirm_password'],
     }
   );
-
 export type RegistrationFormInput = z.infer<typeof RegistrationFormSchema>;
+
+export type FormData = RegistrationFormInput | LoginFormInput;
