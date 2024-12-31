@@ -35,6 +35,8 @@ export function useCheckCustomerSession() {
     queryKey: ['customerSession'],
     queryFn: () => checkCustomerSession(),
     retry: false,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 }
 
