@@ -6,6 +6,12 @@ const MAX_PRODUCTS_PER_PAGE = 10;
 
 // Gets all products
 exports.getAllProducts = async (currentPage) => {
+  // Get the total amount of items
+  const [{ count }] = await knex("products").count();
+  const totalItems = parseInt(count);
+  // Get the maximum number of pages
+  const maxPages = Math.ceil(totalItems / MAX_PRODUCTS_PER_PAGE);
+
   // Query
   const result = await knex("products")
     .select(
@@ -20,16 +26,29 @@ exports.getAllProducts = async (currentPage) => {
     });
 
   // Return the data from the response
-  return result.data.map((productDetails) => {
-    return {
-      ...productDetails,
-      price: Number(productDetails.price),
-    };
-  });
+  return {
+    totalPages: maxPages,
+    totalItems: totalItems,
+    maxItemsPerPage: MAX_PRODUCTS_PER_PAGE,
+    products: result.data.map((productDetails) => {
+      return {
+        ...productDetails,
+        price: Number(productDetails.price),
+      };
+    }),
+  };
 };
 
 // Gets the products by category ID
 exports.getProductsByCategoryId = async (category_id, currentPage) => {
+  // Get the total amount of items
+  const [{ count }] = await knex("products")
+    .count()
+    .where("category_id", category_id);
+  const totalItems = parseInt(count);
+  // Get the maximum number of pages
+  const maxPages = Math.ceil(totalItems / MAX_PRODUCTS_PER_PAGE);
+
   // Query
   const result = await knex("products")
     .select(
@@ -43,13 +62,19 @@ exports.getProductsByCategoryId = async (category_id, currentPage) => {
       perPage: MAX_PRODUCTS_PER_PAGE,
       currentPage: currentPage,
     });
+
   // Return the data from the response
-  return result.data.map((productDetails) => {
-    return {
-      ...productDetails,
-      price: Number(productDetails.price),
-    };
-  });
+  return {
+    totalPages: maxPages,
+    totalItems: totalItems,
+    maxItemsPerPage: MAX_PRODUCTS_PER_PAGE,
+    products: result.data.map((productDetails) => {
+      return {
+        ...productDetails,
+        price: Number(productDetails.price),
+      };
+    }),
+  };
 };
 
 // Gets a specific product by ID
