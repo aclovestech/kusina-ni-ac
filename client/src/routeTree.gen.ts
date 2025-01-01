@@ -8,8 +8,6 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
-
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
@@ -17,19 +15,16 @@ import { Route as SettingsImport } from './routes/settings'
 import { Route as ProfileImport } from './routes/profile'
 import { Route as OrdersImport } from './routes/orders'
 import { Route as MenuImport } from './routes/menu'
-import { Route as HomeImport } from './routes/home'
 import { Route as CartImport } from './routes/cart'
 import { Route as AboutImport } from './routes/about'
-import { Route as ProductProductIdImport } from './routes/product.$productId'
+import { Route as IndexImport } from './routes/index'
 import { Route as OrdersOrderIdImport } from './routes/orders.$orderId'
-import { Route as CategoryCategoryIdImport } from './routes/category.$categoryId'
 import { Route as CartCheckoutImport } from './routes/cart.checkout'
 import { Route as AuthSignInImport } from './routes/auth.sign-in'
 import { Route as AuthRegisterImport } from './routes/auth.register'
-
-// Create Virtual Routes
-
-const IndexLazyImport = createFileRoute('/')()
+import { Route as MenuProductProductIdImport } from './routes/menu.product.$productId'
+import { Route as MenuCategoryAllImport } from './routes/menu.category.all'
+import { Route as MenuCategoryCategoryIdImport } from './routes/menu.category.$categoryId'
 
 // Create/Update Routes
 
@@ -57,12 +52,6 @@ const MenuRoute = MenuImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const HomeRoute = HomeImport.update({
-  id: '/home',
-  path: '/home',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const CartRoute = CartImport.update({
   id: '/cart',
   path: '/cart',
@@ -75,15 +64,9 @@ const AboutRoute = AboutImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexLazyRoute = IndexLazyImport.update({
+const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
-
-const ProductProductIdRoute = ProductProductIdImport.update({
-  id: '/product/$productId',
-  path: '/product/$productId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -91,12 +74,6 @@ const OrdersOrderIdRoute = OrdersOrderIdImport.update({
   id: '/$orderId',
   path: '/$orderId',
   getParentRoute: () => OrdersRoute,
-} as any)
-
-const CategoryCategoryIdRoute = CategoryCategoryIdImport.update({
-  id: '/category/$categoryId',
-  path: '/category/$categoryId',
-  getParentRoute: () => rootRoute,
 } as any)
 
 const CartCheckoutRoute = CartCheckoutImport.update({
@@ -117,6 +94,24 @@ const AuthRegisterRoute = AuthRegisterImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const MenuProductProductIdRoute = MenuProductProductIdImport.update({
+  id: '/product/$productId',
+  path: '/product/$productId',
+  getParentRoute: () => MenuRoute,
+} as any)
+
+const MenuCategoryAllRoute = MenuCategoryAllImport.update({
+  id: '/category/all',
+  path: '/category/all',
+  getParentRoute: () => MenuRoute,
+} as any)
+
+const MenuCategoryCategoryIdRoute = MenuCategoryCategoryIdImport.update({
+  id: '/category/$categoryId',
+  path: '/category/$categoryId',
+  getParentRoute: () => MenuRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -125,7 +120,7 @@ declare module '@tanstack/react-router' {
       id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexLazyImport
+      preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
     '/about': {
@@ -140,13 +135,6 @@ declare module '@tanstack/react-router' {
       path: '/cart'
       fullPath: '/cart'
       preLoaderRoute: typeof CartImport
-      parentRoute: typeof rootRoute
-    }
-    '/home': {
-      id: '/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof HomeImport
       parentRoute: typeof rootRoute
     }
     '/menu': {
@@ -198,13 +186,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CartCheckoutImport
       parentRoute: typeof CartImport
     }
-    '/category/$categoryId': {
-      id: '/category/$categoryId'
-      path: '/category/$categoryId'
-      fullPath: '/category/$categoryId'
-      preLoaderRoute: typeof CategoryCategoryIdImport
-      parentRoute: typeof rootRoute
-    }
     '/orders/$orderId': {
       id: '/orders/$orderId'
       path: '/$orderId'
@@ -212,12 +193,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersOrderIdImport
       parentRoute: typeof OrdersImport
     }
-    '/product/$productId': {
-      id: '/product/$productId'
+    '/menu/category/$categoryId': {
+      id: '/menu/category/$categoryId'
+      path: '/category/$categoryId'
+      fullPath: '/menu/category/$categoryId'
+      preLoaderRoute: typeof MenuCategoryCategoryIdImport
+      parentRoute: typeof MenuImport
+    }
+    '/menu/category/all': {
+      id: '/menu/category/all'
+      path: '/category/all'
+      fullPath: '/menu/category/all'
+      preLoaderRoute: typeof MenuCategoryAllImport
+      parentRoute: typeof MenuImport
+    }
+    '/menu/product/$productId': {
+      id: '/menu/product/$productId'
       path: '/product/$productId'
-      fullPath: '/product/$productId'
-      preLoaderRoute: typeof ProductProductIdImport
-      parentRoute: typeof rootRoute
+      fullPath: '/menu/product/$productId'
+      preLoaderRoute: typeof MenuProductProductIdImport
+      parentRoute: typeof MenuImport
     }
   }
 }
@@ -234,6 +229,20 @@ const CartRouteChildren: CartRouteChildren = {
 
 const CartRouteWithChildren = CartRoute._addFileChildren(CartRouteChildren)
 
+interface MenuRouteChildren {
+  MenuCategoryCategoryIdRoute: typeof MenuCategoryCategoryIdRoute
+  MenuCategoryAllRoute: typeof MenuCategoryAllRoute
+  MenuProductProductIdRoute: typeof MenuProductProductIdRoute
+}
+
+const MenuRouteChildren: MenuRouteChildren = {
+  MenuCategoryCategoryIdRoute: MenuCategoryCategoryIdRoute,
+  MenuCategoryAllRoute: MenuCategoryAllRoute,
+  MenuProductProductIdRoute: MenuProductProductIdRoute,
+}
+
+const MenuRouteWithChildren = MenuRoute._addFileChildren(MenuRouteChildren)
+
 interface OrdersRouteChildren {
   OrdersOrderIdRoute: typeof OrdersOrderIdRoute
 }
@@ -246,55 +255,55 @@ const OrdersRouteWithChildren =
   OrdersRoute._addFileChildren(OrdersRouteChildren)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexLazyRoute
+  '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/cart': typeof CartRouteWithChildren
-  '/home': typeof HomeRoute
-  '/menu': typeof MenuRoute
+  '/menu': typeof MenuRouteWithChildren
   '/orders': typeof OrdersRouteWithChildren
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/cart/checkout': typeof CartCheckoutRoute
-  '/category/$categoryId': typeof CategoryCategoryIdRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
-  '/product/$productId': typeof ProductProductIdRoute
+  '/menu/category/$categoryId': typeof MenuCategoryCategoryIdRoute
+  '/menu/category/all': typeof MenuCategoryAllRoute
+  '/menu/product/$productId': typeof MenuProductProductIdRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexLazyRoute
+  '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/cart': typeof CartRouteWithChildren
-  '/home': typeof HomeRoute
-  '/menu': typeof MenuRoute
+  '/menu': typeof MenuRouteWithChildren
   '/orders': typeof OrdersRouteWithChildren
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/cart/checkout': typeof CartCheckoutRoute
-  '/category/$categoryId': typeof CategoryCategoryIdRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
-  '/product/$productId': typeof ProductProductIdRoute
+  '/menu/category/$categoryId': typeof MenuCategoryCategoryIdRoute
+  '/menu/category/all': typeof MenuCategoryAllRoute
+  '/menu/product/$productId': typeof MenuProductProductIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexLazyRoute
+  '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/cart': typeof CartRouteWithChildren
-  '/home': typeof HomeRoute
-  '/menu': typeof MenuRoute
+  '/menu': typeof MenuRouteWithChildren
   '/orders': typeof OrdersRouteWithChildren
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/cart/checkout': typeof CartCheckoutRoute
-  '/category/$categoryId': typeof CategoryCategoryIdRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
-  '/product/$productId': typeof ProductProductIdRoute
+  '/menu/category/$categoryId': typeof MenuCategoryCategoryIdRoute
+  '/menu/category/all': typeof MenuCategoryAllRoute
+  '/menu/product/$productId': typeof MenuProductProductIdRoute
 }
 
 export interface FileRouteTypes {
@@ -303,7 +312,6 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/cart'
-    | '/home'
     | '/menu'
     | '/orders'
     | '/profile'
@@ -311,15 +319,15 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/sign-in'
     | '/cart/checkout'
-    | '/category/$categoryId'
     | '/orders/$orderId'
-    | '/product/$productId'
+    | '/menu/category/$categoryId'
+    | '/menu/category/all'
+    | '/menu/product/$productId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/cart'
-    | '/home'
     | '/menu'
     | '/orders'
     | '/profile'
@@ -327,15 +335,15 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/sign-in'
     | '/cart/checkout'
-    | '/category/$categoryId'
     | '/orders/$orderId'
-    | '/product/$productId'
+    | '/menu/category/$categoryId'
+    | '/menu/category/all'
+    | '/menu/product/$productId'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/cart'
-    | '/home'
     | '/menu'
     | '/orders'
     | '/profile'
@@ -343,40 +351,35 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/sign-in'
     | '/cart/checkout'
-    | '/category/$categoryId'
     | '/orders/$orderId'
-    | '/product/$productId'
+    | '/menu/category/$categoryId'
+    | '/menu/category/all'
+    | '/menu/product/$productId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexLazyRoute: typeof IndexLazyRoute
+  IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   CartRoute: typeof CartRouteWithChildren
-  HomeRoute: typeof HomeRoute
-  MenuRoute: typeof MenuRoute
+  MenuRoute: typeof MenuRouteWithChildren
   OrdersRoute: typeof OrdersRouteWithChildren
   ProfileRoute: typeof ProfileRoute
   SettingsRoute: typeof SettingsRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
   AuthSignInRoute: typeof AuthSignInRoute
-  CategoryCategoryIdRoute: typeof CategoryCategoryIdRoute
-  ProductProductIdRoute: typeof ProductProductIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexLazyRoute: IndexLazyRoute,
+  IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   CartRoute: CartRouteWithChildren,
-  HomeRoute: HomeRoute,
-  MenuRoute: MenuRoute,
+  MenuRoute: MenuRouteWithChildren,
   OrdersRoute: OrdersRouteWithChildren,
   ProfileRoute: ProfileRoute,
   SettingsRoute: SettingsRoute,
   AuthRegisterRoute: AuthRegisterRoute,
   AuthSignInRoute: AuthSignInRoute,
-  CategoryCategoryIdRoute: CategoryCategoryIdRoute,
-  ProductProductIdRoute: ProductProductIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -392,19 +395,16 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/cart",
-        "/home",
         "/menu",
         "/orders",
         "/profile",
         "/settings",
         "/auth/register",
-        "/auth/sign-in",
-        "/category/$categoryId",
-        "/product/$productId"
+        "/auth/sign-in"
       ]
     },
     "/": {
-      "filePath": "index.lazy.tsx"
+      "filePath": "index.tsx"
     },
     "/about": {
       "filePath": "about.tsx"
@@ -415,11 +415,13 @@ export const routeTree = rootRoute
         "/cart/checkout"
       ]
     },
-    "/home": {
-      "filePath": "home.tsx"
-    },
     "/menu": {
-      "filePath": "menu.tsx"
+      "filePath": "menu.tsx",
+      "children": [
+        "/menu/category/$categoryId",
+        "/menu/category/all",
+        "/menu/product/$productId"
+      ]
     },
     "/orders": {
       "filePath": "orders.tsx",
@@ -443,15 +445,21 @@ export const routeTree = rootRoute
       "filePath": "cart.checkout.tsx",
       "parent": "/cart"
     },
-    "/category/$categoryId": {
-      "filePath": "category.$categoryId.tsx"
-    },
     "/orders/$orderId": {
       "filePath": "orders.$orderId.tsx",
       "parent": "/orders"
     },
-    "/product/$productId": {
-      "filePath": "product.$productId.tsx"
+    "/menu/category/$categoryId": {
+      "filePath": "menu.category.$categoryId.tsx",
+      "parent": "/menu"
+    },
+    "/menu/category/all": {
+      "filePath": "menu.category.all.tsx",
+      "parent": "/menu"
+    },
+    "/menu/product/$productId": {
+      "filePath": "menu.product.$productId.tsx",
+      "parent": "/menu"
     }
   }
 }

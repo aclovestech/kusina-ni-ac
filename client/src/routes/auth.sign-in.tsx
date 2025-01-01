@@ -1,62 +1,41 @@
 // Imports
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { LoginFormSchema, LoginFormInput } from '../schemas/login';
-import { useState } from 'react';
-import { LoginForm } from '../components';
+import { AuthForm } from '../components';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { SignInWithGoogle } from '../components';
-import { useSession } from '../hooks/SessionProvider';
+import { useLoginCustomer } from '../hooks/useAuthHooks';
+import { FormData, LoginFormInput } from '../schemas/authSchemas';
+import { toast } from 'sonner';
+import { useNavigate } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/auth/sign-in')({
   component: SignIn,
 });
 
 function SignIn() {
-  // React Hook Form
+  const navigate = useNavigate();
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormInput>({
-    resolver: zodResolver(LoginFormSchema),
+    mutate: login,
+    isPending,
+    error,
+  } = useLoginCustomer(() => {
+    navigate({ to: '/' });
   });
 
-  // State for submitting the form
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  function onSubmit(data: FormData) {
+    login(data as LoginFormInput);
+  }
 
-  // Login hook
-  const { login } = useSession();
-
-  const onSubmit: SubmitHandler<LoginFormInput> = async (data) => {
-    // Check if the form is already being submitted to avoid multiple submissions
-    if (isSubmitting) {
-      return;
-    }
-
-    // Set isSubmitting to true to indicate that the form is being submitted
-    setIsSubmitting(true);
-
-    // Send the form data to the server
-    try {
-      await login(data);
-    } finally {
-      // Set isSubmitting to false to indicate that the form submission is complete
-      setIsSubmitting(false);
-    }
-  };
+  if (error) toast.error(error.message);
 
   return (
     <>
       <div className="card mx-5 my-8 bg-base-300 shadow-xl md:card-side md:mx-32 lg:mx-60">
         <div className="card-body">
           <h1 className="card-title self-center">Sign in</h1>
-          <LoginForm
-            register={register}
-            handleSubmit={handleSubmit}
-            errors={errors}
-            isSubmitting={isSubmitting}
+          <AuthForm
+            formType="login"
             onSubmit={onSubmit}
+            isPending={isPending}
           />
           <div className="divider divider-primary">OR</div>
           <div className="card-actions justify-center">
