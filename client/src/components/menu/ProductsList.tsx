@@ -36,11 +36,11 @@ export function ProductsList({
                   <ProductCard
                     key={product.product_id}
                     data={{
-                      imageURL: productImage,
+                      imageURL: product.image_url || productImage,
                       name: product.name,
                       description: product.description,
                       category: product.category_name,
-                      linkTo: `/product/${product.product_id}`,
+                      linkTo: `/menu/product/${product.product_id}`,
                       price: product.price,
                     }}
                   />

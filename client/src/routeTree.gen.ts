@@ -18,11 +18,11 @@ import { Route as MenuImport } from './routes/menu'
 import { Route as CartImport } from './routes/cart'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
-import { Route as ProductProductIdImport } from './routes/product.$productId'
 import { Route as OrdersOrderIdImport } from './routes/orders.$orderId'
 import { Route as CartCheckoutImport } from './routes/cart.checkout'
 import { Route as AuthSignInImport } from './routes/auth.sign-in'
 import { Route as AuthRegisterImport } from './routes/auth.register'
+import { Route as MenuProductProductIdImport } from './routes/menu.product.$productId'
 import { Route as MenuCategoryAllImport } from './routes/menu.category.all'
 import { Route as MenuCategoryCategoryIdImport } from './routes/menu.category.$categoryId'
 
@@ -70,12 +70,6 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ProductProductIdRoute = ProductProductIdImport.update({
-  id: '/product/$productId',
-  path: '/product/$productId',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const OrdersOrderIdRoute = OrdersOrderIdImport.update({
   id: '/$orderId',
   path: '/$orderId',
@@ -98,6 +92,12 @@ const AuthRegisterRoute = AuthRegisterImport.update({
   id: '/auth/register',
   path: '/auth/register',
   getParentRoute: () => rootRoute,
+} as any)
+
+const MenuProductProductIdRoute = MenuProductProductIdImport.update({
+  id: '/product/$productId',
+  path: '/product/$productId',
+  getParentRoute: () => MenuRoute,
 } as any)
 
 const MenuCategoryAllRoute = MenuCategoryAllImport.update({
@@ -193,13 +193,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersOrderIdImport
       parentRoute: typeof OrdersImport
     }
-    '/product/$productId': {
-      id: '/product/$productId'
-      path: '/product/$productId'
-      fullPath: '/product/$productId'
-      preLoaderRoute: typeof ProductProductIdImport
-      parentRoute: typeof rootRoute
-    }
     '/menu/category/$categoryId': {
       id: '/menu/category/$categoryId'
       path: '/category/$categoryId'
@@ -212,6 +205,13 @@ declare module '@tanstack/react-router' {
       path: '/category/all'
       fullPath: '/menu/category/all'
       preLoaderRoute: typeof MenuCategoryAllImport
+      parentRoute: typeof MenuImport
+    }
+    '/menu/product/$productId': {
+      id: '/menu/product/$productId'
+      path: '/product/$productId'
+      fullPath: '/menu/product/$productId'
+      preLoaderRoute: typeof MenuProductProductIdImport
       parentRoute: typeof MenuImport
     }
   }
@@ -232,11 +232,13 @@ const CartRouteWithChildren = CartRoute._addFileChildren(CartRouteChildren)
 interface MenuRouteChildren {
   MenuCategoryCategoryIdRoute: typeof MenuCategoryCategoryIdRoute
   MenuCategoryAllRoute: typeof MenuCategoryAllRoute
+  MenuProductProductIdRoute: typeof MenuProductProductIdRoute
 }
 
 const MenuRouteChildren: MenuRouteChildren = {
   MenuCategoryCategoryIdRoute: MenuCategoryCategoryIdRoute,
   MenuCategoryAllRoute: MenuCategoryAllRoute,
+  MenuProductProductIdRoute: MenuProductProductIdRoute,
 }
 
 const MenuRouteWithChildren = MenuRoute._addFileChildren(MenuRouteChildren)
@@ -264,9 +266,9 @@ export interface FileRoutesByFullPath {
   '/auth/sign-in': typeof AuthSignInRoute
   '/cart/checkout': typeof CartCheckoutRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
-  '/product/$productId': typeof ProductProductIdRoute
   '/menu/category/$categoryId': typeof MenuCategoryCategoryIdRoute
   '/menu/category/all': typeof MenuCategoryAllRoute
+  '/menu/product/$productId': typeof MenuProductProductIdRoute
 }
 
 export interface FileRoutesByTo {
@@ -281,9 +283,9 @@ export interface FileRoutesByTo {
   '/auth/sign-in': typeof AuthSignInRoute
   '/cart/checkout': typeof CartCheckoutRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
-  '/product/$productId': typeof ProductProductIdRoute
   '/menu/category/$categoryId': typeof MenuCategoryCategoryIdRoute
   '/menu/category/all': typeof MenuCategoryAllRoute
+  '/menu/product/$productId': typeof MenuProductProductIdRoute
 }
 
 export interface FileRoutesById {
@@ -299,9 +301,9 @@ export interface FileRoutesById {
   '/auth/sign-in': typeof AuthSignInRoute
   '/cart/checkout': typeof CartCheckoutRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
-  '/product/$productId': typeof ProductProductIdRoute
   '/menu/category/$categoryId': typeof MenuCategoryCategoryIdRoute
   '/menu/category/all': typeof MenuCategoryAllRoute
+  '/menu/product/$productId': typeof MenuProductProductIdRoute
 }
 
 export interface FileRouteTypes {
@@ -318,9 +320,9 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/cart/checkout'
     | '/orders/$orderId'
-    | '/product/$productId'
     | '/menu/category/$categoryId'
     | '/menu/category/all'
+    | '/menu/product/$productId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -334,9 +336,9 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/cart/checkout'
     | '/orders/$orderId'
-    | '/product/$productId'
     | '/menu/category/$categoryId'
     | '/menu/category/all'
+    | '/menu/product/$productId'
   id:
     | '__root__'
     | '/'
@@ -350,9 +352,9 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/cart/checkout'
     | '/orders/$orderId'
-    | '/product/$productId'
     | '/menu/category/$categoryId'
     | '/menu/category/all'
+    | '/menu/product/$productId'
   fileRoutesById: FileRoutesById
 }
 
@@ -366,7 +368,6 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
   AuthSignInRoute: typeof AuthSignInRoute
-  ProductProductIdRoute: typeof ProductProductIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -379,7 +380,6 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   AuthRegisterRoute: AuthRegisterRoute,
   AuthSignInRoute: AuthSignInRoute,
-  ProductProductIdRoute: ProductProductIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -400,8 +400,7 @@ export const routeTree = rootRoute
         "/profile",
         "/settings",
         "/auth/register",
-        "/auth/sign-in",
-        "/product/$productId"
+        "/auth/sign-in"
       ]
     },
     "/": {
@@ -420,7 +419,8 @@ export const routeTree = rootRoute
       "filePath": "menu.tsx",
       "children": [
         "/menu/category/$categoryId",
-        "/menu/category/all"
+        "/menu/category/all",
+        "/menu/product/$productId"
       ]
     },
     "/orders": {
@@ -449,15 +449,16 @@ export const routeTree = rootRoute
       "filePath": "orders.$orderId.tsx",
       "parent": "/orders"
     },
-    "/product/$productId": {
-      "filePath": "product.$productId.tsx"
-    },
     "/menu/category/$categoryId": {
       "filePath": "menu.category.$categoryId.tsx",
       "parent": "/menu"
     },
     "/menu/category/all": {
       "filePath": "menu.category.all.tsx",
+      "parent": "/menu"
+    },
+    "/menu/product/$productId": {
+      "filePath": "menu.product.$productId.tsx",
       "parent": "/menu"
     }
   }
