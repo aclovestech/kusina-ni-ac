@@ -10,10 +10,11 @@ export function ProductCard({ data }: { data: ProductCardProps }) {
       <div className="card-body">
         <div className="badge badge-outline">{data.category}</div>
         <h2 className="card-title mt-3">{data.name}</h2>
+        <p>${data.price}</p>
         <p>{data.description}</p>
         <div className="card-actions justify-end">
           <Link className="btn btn-outline mt-4" to={data.linkTo}>
-            View
+            Order
           </Link>
         </div>
       </div>
@@ -27,4 +28,5 @@ export type ProductCardProps = {
   description: string;
   category: string;
   linkTo: string;
+  price: number;
 };

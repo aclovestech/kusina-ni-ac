@@ -8,7 +8,7 @@ export async function getCategories() {
 export async function getAllProducts(page: number) {
   const params = new URLSearchParams({ page: page.toString() });
   return await apiClient
-    .get<Product[]>('products/all', { searchParams: params })
+    .get<Products>('products/all', { searchParams: params })
     .json();
 }
 
@@ -18,7 +18,7 @@ export async function getProductsByCategory(category_id: number, page: number) {
     page: page.toString(),
   });
   return await apiClient
-    .get<Product[]>('products', { searchParams: params })
+    .get<Products>('products', { searchParams: params })
     .json();
 }
 
@@ -43,4 +43,11 @@ export type Product = {
   updated_at: string;
   is_available: boolean;
   image_url: string;
+};
+
+export type Products = {
+  totalPages: number;
+  totalItems: number;
+  maxItemsPerPage: number;
+  products: Product[];
 };
