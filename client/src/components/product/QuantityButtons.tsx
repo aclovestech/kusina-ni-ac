@@ -28,6 +28,7 @@ export function QuantityButtons({
         <input
           type="number"
           value={quantity}
+          readOnly
           className="w-16 appearance-none bg-inherit text-center [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
         />
         <button
