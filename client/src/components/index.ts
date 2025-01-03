@@ -6,3 +6,6 @@ export * from './menu/ProductCard';
 export * from './menu/ProductCardSkeleton';
 export * from './menu/ProductsPaginationButtons';
 export * from './menu/ProductsList';
+export * from './product/QuantityButtons';
+export * from './product/AddToCartButton';
+export * from './product/ProductDetailsSkeleton';
