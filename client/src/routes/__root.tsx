@@ -13,7 +13,7 @@ export const Route = createRootRoute({
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { staleTime: 300000, refetchOnWindowFocus: false },
+    queries: { staleTime: 3600000, refetchOnWindowFocus: false },
   },
 });
 
