@@ -59,7 +59,7 @@ function ProductDetails() {
                     quantity={quantity}
                     setQuantity={setQuantity}
                   />
-                  <AddToCartButton quantity={quantity} />
+                  <AddToCartButton product_id={productId} quantity={quantity} />
                 </div>
               </div>
             </>
