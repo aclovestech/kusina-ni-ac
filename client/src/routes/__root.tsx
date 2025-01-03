@@ -11,7 +11,11 @@ export const Route = createRootRoute({
   notFoundComponent: () => <div>404</div>,
 });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { staleTime: 300000, refetchOnWindowFocus: false },
+  },
+});
 
 function Root() {
   return (
