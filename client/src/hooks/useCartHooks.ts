@@ -22,6 +22,7 @@ export function useGetCart() {
   return useQuery({
     queryKey: ['cart'],
     queryFn: () => getCart(),
+    retry: false,
   });
 }
 

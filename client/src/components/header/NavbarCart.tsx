@@ -2,9 +2,11 @@
 import { ShoppingCart } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import closeDropdown from '../../utils/closeDropdown';
+import { useCheckCustomerSession } from '../../hooks/useAuthHooks';
 import { useGetCart } from '../../hooks/useCartHooks';
 
 export default function NavbarCart() {
+  const { data: customer } = useCheckCustomerSession();
   const { data: cart } = useGetCart();
 
   function UserNotSignedIn() {
@@ -53,7 +55,7 @@ export default function NavbarCart() {
         tabIndex={0}
         className="card dropdown-content card-compact z-50 mt-3 w-44 bg-base-200 shadow"
       >
-        {cart ? <UserSignedIn /> : <UserNotSignedIn />}
+        {customer ? <UserSignedIn /> : <UserNotSignedIn />}
       </div>
     </div>
   );
