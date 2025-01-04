@@ -47,7 +47,8 @@ function Cart() {
         </div>
         <div className="divider my-0"></div>
         <div className="card-actions justify-center">
-          <button
+          <Link
+            to="/cart/checkout"
             className={
               isUpdatingCart
                 ? 'btn btn-disabled btn-primary w-full'
@@ -55,7 +56,7 @@ function Cart() {
             }
           >
             Continue to Checkout
-          </button>
+          </Link>
         </div>
       </>
     );
