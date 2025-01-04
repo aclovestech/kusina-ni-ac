@@ -36,7 +36,7 @@ export default function NavbarCart() {
     return (
       <div className="card-body items-center text-center">
         <span className="card-title">{`Items: ${cart?.cart_items.length}`}</span>
-        <span className="mb-2 text-primary">{`Total: $${total}`}</span>
+        <span className="mb-2 text-info">{`Total: $${total}`}</span>
         <div className="card-actions">
           <Link to="/cart" className="btn btn-outline" onClick={closeDropdown}>
             View cart
