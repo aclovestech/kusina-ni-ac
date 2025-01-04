@@ -51,7 +51,7 @@ function ProductDetails() {
                   <img
                     src={product.image_url || productImage}
                     alt="Product Image"
-                    className="h-auto w-full rounded-xl object-cover"
+                    className="aspect-video h-auto w-full rounded-xl object-cover"
                   />
                 </figure>
 
