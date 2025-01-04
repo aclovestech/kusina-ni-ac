@@ -9,3 +9,6 @@ export * from './menu/ProductsList';
 export * from './product/QuantityButtons';
 export * from './product/AddToCartButton';
 export * from './product/ProductDetailsSkeleton';
+export * from './cart/CartItem';
+export * from './cart/CartItemQuantityButtons';
+export * from './cart/CartItemRemoveButton';
