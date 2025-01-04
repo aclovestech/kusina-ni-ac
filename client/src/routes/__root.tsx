@@ -26,7 +26,7 @@ function Root() {
       </main>
       <Toaster
         className="md:![--width:150px]"
-        duration={10000}
+        duration={5000}
         position="bottom-center"
         toastOptions={{
           classNames: {

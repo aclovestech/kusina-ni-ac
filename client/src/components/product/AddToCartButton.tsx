@@ -1,24 +1,22 @@
 // Imports
 import {
-  useGetCart,
   useAddItemToCart,
   useUpdateItemInCart,
 } from '../../hooks/useCartHooks';
 
-export function AddToCartButton({
-  product_id,
-  quantity,
-}: {
+type AddToCartButtonProps = {
+  isItemInCart: boolean | undefined;
   product_id: string;
   quantity: number;
-}) {
-  const { data: cart } = useGetCart();
+};
+
+export function AddToCartButton({
+  isItemInCart,
+  product_id,
+  quantity,
+}: AddToCartButtonProps) {
   const { mutate: addItemToCart } = useAddItemToCart();
   const { mutate: updateItemInCart } = useUpdateItemInCart();
-
-  const isItemInCart = cart?.cart_items.some(
-    (item) => item.product_id === product_id
-  );
 
   function handleOnClick() {
     if (isItemInCart) {

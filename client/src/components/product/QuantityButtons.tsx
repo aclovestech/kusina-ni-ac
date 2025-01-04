@@ -1,10 +1,12 @@
+type QuantityButtonsProps = {
+  quantity: number;
+  setQuantity: (quantity: number) => void;
+};
+
 export function QuantityButtons({
   quantity,
   setQuantity,
-}: {
-  quantity: number;
-  setQuantity: (quantity: number) => void;
-}) {
+}: QuantityButtonsProps) {
   function handleIncrement() {
     setQuantity(quantity + 1);
   }

@@ -8,6 +8,7 @@ import {
   removeItemFromCart,
   CartDetails,
 } from '../api';
+import { toast } from 'sonner';
 
 export function useCreateNewCart(onSuccess?: () => void) {
   return useMutation({
@@ -44,6 +45,7 @@ export function useAddItemToCart() {
           cart_items: [...oldData.cart_items, data],
         };
       });
+      toast.success(`${data.name} was added to the cart`);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
@@ -74,6 +76,7 @@ export function useUpdateItemInCart() {
           }),
         };
       });
+      toast.success(`${data.name}'s quantity was updated`);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
@@ -95,6 +98,7 @@ export function useRemoveItemFromCart() {
           ),
         };
       });
+      toast.success(`Item was removed from the cart`);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
