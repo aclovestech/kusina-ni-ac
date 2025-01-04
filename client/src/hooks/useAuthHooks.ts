@@ -12,9 +12,12 @@ export function useRegisterCustomer(onSuccess?: () => void) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: RegistrationFormInput) => registerCustomer(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['customerSession'] });
+    onSuccess: (data) => {
+      queryClient.setQueryData(['customerSession'], data);
       onSuccess?.();
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['customerSession'] });
     },
   });
 }
@@ -23,9 +26,12 @@ export function useLoginCustomer(onSuccess?: () => void) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: LoginFormInput) => loginCustomer(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['customerSession'] });
+    onSuccess: (data) => {
+      queryClient.setQueryData(['customerSession'], data);
       onSuccess?.();
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['customerSession'] });
     },
   });
 }
@@ -35,8 +41,6 @@ export function useCheckCustomerSession() {
     queryKey: ['customerSession'],
     queryFn: () => checkCustomerSession(),
     retry: false,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
   });
 }
 
@@ -46,8 +50,10 @@ export function useLogoutCustomer(onSuccess?: () => void) {
     mutationFn: () => logoutCustomer(),
     onSuccess: () => {
       queryClient.setQueryData(['customerSession'], null);
-      queryClient.invalidateQueries({ queryKey: ['customerSession'] });
       onSuccess?.();
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['customerSession'] });
     },
   });
 }

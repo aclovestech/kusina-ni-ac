@@ -1,8 +1,29 @@
-export function AddToCartButton({ quantity }: { quantity: number }) {
-  const isItemInCart = false;
+// Imports
+import {
+  useAddItemToCart,
+  useUpdateItemInCart,
+} from '../../hooks/useCartHooks';
+
+type AddToCartButtonProps = {
+  isItemInCart: boolean | undefined;
+  product_id: string;
+  quantity: number;
+};
+
+export function AddToCartButton({
+  isItemInCart,
+  product_id,
+  quantity,
+}: AddToCartButtonProps) {
+  const { mutate: addItemToCart } = useAddItemToCart();
+  const { mutate: updateItemInCart } = useUpdateItemInCart();
 
   function handleOnClick() {
-    console.log(`Add to cart button clicked with quantity: ${quantity}`);
+    if (isItemInCart) {
+      updateItemInCart({ product_id, quantity });
+    } else {
+      addItemToCart({ product_id, quantity });
+    }
   }
 
   return (

@@ -13,7 +13,7 @@ export const Route = createRootRoute({
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { staleTime: 300000, refetchOnWindowFocus: false },
+    queries: { staleTime: 3600000, refetchOnWindowFocus: false },
   },
 });
 
@@ -26,7 +26,7 @@ function Root() {
       </main>
       <Toaster
         className="md:![--width:150px]"
-        duration={10000}
+        duration={5000}
         position="bottom-center"
         toastOptions={{
           classNames: {

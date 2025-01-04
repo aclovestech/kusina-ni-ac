@@ -5,20 +5,26 @@ import { QuantityButtons, AddToCartButton } from '../components';
 import { useState } from 'react';
 import { useGetProductById } from '../hooks/useProductsHooks';
 import { ProductDetailsSkeleton } from '../components';
+import { useGetCart } from '../hooks/useCartHooks';
 
 export const Route = createFileRoute('/menu/product/$productId')({
   component: ProductDetails,
 });
 
 function ProductDetails() {
-  const [quantity, setQuantity] = useState(1);
-
   const productId = useParams({
     from: '/menu/product/$productId',
     select: (params) => params.productId,
   });
 
   const { data: product, isPending, isError } = useGetProductById(productId);
+  const { data: cart } = useGetCart();
+
+  const cartItem = cart?.cart_items.find(
+    (item) => item.product_id === productId
+  );
+
+  const [quantity, setQuantity] = useState(cartItem?.quantity || 1);
 
   return (
     <>
@@ -59,7 +65,11 @@ function ProductDetails() {
                     quantity={quantity}
                     setQuantity={setQuantity}
                   />
-                  <AddToCartButton quantity={quantity} />
+                  <AddToCartButton
+                    isItemInCart={!!cartItem}
+                    product_id={productId}
+                    quantity={quantity}
+                  />
                 </div>
               </div>
             </>
