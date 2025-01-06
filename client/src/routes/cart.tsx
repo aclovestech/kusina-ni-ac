@@ -43,7 +43,7 @@ function Cart() {
         <div className="divider my-0"></div>
         <div className="p-2 text-center">
           <p className="text-lg font-bold">Order Summary</p>
-          <p className="text-info">Total: ${total}</p>
+          <p className="text-info">Total: ${total?.toFixed(2)}</p>
         </div>
         <div className="divider my-0"></div>
         <div className="card-actions justify-center">

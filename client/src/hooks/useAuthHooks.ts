@@ -14,6 +14,7 @@ export function useRegisterCustomer(onSuccess?: () => void) {
     mutationFn: (data: RegistrationFormInput) => registerCustomer(data),
     onSuccess: (data) => {
       queryClient.setQueryData(['customerSession'], data);
+      queryClient.refetchQueries({ queryKey: ['cart'], type: 'active' });
       onSuccess?.();
     },
     onSettled: () => {
@@ -28,6 +29,7 @@ export function useLoginCustomer(onSuccess?: () => void) {
     mutationFn: (data: LoginFormInput) => loginCustomer(data),
     onSuccess: (data) => {
       queryClient.setQueryData(['customerSession'], data);
+      queryClient.refetchQueries({ queryKey: ['cart'], type: 'active' });
       onSuccess?.();
     },
     onSettled: () => {
