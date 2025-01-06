@@ -4,7 +4,7 @@ import { Link } from '@tanstack/react-router';
 export function ProductCard({ data }: { data: ProductCardProps }) {
   return (
     <div className="card bg-base-300 shadow-xl">
-      <figure>
+      <figure className="aspect-video">
         <img src={data.imageURL} alt="" />
       </figure>
       <div className="card-body">
