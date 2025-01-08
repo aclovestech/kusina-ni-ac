@@ -2,6 +2,9 @@
 const Router = require("express-promise-router");
 const cartController = require("../controllers/cart.controller");
 const cartValidator = require("../validators/cart.validator");
+const {
+  validateAddressIdInput,
+} = require("../validators/users-addresses.validator");
 const { checkIsCustomerLoggedIn } = require("../middleware/session.middleware");
 
 const cartRouter = new Router();
@@ -40,6 +43,13 @@ cartRouter
     // Then delete the item
     cartController.handleDeleteCartItem
   );
+
+// Creates a new Stripe checkout session
+cartRouter.post(
+  "/create-checkout-session",
+  validateAddressIdInput,
+  cartController.handleCreateStripeSession
+);
 
 // Checks out a cart
 // cartRouter.post("/checkout", cartController.handleCheckout);

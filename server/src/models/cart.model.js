@@ -44,6 +44,7 @@ exports.getCartItems = async (cart_id) => {
     .select(
       "products.product_id",
       "products.name",
+      "products.description",
       "products.image_url",
       "products.price",
       "cart_items.quantity"
@@ -121,6 +122,7 @@ async function getProductDetails(cart_id, product_id) {
     .first(
       "products.product_id",
       "products.name",
+      "products.description",
       "products.price",
       "cart_items.quantity"
     )
@@ -136,55 +138,65 @@ async function getProductDetails(cart_id, product_id) {
 }
 
 // Checkout a specific cart
-// exports.checkoutCart = async (cart_id, customer_id, address_id) => {
-//   return await knex.transaction(async (trx) => {
-//     // Get the cart items
-//     const cartData = await trx("cart_items")
-//       .join("carts", "cart_items.cart_id", "carts.cart_id")
-//       .join("products", "cart_items.product_id", "products.product_id")
-//       .select(
-//         "cart_items.quantity",
-//         "products.name",
-//         "products.description",
-//         "products.price",
-//         "products.product_id"
-//       )
-//       .where("cart_items.cart_id", cart_id);
-//     // Throw an error if the cart is empty
-//     if (cartData.length === 0) {
-//       return {};
-//     }
-//     // Calculate the total amount
-//     let total_amount = 0;
-//     cartData.forEach((item) => {
-//       total_amount += item.price * item.quantity;
-//     });
-//     // Checkout the cart
-//     const [order] = await trx("orders").insert(
-//       {
-//         customer_id: customer_id,
-//         address_id: address_id,
-//         total_amount: total_amount,
-//       },
-//       ["*"]
-//     );
-//     // Get the order ID
-//     const order_id = order.order_id;
-//     // Add the cart items to the order
-//     await trx("order_items").insert(
-//       cartData.map((item) => ({
-//         order_id: order_id,
-//         product_id: item.product_id,
-//         quantity: item.quantity,
-//         price_at_purchase: item.price,
-//       }))
-//     );
-//     // Return the order data
-//     return {
-//       order_details: { ...order, total_amount: Number(order.total_amount) },
-//       order_items: cartData.map((item) => {
-//         return { ...item, price: Number(item.price) };
-//       }),
-//     };
-//   });
-// };
+exports.checkoutCart = async (cart_id, customer_id, address_id) => {
+  return await knex.transaction(async (trx) => {
+    // Get the cart items
+    const cartData = await trx("cart_items")
+      .join("carts", "cart_items.cart_id", "carts.cart_id")
+      .join("products", "cart_items.product_id", "products.product_id")
+      .select(
+        "cart_items.quantity",
+        "products.product_id",
+        "products.name",
+        "products.price"
+      )
+      .where("carts.cart_id", cart_id)
+      .andWhere("customer_id", customer_id);
+
+    // Return an empty object if the cart is empty
+    if (cartData.length === 0) {
+      return {};
+    }
+
+    // Checkout the cart
+    const order = await trx("orders").insert(
+      {
+        customer_id: customer_id,
+        address_id: address_id,
+      },
+      ["*"]
+    );
+
+    // Get the order ID
+    const { order_id } = order[0];
+
+    // Add the cart items to the order
+    await trx("order_items").insert(
+      cartData.map((item) => ({
+        order_id: order_id,
+        product_id: item.product_id,
+        quantity: item.quantity,
+        price_at_purchase: item.price,
+      }))
+    );
+
+    // Set the cart as checked out
+    await trx("carts")
+      .update({ is_checked_out: true })
+      .where("cart_id", cart_id);
+
+    // Get total amount
+    const totalAmount = cartData.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+
+    // Return the order data
+    return {
+      order_details: { ...order, total_amount: Number(totalAmount) },
+      order_items: cartData.map((item) => {
+        return { ...item, price: Number(item.price) };
+      }),
+    };
+  });
+};
