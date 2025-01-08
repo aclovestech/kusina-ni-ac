@@ -10,7 +10,7 @@ exports.handleGetCustomerAddresses = async (req, res, next) => {
   );
 
   if (result.length === 0) {
-    return res.status(200).json({ message: "No addresses found" });
+    return res.status(200).json([]);
   }
 
   // Return the data from the response

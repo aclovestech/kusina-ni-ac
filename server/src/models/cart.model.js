@@ -193,10 +193,11 @@ exports.checkoutCart = async (cart_id, customer_id, address_id) => {
 
     // Return the order data
     return {
-      order_details: { ...order, total_amount: Number(totalAmount) },
-      order_items: cartData.map((item) => {
-        return { ...item, price: Number(item.price) };
-      }),
+      order_id: order_id,
+      // order_details: { ...order, total_amount: Number(totalAmount) },
+      // order_items: cartData.map((item) => {
+      //   return { ...item, price: Number(item.price) };
+      // }),
     };
   });
 };

@@ -48,7 +48,7 @@ function Cart() {
         <div className="divider my-0"></div>
         <div className="card-actions justify-center">
           <Link
-            to="/cart/checkout"
+            to="/checkout"
             className={
               isUpdatingCart
                 ? 'btn btn-disabled btn-primary w-full'

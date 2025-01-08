@@ -15,6 +15,7 @@ import { Route as SettingsImport } from './routes/settings'
 import { Route as ProfileImport } from './routes/profile'
 import { Route as OrdersImport } from './routes/orders'
 import { Route as MenuImport } from './routes/menu'
+import { Route as CheckoutImport } from './routes/checkout'
 import { Route as CartImport } from './routes/cart'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
@@ -49,6 +50,12 @@ const OrdersRoute = OrdersImport.update({
 const MenuRoute = MenuImport.update({
   id: '/menu',
   path: '/menu',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CheckoutRoute = CheckoutImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -135,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/cart'
       fullPath: '/cart'
       preLoaderRoute: typeof CartImport
+      parentRoute: typeof rootRoute
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutImport
       parentRoute: typeof rootRoute
     }
     '/menu': {
@@ -258,6 +272,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/cart': typeof CartRouteWithChildren
+  '/checkout': typeof CheckoutRoute
   '/menu': typeof MenuRouteWithChildren
   '/orders': typeof OrdersRouteWithChildren
   '/profile': typeof ProfileRoute
@@ -275,6 +290,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/cart': typeof CartRouteWithChildren
+  '/checkout': typeof CheckoutRoute
   '/menu': typeof MenuRouteWithChildren
   '/orders': typeof OrdersRouteWithChildren
   '/profile': typeof ProfileRoute
@@ -293,6 +309,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/cart': typeof CartRouteWithChildren
+  '/checkout': typeof CheckoutRoute
   '/menu': typeof MenuRouteWithChildren
   '/orders': typeof OrdersRouteWithChildren
   '/profile': typeof ProfileRoute
@@ -312,6 +329,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/cart'
+    | '/checkout'
     | '/menu'
     | '/orders'
     | '/profile'
@@ -328,6 +346,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/cart'
+    | '/checkout'
     | '/menu'
     | '/orders'
     | '/profile'
@@ -344,6 +363,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/cart'
+    | '/checkout'
     | '/menu'
     | '/orders'
     | '/profile'
@@ -362,6 +382,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   CartRoute: typeof CartRouteWithChildren
+  CheckoutRoute: typeof CheckoutRoute
   MenuRoute: typeof MenuRouteWithChildren
   OrdersRoute: typeof OrdersRouteWithChildren
   ProfileRoute: typeof ProfileRoute
@@ -374,6 +395,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   CartRoute: CartRouteWithChildren,
+  CheckoutRoute: CheckoutRoute,
   MenuRoute: MenuRouteWithChildren,
   OrdersRoute: OrdersRouteWithChildren,
   ProfileRoute: ProfileRoute,
@@ -395,6 +417,7 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/cart",
+        "/checkout",
         "/menu",
         "/orders",
         "/profile",
@@ -414,6 +437,9 @@ export const routeTree = rootRoute
       "children": [
         "/cart/checkout"
       ]
+    },
+    "/checkout": {
+      "filePath": "checkout.tsx"
     },
     "/menu": {
       "filePath": "menu.tsx",

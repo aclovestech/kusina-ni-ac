@@ -4,6 +4,7 @@ const { matchedData } = require("express-validator");
 const {
   STRIPE_SECRET_KEY,
   STRIPE_DOMAIN_URL,
+  CLIENT_URL,
 } = require("../config/environment");
 const stripe = require("stripe")(STRIPE_SECRET_KEY);
 
@@ -113,9 +114,7 @@ exports.handleCheckout = async (req, res, next) => {
   console.log(session);
 
   if (session.payment_status === "unpaid") {
-    return res
-      .status(400)
-      .json({ message: "Payment was cancelled or failed. Please try again." });
+    return res.redirect(CLIENT_URL + "/payment-failed");
   }
 
   // Get the address ID
@@ -129,5 +128,5 @@ exports.handleCheckout = async (req, res, next) => {
   );
 
   // Return the response
-  res.status(200).json(result);
+  res.redirect(CLIENT_URL + "/orders?orderId=" + result.order_id);
 };
