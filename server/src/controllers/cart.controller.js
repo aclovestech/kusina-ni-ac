@@ -96,11 +96,11 @@ exports.handleCreateStripeSession = async (req, res, next) => {
   const session = await stripe.checkout.sessions.create({
     line_items: lineItems,
     mode: "payment",
-    success_url: `${STRIPE_DOMAIN_URL}/checkout?sid={CHECKOUT_SESSION_ID}&address_id=${address_id}`,
-    cancel_url: `${STRIPE_DOMAIN_URL}/checkout?sid={CHECKOUT_SESSION_ID}`,
+    success_url: `${STRIPE_DOMAIN_URL}/cart/checkout?sid={CHECKOUT_SESSION_ID}&address_id=${address_id}`,
+    cancel_url: `${STRIPE_DOMAIN_URL}/cart/checkout?sid={CHECKOUT_SESSION_ID}`,
   });
 
-  res.redirect(session.url);
+  res.json({ url: session.url });
 };
 
 // Checks out the cart
@@ -110,8 +110,6 @@ exports.handleCheckout = async (req, res, next) => {
 
   // Retrieve the session
   const session = await stripe.checkout.sessions.retrieve(sid);
-
-  console.log(session);
 
   if (session.payment_status === "unpaid") {
     return res.redirect(CLIENT_URL + "/payment-failed");

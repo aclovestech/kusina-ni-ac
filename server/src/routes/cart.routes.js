@@ -52,6 +52,10 @@ cartRouter.post(
 );
 
 // Checks out a cart
-cartRouter.get("/checkout", cartController.handleCheckout);
+cartRouter.get(
+  "/checkout",
+  validateAddressIdInput,
+  cartController.handleCheckout
+);
 
 module.exports = cartRouter;

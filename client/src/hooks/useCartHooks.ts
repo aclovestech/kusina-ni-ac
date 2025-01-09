@@ -6,6 +6,7 @@ import {
   addItemToCart,
   updateItemInCart,
   removeItemFromCart,
+  createCheckoutSession,
   CartDetails,
 } from '../api';
 import { toast } from 'sonner';
@@ -103,5 +104,12 @@ export function useRemoveItemFromCart() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
     },
+  });
+}
+
+export function useCreateCheckoutSession() {
+  return useMutation({
+    mutationKey: ['createCheckoutSession'],
+    mutationFn: (address_id: string) => createCheckoutSession(address_id),
   });
 }
