@@ -126,5 +126,5 @@ exports.handleCheckout = async (req, res, next) => {
   );
 
   // Return the response
-  res.redirect(CLIENT_URL + "/orders?orderId=" + result.order_id);
+  res.redirect(CLIENT_URL + "/orders/" + result.order_id);
 };

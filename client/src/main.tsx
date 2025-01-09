@@ -2,36 +2,13 @@
 import './index.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import {
-  RouterProvider,
-  createRouter,
-  createRouteMask,
-} from '@tanstack/react-router';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
-
-// Set up the route mask/s
-const checkoutMask = createRouteMask({
-  routeTree,
-  from: '/checkout',
-  to: '/cart/checkout',
-});
-const newAddressMask = createRouteMask({
-  routeTree,
-  from: '/new-address',
-  to: '/addresses/new',
-});
-const editAddressMask = createRouteMask({
-  routeTree,
-  from: '/edit-address/$addressId',
-  to: '/addresses/$addressId',
-  params: true,
-});
 
 // Set up a Router instance
 const router = createRouter({
   routeTree,
   defaultStaleTime: 5000,
-  routeMasks: [checkoutMask, newAddressMask, editAddressMask],
 });
 
 // Register things for typesafety

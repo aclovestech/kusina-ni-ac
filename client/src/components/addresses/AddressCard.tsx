@@ -21,7 +21,7 @@ export function AddressCard({
 
   function handleEdit() {
     navigate({
-      to: '/edit-address/$addressId',
+      to: '/addresses/$addressId/edit',
       params: { addressId: addressInfo.address_id },
     });
   }

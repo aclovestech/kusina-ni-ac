@@ -1,14 +1,14 @@
 // Imports
-import { createFileRoute } from '@tanstack/react-router';
-import { AddressCard, NewAddressButton } from '../components';
-import { useGetUserAddresses } from '../hooks/useUsersHooks';
+import { createFileRoute } from '@tanstack/react-router'
+import { AddressCard, NewAddressButton } from '../components'
+import { useGetUserAddresses } from '../hooks/useUsersHooks'
 
-export const Route = createFileRoute('/addresses')({
+export const Route = createFileRoute('/addresses/')({
   component: Addresses,
-});
+})
 
 function Addresses() {
-  const { data: addresses, isPending, isError } = useGetUserAddresses();
+  const { data: addresses, isPending, isError } = useGetUserAddresses()
 
   return (
     <>
@@ -38,5 +38,5 @@ function Addresses() {
         </div>
       </div>
     </>
-  );
+  )
 }

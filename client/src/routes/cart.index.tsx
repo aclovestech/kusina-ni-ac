@@ -3,7 +3,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { CartItem } from '../components';
 import { useGetCart, useUpdateItemInCart } from '../hooks/useCartHooks';
 
-export const Route = createFileRoute('/cart')({
+export const Route = createFileRoute('/cart/')({
   component: Cart,
 });
 
@@ -48,7 +48,7 @@ function Cart() {
         <div className="divider my-0"></div>
         <div className="card-actions justify-center">
           <Link
-            to="/checkout"
+            to="/cart/checkout"
             className={
               isUpdatingCart
                 ? 'btn btn-disabled btn-primary w-full'

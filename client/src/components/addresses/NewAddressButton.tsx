@@ -6,7 +6,7 @@ export function NewAddressButton() {
   const navigate = useNavigate();
 
   function handleClick() {
-    navigate({ to: '/new-address' });
+    navigate({ to: '/addresses/new' });
   }
 
   return (

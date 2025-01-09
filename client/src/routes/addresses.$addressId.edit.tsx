@@ -2,13 +2,13 @@
 import { createFileRoute, useParams, Link } from '@tanstack/react-router';
 import { AddressForm } from '../components';
 
-export const Route = createFileRoute('/edit-address/$addressId')({
+export const Route = createFileRoute('/addresses/$addressId/edit')({
   component: EditAddress,
 });
 
 function EditAddress() {
   const addressId = useParams({
-    from: '/edit-address/$addressId',
+    from: '/addresses/$addressId/edit',
     select: (params) => params.addressId,
   });
 
