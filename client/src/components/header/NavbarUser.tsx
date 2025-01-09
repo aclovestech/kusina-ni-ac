@@ -52,10 +52,12 @@ export default function NavbarUser() {
           <p className="py-1">Hello, {user?.first_name}</p>
           <div className="divider my-0"></div>
           <div className="menu menu-sm gap-2 pt-1 text-center">
-            <Link to="/profile">Profile</Link>
+            <Link to="/personal-details">Personal Details</Link>
+            <Link to="/addresses">Addresses</Link>
             <Link to="/orders">Orders</Link>
-            <Link to="/settings">Account Settings</Link>
-            <div onClick={handleLogout}>Logout</div>
+            <div className="my-2" onClick={handleLogout}>
+              Logout
+            </div>
           </div>
         </ul>
       </div>

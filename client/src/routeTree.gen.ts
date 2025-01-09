@@ -11,39 +11,41 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as SettingsImport } from './routes/settings'
-import { Route as ProfileImport } from './routes/profile'
+import { Route as PersonalDetailsImport } from './routes/personal-details'
 import { Route as OrdersImport } from './routes/orders'
+import { Route as NewAddressImport } from './routes/new-address'
 import { Route as MenuImport } from './routes/menu'
 import { Route as CheckoutImport } from './routes/checkout'
 import { Route as CartImport } from './routes/cart'
+import { Route as AddressesImport } from './routes/addresses'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as OrdersOrderIdImport } from './routes/orders.$orderId'
 import { Route as CartCheckoutImport } from './routes/cart.checkout'
 import { Route as AuthSignInImport } from './routes/auth.sign-in'
 import { Route as AuthRegisterImport } from './routes/auth.register'
+import { Route as AddressesNewImport } from './routes/addresses.new'
 import { Route as MenuProductProductIdImport } from './routes/menu.product.$productId'
 import { Route as MenuCategoryAllImport } from './routes/menu.category.all'
 import { Route as MenuCategoryCategoryIdImport } from './routes/menu.category.$categoryId'
 
 // Create/Update Routes
 
-const SettingsRoute = SettingsImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ProfileRoute = ProfileImport.update({
-  id: '/profile',
-  path: '/profile',
+const PersonalDetailsRoute = PersonalDetailsImport.update({
+  id: '/personal-details',
+  path: '/personal-details',
   getParentRoute: () => rootRoute,
 } as any)
 
 const OrdersRoute = OrdersImport.update({
   id: '/orders',
   path: '/orders',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const NewAddressRoute = NewAddressImport.update({
+  id: '/new-address',
+  path: '/new-address',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -62,6 +64,12 @@ const CheckoutRoute = CheckoutImport.update({
 const CartRoute = CartImport.update({
   id: '/cart',
   path: '/cart',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AddressesRoute = AddressesImport.update({
+  id: '/addresses',
+  path: '/addresses',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -101,6 +109,12 @@ const AuthRegisterRoute = AuthRegisterImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AddressesNewRoute = AddressesNewImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AddressesRoute,
+} as any)
+
 const MenuProductProductIdRoute = MenuProductProductIdImport.update({
   id: '/product/$productId',
   path: '/product/$productId',
@@ -137,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
+    '/addresses': {
+      id: '/addresses'
+      path: '/addresses'
+      fullPath: '/addresses'
+      preLoaderRoute: typeof AddressesImport
+      parentRoute: typeof rootRoute
+    }
     '/cart': {
       id: '/cart'
       path: '/cart'
@@ -158,6 +179,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MenuImport
       parentRoute: typeof rootRoute
     }
+    '/new-address': {
+      id: '/new-address'
+      path: '/new-address'
+      fullPath: '/new-address'
+      preLoaderRoute: typeof NewAddressImport
+      parentRoute: typeof rootRoute
+    }
     '/orders': {
       id: '/orders'
       path: '/orders'
@@ -165,19 +193,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersImport
       parentRoute: typeof rootRoute
     }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileImport
+    '/personal-details': {
+      id: '/personal-details'
+      path: '/personal-details'
+      fullPath: '/personal-details'
+      preLoaderRoute: typeof PersonalDetailsImport
       parentRoute: typeof rootRoute
     }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsImport
-      parentRoute: typeof rootRoute
+    '/addresses/new': {
+      id: '/addresses/new'
+      path: '/new'
+      fullPath: '/addresses/new'
+      preLoaderRoute: typeof AddressesNewImport
+      parentRoute: typeof AddressesImport
     }
     '/auth/register': {
       id: '/auth/register'
@@ -233,6 +261,18 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface AddressesRouteChildren {
+  AddressesNewRoute: typeof AddressesNewRoute
+}
+
+const AddressesRouteChildren: AddressesRouteChildren = {
+  AddressesNewRoute: AddressesNewRoute,
+}
+
+const AddressesRouteWithChildren = AddressesRoute._addFileChildren(
+  AddressesRouteChildren,
+)
+
 interface CartRouteChildren {
   CartCheckoutRoute: typeof CartCheckoutRoute
 }
@@ -271,12 +311,14 @@ const OrdersRouteWithChildren =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/addresses': typeof AddressesRouteWithChildren
   '/cart': typeof CartRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/menu': typeof MenuRouteWithChildren
+  '/new-address': typeof NewAddressRoute
   '/orders': typeof OrdersRouteWithChildren
-  '/profile': typeof ProfileRoute
-  '/settings': typeof SettingsRoute
+  '/personal-details': typeof PersonalDetailsRoute
+  '/addresses/new': typeof AddressesNewRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/cart/checkout': typeof CartCheckoutRoute
@@ -289,12 +331,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/addresses': typeof AddressesRouteWithChildren
   '/cart': typeof CartRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/menu': typeof MenuRouteWithChildren
+  '/new-address': typeof NewAddressRoute
   '/orders': typeof OrdersRouteWithChildren
-  '/profile': typeof ProfileRoute
-  '/settings': typeof SettingsRoute
+  '/personal-details': typeof PersonalDetailsRoute
+  '/addresses/new': typeof AddressesNewRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/cart/checkout': typeof CartCheckoutRoute
@@ -308,12 +352,14 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/addresses': typeof AddressesRouteWithChildren
   '/cart': typeof CartRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/menu': typeof MenuRouteWithChildren
+  '/new-address': typeof NewAddressRoute
   '/orders': typeof OrdersRouteWithChildren
-  '/profile': typeof ProfileRoute
-  '/settings': typeof SettingsRoute
+  '/personal-details': typeof PersonalDetailsRoute
+  '/addresses/new': typeof AddressesNewRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/cart/checkout': typeof CartCheckoutRoute
@@ -328,12 +374,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/addresses'
     | '/cart'
     | '/checkout'
     | '/menu'
+    | '/new-address'
     | '/orders'
-    | '/profile'
-    | '/settings'
+    | '/personal-details'
+    | '/addresses/new'
     | '/auth/register'
     | '/auth/sign-in'
     | '/cart/checkout'
@@ -345,12 +393,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/addresses'
     | '/cart'
     | '/checkout'
     | '/menu'
+    | '/new-address'
     | '/orders'
-    | '/profile'
-    | '/settings'
+    | '/personal-details'
+    | '/addresses/new'
     | '/auth/register'
     | '/auth/sign-in'
     | '/cart/checkout'
@@ -362,12 +412,14 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/addresses'
     | '/cart'
     | '/checkout'
     | '/menu'
+    | '/new-address'
     | '/orders'
-    | '/profile'
-    | '/settings'
+    | '/personal-details'
+    | '/addresses/new'
     | '/auth/register'
     | '/auth/sign-in'
     | '/cart/checkout'
@@ -381,12 +433,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AddressesRoute: typeof AddressesRouteWithChildren
   CartRoute: typeof CartRouteWithChildren
   CheckoutRoute: typeof CheckoutRoute
   MenuRoute: typeof MenuRouteWithChildren
+  NewAddressRoute: typeof NewAddressRoute
   OrdersRoute: typeof OrdersRouteWithChildren
-  ProfileRoute: typeof ProfileRoute
-  SettingsRoute: typeof SettingsRoute
+  PersonalDetailsRoute: typeof PersonalDetailsRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
   AuthSignInRoute: typeof AuthSignInRoute
 }
@@ -394,12 +447,13 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AddressesRoute: AddressesRouteWithChildren,
   CartRoute: CartRouteWithChildren,
   CheckoutRoute: CheckoutRoute,
   MenuRoute: MenuRouteWithChildren,
+  NewAddressRoute: NewAddressRoute,
   OrdersRoute: OrdersRouteWithChildren,
-  ProfileRoute: ProfileRoute,
-  SettingsRoute: SettingsRoute,
+  PersonalDetailsRoute: PersonalDetailsRoute,
   AuthRegisterRoute: AuthRegisterRoute,
   AuthSignInRoute: AuthSignInRoute,
 }
@@ -416,12 +470,13 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/addresses",
         "/cart",
         "/checkout",
         "/menu",
+        "/new-address",
         "/orders",
-        "/profile",
-        "/settings",
+        "/personal-details",
         "/auth/register",
         "/auth/sign-in"
       ]
@@ -431,6 +486,12 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
+    },
+    "/addresses": {
+      "filePath": "addresses.tsx",
+      "children": [
+        "/addresses/new"
+      ]
     },
     "/cart": {
       "filePath": "cart.tsx",
@@ -449,17 +510,21 @@ export const routeTree = rootRoute
         "/menu/product/$productId"
       ]
     },
+    "/new-address": {
+      "filePath": "new-address.tsx"
+    },
     "/orders": {
       "filePath": "orders.tsx",
       "children": [
         "/orders/$orderId"
       ]
     },
-    "/profile": {
-      "filePath": "profile.tsx"
+    "/personal-details": {
+      "filePath": "personal-details.tsx"
     },
-    "/settings": {
-      "filePath": "settings.tsx"
+    "/addresses/new": {
+      "filePath": "addresses.new.tsx",
+      "parent": "/addresses"
     },
     "/auth/register": {
       "filePath": "auth.register.tsx"

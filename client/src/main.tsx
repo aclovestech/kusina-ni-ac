@@ -15,12 +15,17 @@ const checkoutMask = createRouteMask({
   from: '/checkout',
   to: '/cart/checkout',
 });
+const newAddressMask = createRouteMask({
+  routeTree,
+  from: '/new-address',
+  to: '/addresses/new',
+});
 
 // Set up a Router instance
 const router = createRouter({
   routeTree,
   defaultStaleTime: 5000,
-  routeMasks: [checkoutMask],
+  routeMasks: [checkoutMask, newAddressMask],
 });
 
 // Register things for typesafety
