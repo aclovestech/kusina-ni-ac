@@ -35,7 +35,7 @@ export async function updateUserAddress(
 }
 
 export async function deleteUserAddress(address_id: string) {
-  return await apiClient.delete(`users/addresses/${address_id}`).json();
+  return await apiClient.delete(`users/addresses/${address_id}`);
 }
 
 export type UserAddress = {

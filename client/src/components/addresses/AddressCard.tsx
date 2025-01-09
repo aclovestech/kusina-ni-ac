@@ -14,7 +14,10 @@ export function AddressCard({
   const navigate = useNavigate();
 
   function handleEdit() {
-    navigate({ to: '/addresses/new' });
+    navigate({
+      to: '/edit-address/$addressId',
+      params: { addressId: addressInfo.address_id },
+    });
   }
 
   function handleDelete() {
@@ -24,7 +27,12 @@ export function AddressCard({
   return (
     <div className="card my-2 bg-primary text-primary-content">
       <div className="card-body p-6">
-        <h2 className="card-title">Address {addressIndex}</h2>
+        <div className="flex flex-row items-center justify-between">
+          <h2 className="card-title">Address {addressIndex + 1}</h2>
+          {addressInfo.is_default && (
+            <div className="badge badge-outline">Default</div>
+          )}
+        </div>
         <div>
           <p>{addressInfo.address_line1}</p>
           <p>{addressInfo.address_line2}</p>

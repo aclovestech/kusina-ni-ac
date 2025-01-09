@@ -99,8 +99,15 @@ exports.deleteCustomerAddress = async (customer_id, address_id) => {
       `chosen new default is ${defaultAddress.address_id} and input address id is ${address_id}`
     );
 
-    // Check if the address to be deleted is the default
-    if (defaultAddress.address_id === address_id) {
+    // Check if the address to be deleted is the default and if there are other addresses
+    const addressesCount = await trx("customer_addresses")
+      .count("address_id")
+      .where("customer_id", customer_id);
+
+    if (
+      addressesCount[0].count > 1 &&
+      defaultAddress.address_id === address_id
+    ) {
       // Get the first address that is not the default
       const newDefaultAddress = await trx("customer_addresses")
         .first("address_id")

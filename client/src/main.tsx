@@ -20,12 +20,18 @@ const newAddressMask = createRouteMask({
   from: '/new-address',
   to: '/addresses/new',
 });
+const editAddressMask = createRouteMask({
+  routeTree,
+  from: '/edit-address/$addressId',
+  to: '/addresses/$addressId',
+  params: true,
+});
 
 // Set up a Router instance
 const router = createRouter({
   routeTree,
   defaultStaleTime: 5000,
-  routeMasks: [checkoutMask, newAddressMask],
+  routeMasks: [checkoutMask, newAddressMask, editAddressMask],
 });
 
 // Register things for typesafety
