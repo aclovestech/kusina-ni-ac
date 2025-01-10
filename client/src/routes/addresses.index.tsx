@@ -1,14 +1,22 @@
 // Imports
-import { createFileRoute } from '@tanstack/react-router'
-import { AddressCard, NewAddressButton } from '../components'
-import { useGetUserAddresses } from '../hooks/useUsersHooks'
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { AddressCard, NewAddressButton } from '../components';
+import { useGetUserAddresses } from '../hooks/useUsersHooks';
+import isSignedIn from '../utils/getIsSignedIn';
 
 export const Route = createFileRoute('/addresses/')({
+  loader: async () => {
+    const user = await isSignedIn();
+    if (!user) {
+      throw redirect({ to: '/auth/sign-in' });
+    }
+    return {};
+  },
   component: Addresses,
-})
+});
 
 function Addresses() {
-  const { data: addresses, isPending, isError } = useGetUserAddresses()
+  const { data: addresses, isPending, isError } = useGetUserAddresses();
 
   return (
     <>
@@ -38,5 +46,5 @@ function Addresses() {
         </div>
       </div>
     </>
-  )
+  );
 }
