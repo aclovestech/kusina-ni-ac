@@ -18,6 +18,20 @@ exports.handleCreateNewCart = async (req, res, next) => {
 
 // Retrieves the customer's cart details
 exports.handleGetCartDetails = async (req, res, next) => {
+  // Get the customer's cart ID
+  let cart_id;
+  const currentCart = await cartModel.getValidCart(req.user.customer_id);
+
+  // If the cart doesn't exist, create a new one
+  if (!currentCart) {
+    cart_id = await cartModel.createNewCart(req.user.customer_id);
+  } else {
+    cart_id = currentCart.cart_id;
+  }
+
+  // Add the cart ID to the session
+  req.session.cart_id = cart_id;
+
   const cart = await cartModel.getCartItems(req.session.cart_id);
 
   // Return the cart
