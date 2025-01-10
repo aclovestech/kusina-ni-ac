@@ -33,7 +33,7 @@ function ProductDetails() {
           Error fetching products, please try again later.
         </div>
       ) : (
-        <div className="mb-8 lg:mx-32 xl:mx-72">
+        <div className="mx-4 mt-2 max-w-3xl md:mx-8 lg:mx-auto">
           {isPending && <ProductDetailsSkeleton />}
           {product && (
             <>

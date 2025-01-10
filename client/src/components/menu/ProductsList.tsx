@@ -28,7 +28,7 @@ export function ProductsList({
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-6 p-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
             {isPending && createSkeletonElements(8)}
             {products &&
               products.products.map((product) => {
@@ -47,7 +47,7 @@ export function ProductsList({
                 );
               })}
           </div>
-          <div className="mb-8 mt-4 flex justify-center">
+          <div className="my-8 flex justify-center">
             <div className="join">
               <ProductsPaginationButtons
                 products={products}
