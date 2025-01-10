@@ -153,25 +153,23 @@ function Checkout() {
   }
 
   return (
-    <>
-      <div className="card m-4 bg-base-300 shadow-xl">
-        <div className="card-body">
-          <div className="card-title self-center">Checkout</div>
-          <ul className="steps mt-2">
-            <li className="step step-primary">Shipping</li>
-            <li className={isDoneWithStepOne ? 'step step-primary' : 'step'}>
-              Review
-            </li>
-          </ul>
-          <div className="divider my-0"></div>
-          <div className="mb-2 self-center text-info">
-            {isDoneWithStepOne
-              ? 'Review your order'
-              : 'Select a shipping address'}
-          </div>
-          {isDoneWithStepOne ? <StepTwoDisplay /> : <StepOneDisplay />}
+    <div className="card mx-4 my-8 max-w-3xl bg-base-300 shadow-xl md:mx-8 lg:mx-auto">
+      <div className="card-body">
+        <div className="card-title self-center">Checkout</div>
+        <ul className="steps mt-2">
+          <li className="step step-primary">Shipping</li>
+          <li className={isDoneWithStepOne ? 'step step-primary' : 'step'}>
+            Review
+          </li>
+        </ul>
+        <div className="divider my-0"></div>
+        <div className="mb-2 self-center text-info">
+          {isDoneWithStepOne
+            ? 'Review your order'
+            : 'Select a shipping address'}
         </div>
+        {isDoneWithStepOne ? <StepTwoDisplay /> : <StepOneDisplay />}
       </div>
-    </>
+    </div>
   );
 }
