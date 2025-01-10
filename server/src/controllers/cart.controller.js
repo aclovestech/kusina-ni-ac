@@ -24,7 +24,8 @@ exports.handleGetCartDetails = async (req, res, next) => {
 
   // If the cart doesn't exist, create a new one
   if (!currentCart) {
-    cart_id = await cartModel.createNewCart(req.user.customer_id);
+    const cart = await cartModel.createNewCart(req.user.customer_id);
+    cart_id = cart.cart_id;
   } else {
     cart_id = currentCart.cart_id;
   }
@@ -98,7 +99,7 @@ exports.handleCreateStripeSession = async (req, res, next) => {
   const lineItems = cartItems.map((item) => ({
     price_data: {
       currency: "usd",
-      unit_amount: item.price * 100,
+      unit_amount: Math.round(item.price * 100),
       product_data: {
         name: item.name,
         description: item.description,

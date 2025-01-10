@@ -66,7 +66,11 @@ function OrderCard({ order }: { order: Order }) {
             <div>
               <h3 className="text-sm font-extrabold">Items:</h3>
               {order.order_items.map((item) => {
-                return <h2>{`${item.product_name} x ${item.quantity}`}</h2>;
+                return (
+                  <h2
+                    key={item.product_name}
+                  >{`${item.product_name} x ${item.quantity}`}</h2>
+                );
               })}
             </div>
           </div>

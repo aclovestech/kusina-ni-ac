@@ -1,26 +1,26 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useGetUserAddresses } from '../hooks/useUsersHooks'
-import { useState } from 'react'
-import { AddressCard } from '../components'
-import { useGetCart, useCreateCheckoutSession } from '../hooks/useCartHooks'
+import { createFileRoute } from '@tanstack/react-router';
+import { useGetUserAddresses } from '../hooks/useUsersHooks';
+import { useState } from 'react';
+import { AddressCard } from '../components';
+import { useGetCart, useCreateCheckoutSession } from '../hooks/useCartHooks';
 
 export const Route = createFileRoute('/cart/checkout')({
   component: Checkout,
-})
+});
 
 function Checkout() {
-  const { data: addresses, isLoading, isError } = useGetUserAddresses()
-  const { data: cart, isPending: isCartPending } = useGetCart()
-  const { mutate: createCheckoutSession } = useCreateCheckoutSession()
-  const [isDoneWithStepOne, setIsDoneWithStepOne] = useState(false)
-  const [selectedAddressId, setSelectedAddressId] = useState('')
+  const { data: addresses, isLoading, isError } = useGetUserAddresses();
+  const { data: cart, isPending: isCartPending } = useGetCart();
+  const { mutate: createCheckoutSession } = useCreateCheckoutSession();
+  const [isDoneWithStepOne, setIsDoneWithStepOne] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState('');
 
   function handleSelectAddress(addressId: string) {
-    setSelectedAddressId(addressId)
+    setSelectedAddressId(addressId);
   }
 
   function checkIfSelected(addressId: string) {
-    return selectedAddressId === addressId
+    return selectedAddressId === addressId;
   }
 
   function ErrorDisplay() {
@@ -29,13 +29,13 @@ function Checkout() {
         <p className="self-center text-error">Unable to load addresses</p>
         <button className="btn btn-primary self-center">Retry</button>
       </>
-    )
+    );
   }
 
   function LoadingDisplay() {
     return (
       <div className="loading loading-spinner loading-lg self-center"></div>
-    )
+    );
   }
 
   function NoAddressesDisplay() {
@@ -44,7 +44,7 @@ function Checkout() {
         <p className="self-center">You have no addresses saved</p>
         <div className="btn btn-primary self-center">Add an address here</div>
       </>
-    )
+    );
   }
 
   function AddressDisplay() {
@@ -61,7 +61,7 @@ function Checkout() {
           />
         ))}
       </>
-    )
+    );
   }
 
   function StepOneDisplay() {
@@ -85,16 +85,16 @@ function Checkout() {
           </button>
         </div>
       </>
-    )
+    );
   }
 
   function StepTwoDisplay() {
     const selectedAddress = addresses?.find(
-      (item) => item.address_id === selectedAddressId,
-    )
+      (item) => item.address_id === selectedAddressId
+    );
 
     function handlePlaceOrder() {
-      createCheckoutSession(selectedAddressId)
+      createCheckoutSession(selectedAddressId);
     }
 
     return (
@@ -118,13 +118,14 @@ function Checkout() {
                   {item.price} x {item.quantity}
                 </p>
               </div>
-            )
+            );
           })}
           {cart && (
             <p className="text-info">
               {`Total: ${cart.cart_items
                 .map((item) => item.price * item.quantity)
-                .reduce((a, b) => a + b, 0)}`}
+                .reduce((a, b) => a + b, 0)
+                .toFixed(2)}`}
             </p>
           )}
         </div>
@@ -140,7 +141,7 @@ function Checkout() {
           </button>
         </div>
       </>
-    )
+    );
   }
 
   return (
@@ -164,5 +165,5 @@ function Checkout() {
         </div>
       </div>
     </>
-  )
+  );
 }
