@@ -127,7 +127,7 @@ exports.handleCheckout = async (req, res, next) => {
   const session = await stripe.checkout.sessions.retrieve(sid);
 
   if (session.payment_status === "unpaid") {
-    return res.redirect(CLIENT_URL + "/payment-failed");
+    return res.redirect(CLIENT_URL + "/cart");
   }
 
   // Get the address ID
