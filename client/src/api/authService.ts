@@ -1,6 +1,7 @@
 // Imports
 import apiClient from './apiClient';
 import { LoginFormInput, RegistrationFormInput } from '../schemas/authSchemas';
+import { HTTPError } from 'ky';
 
 export async function registerCustomer(data: RegistrationFormInput) {
   return await apiClient.post<User>('auth/register', { json: data }).json();
@@ -15,7 +16,18 @@ export function loginCustomerWithGoogle() {
 }
 
 export async function checkCustomerSession() {
-  return await apiClient.get<User>('auth/check-session').json();
+  try {
+    const response = await apiClient.get<User>('auth/check-session').json();
+    return response;
+  } catch (error) {
+    if (
+      error instanceof HTTPError &&
+      error.response &&
+      error.response.status === 401
+    ) {
+      return null;
+    }
+  }
 }
 
 export async function logoutCustomer() {

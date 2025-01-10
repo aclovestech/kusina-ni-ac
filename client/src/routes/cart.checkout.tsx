@@ -1,10 +1,18 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useGetUserAddresses } from '../hooks/useUsersHooks';
 import { useState } from 'react';
 import { AddressCard } from '../components';
 import { useGetCart, useCreateCheckoutSession } from '../hooks/useCartHooks';
+import isSignedIn from '../utils/getIsSignedIn';
 
 export const Route = createFileRoute('/cart/checkout')({
+  loader: async () => {
+    const user = await isSignedIn();
+    if (!user) {
+      throw redirect({ to: '/auth/sign-in' });
+    }
+    return {};
+  },
   component: Checkout,
 });
 

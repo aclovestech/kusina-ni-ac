@@ -1,8 +1,21 @@
 // Imports
-import { createFileRoute, useParams, Link } from '@tanstack/react-router';
+import {
+  createFileRoute,
+  useParams,
+  Link,
+  redirect,
+} from '@tanstack/react-router';
 import { AddressForm } from '../components';
+import isSignedIn from '../utils/getIsSignedIn';
 
 export const Route = createFileRoute('/addresses/$addressId/edit')({
+  loader: async () => {
+    const user = await isSignedIn();
+    if (!user) {
+      throw redirect({ to: '/auth/sign-in' });
+    }
+    return {};
+  },
   component: EditAddress,
 });
 

@@ -1,10 +1,18 @@
 // Imports
-import { createFileRoute } from '@tanstack/react-router'
-import { AddressForm } from '../components'
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { AddressForm } from '../components';
+import isSignedIn from '../utils/getIsSignedIn';
 
 export const Route = createFileRoute('/addresses/new')({
+  loader: async () => {
+    const user = await isSignedIn();
+    if (!user) {
+      throw redirect({ to: '/auth/sign-in' });
+    }
+    return {};
+  },
   component: NewAddress,
-})
+});
 
 function NewAddress() {
   return (
@@ -16,5 +24,5 @@ function NewAddress() {
         </div>
       </div>
     </>
-  )
+  );
 }

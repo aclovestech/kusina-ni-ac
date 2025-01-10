@@ -1,10 +1,18 @@
 // Imports
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 import formatRawDateTime from '../utils/formatRawDateTime';
 import { useGetOrders } from '../hooks/useOrdersHooks';
 import { Order } from '../api';
+import isSignedIn from '../utils/getIsSignedIn';
 
 export const Route = createFileRoute('/orders/')({
+  loader: async () => {
+    const user = await isSignedIn();
+    if (!user) {
+      throw redirect({ to: '/auth/sign-in' });
+    }
+    return {};
+  },
   component: Orders,
 });
 
