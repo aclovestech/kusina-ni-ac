@@ -1,9 +1,17 @@
 // Imports
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 import { CartItem } from '../components';
 import { useGetCart, useUpdateItemInCart } from '../hooks/useCartHooks';
+import isSignedIn from '../utils/getIsSignedIn';
 
 export const Route = createFileRoute('/cart/')({
+  loader: async () => {
+    const user = await isSignedIn();
+    if (!user) {
+      throw redirect({ to: '/auth/sign-in' });
+    }
+    return {};
+  },
   component: Cart,
 });
 
