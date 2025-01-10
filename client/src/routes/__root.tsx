@@ -1,6 +1,5 @@
 // Imports
-import { createRootRoute, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import { createRootRoute, Outlet, Link } from '@tanstack/react-router';
 import { Toaster } from 'sonner';
 import { Header } from '../components';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -8,7 +7,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export const Route = createRootRoute({
   component: Root,
-  notFoundComponent: () => <div>404</div>,
+  notFoundComponent: NotFound,
 });
 
 const queryClient = new QueryClient({
@@ -38,8 +37,21 @@ function Root() {
           style: { justifyContent: 'center' },
         }}
       />
-      <TanStackRouterDevtools />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
+  );
+}
+
+function NotFound() {
+  return (
+    <div className="m-12 flex flex-col gap-4 text-center">
+      <h2 className="text-2xl">Oops! Page Not Found</h2>
+      <p className="text-xl">
+        We can't seem to find the page you're looking for.
+      </p>
+      <Link to="/" className="btn btn-primary w-fit self-center">
+        Back to Home
+      </Link>
+    </div>
   );
 }
