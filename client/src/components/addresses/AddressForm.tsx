@@ -91,49 +91,47 @@ export function AddressForm({
   }
 
   return (
-    <>
-      <form
-        className="w-full max-w-xs self-center"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        {fields.map((field) => {
-          return (
-            <FormInput
-              key={field.name}
-              label={field.label}
-              type={field.type}
-              name={field.name as keyof AddressFormInput}
-              register={register}
-              errors={errors}
-            />
-          );
-        })}
+    <form
+      className="w-full max-w-xs self-center"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      {fields.map((field) => {
+        return (
+          <FormInput
+            key={field.name}
+            label={field.label}
+            type={field.type}
+            name={field.name as keyof AddressFormInput}
+            register={register}
+            errors={errors}
+          />
+        );
+      })}
 
-        <div className="form-control mt-2">
-          <label className="label cursor-pointer">
-            <span className="label-text">Set as default address</span>
-            <input
-              {...register('is_default')}
-              type="checkbox"
-              className="checkbox"
-            />
-          </label>
-        </div>
+      <div className="form-control mt-2">
+        <label className="label cursor-pointer">
+          <span className="label-text">Set as default address</span>
+          <input
+            {...register('is_default')}
+            type="checkbox"
+            className="checkbox"
+          />
+        </label>
+      </div>
 
-        <div className="card-actions mt-4 justify-center">
-          <button
-            className={isPending() ? 'btn btn-disabled' : 'btn btn-primary'}
-            disabled={isPending()}
-            onClick={handleSubmit(onSubmit)}
-          >
-            {isPending() && (
-              <span className="loading loading-spinner loading-sm"></span>
-            )}
-            Save
-          </button>
-        </div>
-      </form>
-    </>
+      <div className="card-actions mt-4 justify-center">
+        <button
+          className={isPending() ? 'btn btn-disabled' : 'btn btn-primary'}
+          disabled={isPending()}
+          onClick={handleSubmit(onSubmit)}
+        >
+          {isPending() && (
+            <span className="loading loading-spinner loading-sm"></span>
+          )}
+          Save
+        </button>
+      </div>
+    </form>
   );
 }
 

@@ -10,7 +10,7 @@ export function NewAddressButton() {
   }
 
   return (
-    <div className="card mx-auto w-fit bg-primary text-primary-content">
+    <div className="card mx-auto mb-4 w-full max-w-xs bg-primary text-primary-content">
       <div className="card-body p-6">
         <div onClick={handleClick}>
           <div className="flex flex-row items-center justify-center gap-2">
