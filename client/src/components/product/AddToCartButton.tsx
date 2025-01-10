@@ -1,8 +1,10 @@
 // Imports
+import { useNavigate } from '@tanstack/react-router';
 import {
   useAddItemToCart,
   useUpdateItemInCart,
 } from '../../hooks/useCartHooks';
+import isSignedIn from '../../utils/getIsSignedIn';
 
 type AddToCartButtonProps = {
   isItemInCart: boolean | undefined;
@@ -15,10 +17,16 @@ export function AddToCartButton({
   product_id,
   quantity,
 }: AddToCartButtonProps) {
+  const navigate = useNavigate();
   const { mutate: addItemToCart } = useAddItemToCart();
   const { mutate: updateItemInCart } = useUpdateItemInCart();
 
-  function handleOnClick() {
+  async function handleOnClick() {
+    const user = await isSignedIn();
+    if (!user) {
+      navigate({ to: '/auth/sign-in' });
+    }
+
     if (isItemInCart) {
       updateItemInCart({ product_id, quantity });
     } else {
