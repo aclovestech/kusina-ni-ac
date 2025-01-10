@@ -3,8 +3,8 @@ const cartModel = require("../models/cart.model");
 const { matchedData } = require("express-validator");
 const {
   STRIPE_SECRET_KEY,
-  STRIPE_DOMAIN_URL,
   CLIENT_URL,
+  SERVER_URL,
 } = require("../config/environment");
 const stripe = require("stripe")(STRIPE_SECRET_KEY);
 
@@ -111,8 +111,8 @@ exports.handleCreateStripeSession = async (req, res, next) => {
   const session = await stripe.checkout.sessions.create({
     line_items: lineItems,
     mode: "payment",
-    success_url: `${STRIPE_DOMAIN_URL}/cart/checkout?sid={CHECKOUT_SESSION_ID}&address_id=${address_id}`,
-    cancel_url: `${STRIPE_DOMAIN_URL}/cart/checkout?sid={CHECKOUT_SESSION_ID}`,
+    success_url: `${SERVER_URL}/cart/checkout?sid={CHECKOUT_SESSION_ID}&address_id=${address_id}`,
+    cancel_url: `${SERVER_URL}/cart/checkout?sid={CHECKOUT_SESSION_ID}`,
   });
 
   res.json({ url: session.url });
