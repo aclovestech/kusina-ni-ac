@@ -47,9 +47,7 @@ export function AuthForm({ formType, onSubmit, isPending }: AuthFormProps) {
   return (
     <form
       className="mt-4 w-full max-w-xs self-center"
-      onSubmit={handleSubmit(onSubmit, (error) => {
-        console.error(error);
-      })}
+      onSubmit={handleSubmit(onSubmit)}
     >
       {fields.map((field) => {
         return (

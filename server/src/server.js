@@ -25,7 +25,7 @@ app.use(
   session({
     secret: env.SECRET_KEY,
     cookie: {
-      maxAge: 3600000,
+      maxAge: 86400000,
     },
     store,
     resave: false,

@@ -1,10 +1,10 @@
 // Imports
-const { param, body } = require("express-validator");
+const { body, check } = require("express-validator");
 const validate = require("./validate");
 
 // Validates the input for the address ID
 exports.validateAddressIdInput = [
-  param("address_id", "Invalid address ID").isUUID(4),
+  check("address_id", "Invalid address ID").isUUID(4),
   // Error handler
   validate,
 ];

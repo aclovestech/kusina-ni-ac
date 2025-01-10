@@ -12,3 +12,6 @@ export * from './product/ProductDetailsSkeleton';
 export * from './cart/CartItem';
 export * from './cart/CartItemQuantityButtons';
 export * from './cart/CartItemRemoveButton';
+export * from './addresses/AddressCard';
+export * from './addresses/NewAddressButton';
+export * from './addresses/AddressForm';

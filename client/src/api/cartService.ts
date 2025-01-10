@@ -31,6 +31,15 @@ export async function removeItemFromCart(product_id: string) {
     .json();
 }
 
+export async function createCheckoutSession(address_id: string) {
+  const { url } = await apiClient
+    .post<CreateSessionData>('cart/create-checkout-session', {
+      json: { address_id: address_id },
+    })
+    .json();
+  window.location.href = url;
+}
+
 export type NewlyCreatedCartDetails = {
   cart_id: string;
   customer_id: string;
@@ -50,4 +59,8 @@ export type CartItem = {
   image_url: string;
   price: number;
   quantity: number;
+};
+
+export type CreateSessionData = {
+  url: string;
 };
