@@ -77,7 +77,7 @@ function Cart() {
   }
 
   return (
-    <div className="card m-4 bg-base-300 shadow-xl">
+    <div className="card mx-4 my-8 max-w-3xl bg-base-300 shadow-xl md:mx-8 lg:mx-auto">
       <div className="card-body p-4">
         <div className="card-title self-center">Your Cart</div>
         <div className="divider my-0"></div>

@@ -36,8 +36,8 @@ function OrderDetails() {
           Unable to retrieve order details, please try again later.
         </p>
       ) : order ? (
-        <div className="card m-4 bg-base-300 shadow-xl">
-          <div className="card-body">
+        <div className="card mx-4 my-8 max-w-3xl bg-base-300 md:mx-8 lg:mx-auto">
+          <div className="card-body w-full max-w-md self-center">
             <h2 className="card-title self-center">Order Details</h2>
             <div className="divider my-0"></div>
             <h2>Order ID - {order.order_details.order_id}</h2>
