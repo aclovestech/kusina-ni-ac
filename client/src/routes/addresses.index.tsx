@@ -20,9 +20,9 @@ function Addresses() {
 
   return (
     <>
-      <div className="card m-4 bg-base-300">
+      <div className="card mx-4 my-8 max-w-3xl bg-base-300 md:mx-8 lg:mx-auto">
         <div className="card-body p-6">
-          <div className="card-title">Addresses</div>
+          <h2 className="card-title self-center">Addresses</h2>
 
           {isPending ? (
             <span className="loading loading-spinner loading-lg self-center"></span>

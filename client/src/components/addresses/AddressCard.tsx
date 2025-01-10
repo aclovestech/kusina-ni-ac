@@ -34,8 +34,8 @@ export function AddressCard({
     <div
       className={
         isForCheckout === true && !isSelected?.(addressInfo.address_id)
-          ? 'card my-2 w-full max-w-md self-center bg-base-100 shadow-xl'
-          : 'card my-2 w-full max-w-md self-center bg-primary text-primary-content shadow-xl'
+          ? 'card my-2 w-full max-w-xs self-center bg-base-100 shadow-xl'
+          : 'card my-2 w-full max-w-xs self-center bg-primary text-primary-content shadow-xl'
       }
       onClick={() => onClick?.()}
     >
