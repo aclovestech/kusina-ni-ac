@@ -108,7 +108,7 @@ function Checkout() {
     return (
       <>
         <p className="text-center text-info">Shipping Address</p>
-        <div>
+        <div className="m-4 text-center">
           <p>{selectedAddress?.address_line1}</p>
           <p>{selectedAddress?.address_line2}</p>
           <p>{`${selectedAddress?.city}, ${selectedAddress?.state}, ${selectedAddress?.postal_code}`}</p>
@@ -116,11 +116,13 @@ function Checkout() {
         </div>
         <p className="text-center text-info">Order Summary</p>
         <div
-          className={isCartPending ? 'loading loading-spinner loading-lg' : ''}
+          className={
+            isCartPending ? 'loading loading-spinner loading-lg m-4' : 'm-4'
+          }
         >
           {cart?.cart_items.map((item) => {
             return (
-              <div key={item.name}>
+              <div key={item.name} className="text-center">
                 <p>{item.name}</p>
                 <p>
                   {item.price} x {item.quantity}
@@ -128,15 +130,15 @@ function Checkout() {
               </div>
             );
           })}
-          {cart && (
-            <p className="text-info">
-              {`Total: ${cart.cart_items
-                .map((item) => item.price * item.quantity)
-                .reduce((a, b) => a + b, 0)
-                .toFixed(2)}`}
-            </p>
-          )}
         </div>
+        {cart && (
+          <p className="text-center text-info">
+            {`Total: ${cart.cart_items
+              .map((item) => item.price * item.quantity)
+              .reduce((a, b) => a + b, 0)
+              .toFixed(2)}`}
+          </p>
+        )}
         <div className="mt-2 flex flex-col items-center gap-2 self-center">
           <button className="btn btn-primary" onClick={handlePlaceOrder}>
             Place Order
