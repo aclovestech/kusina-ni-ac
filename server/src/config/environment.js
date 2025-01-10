@@ -12,9 +12,9 @@ module.exports = {
   PGPORT: process.env.PGPORT,
   SECRET_KEY: process.env.SECRET_KEY,
   SERVER_PORT: process.env.SERVER_PORT,
+  SERVER_URL: process.env.SERVER_URL,
   CLIENT_URL: process.env.CLIENT_URL,
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-  STRIPE_DOMAIN_URL: process.env.STRIPE_DOMAIN_URL,
 };
