@@ -1,9 +1,10 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute, redirect, Link } from '@tanstack/react-router';
 import { useGetUserAddresses } from '../hooks/useUsersHooks';
 import { useState } from 'react';
 import { AddressCard } from '../components';
 import { useGetCart, useCreateCheckoutSession } from '../hooks/useCartHooks';
 import isSignedIn from '../utils/getIsSignedIn';
+import { toast } from 'sonner';
 
 export const Route = createFileRoute('/cart/checkout')({
   loader: async () => {
@@ -27,6 +28,16 @@ function Checkout() {
     setSelectedAddressId(addressId);
   }
 
+  function handleContinue() {
+    if (selectedAddressId === '') {
+      toast.error(
+        'Please select an address. If you do not have an address, please create one.'
+      );
+      return;
+    }
+    setIsDoneWithStepOne(true);
+  }
+
   function checkIfSelected(addressId: string) {
     return selectedAddressId === addressId;
   }
@@ -35,7 +46,6 @@ function Checkout() {
     return (
       <>
         <p className="self-center text-error">Unable to load addresses</p>
-        <button className="btn btn-primary self-center">Retry</button>
       </>
     );
   }
@@ -50,7 +60,9 @@ function Checkout() {
     return (
       <>
         <p className="self-center">You have no addresses saved</p>
-        <div className="btn btn-primary self-center">Add an address here</div>
+        <Link to="/addresses/new" className="btn btn-primary self-center">
+          Add an address here
+        </Link>
       </>
     );
   }
@@ -85,10 +97,7 @@ function Checkout() {
           <AddressDisplay />
         )}
         <div className="card-actions self-center">
-          <button
-            className="btn btn-primary mt-2"
-            onClick={() => setIsDoneWithStepOne(true)}
-          >
+          <button className="btn btn-primary mt-2" onClick={handleContinue}>
             Continue
           </button>
         </div>
