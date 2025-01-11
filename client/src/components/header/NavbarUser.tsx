@@ -55,7 +55,7 @@ export default function NavbarUser() {
             {/* <Link to="/personal-details">Personal Details</Link> */}
             <Link to="/addresses">Addresses</Link>
             <Link to="/orders">Orders</Link>
-            <div className="my-2" onClick={handleLogout}>
+            <div className="my-2 cursor-pointer" onClick={handleLogout}>
               Logout
             </div>
           </div>

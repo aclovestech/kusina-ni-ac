@@ -52,6 +52,9 @@ export function useLogoutCustomer(onSuccess?: () => void) {
     mutationFn: () => logoutCustomer(),
     onSuccess: () => {
       queryClient.setQueryData(['customerSession'], null);
+      queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+      queryClient.invalidateQueries({ queryKey: ['userAddresses'] });
       onSuccess?.();
     },
     onSettled: () => {
